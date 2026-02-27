@@ -1,33 +1,35 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function CTASection() {
   return (
-    <section className="py-24 relative overflow-hidden">
-      <div className="absolute inset-0 bg-primary/5 -z-10"></div>
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="flex flex-col items-center text-center gap-8 max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-            Ready to optimize your inventory?
+    <section id="contact" className="py-16 md:py-20">
+      <div className="container mx-auto max-w-5xl px-4 md:px-6">
+        <div className="rounded-3xl border border-border/70 bg-gradient-to-br from-emerald-500/10 via-background to-sky-500/10 p-8 text-center shadow-xl md:p-12">
+          <h2 className="text-balance text-3xl font-extrabold tracking-tight md:text-4xl">
+            Ready to simplify your inventory operations?
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl">
-            Join thousands of businesses that trust AgentHacks IMS to manage their
-            stock efficiently. Start your free trial today.
+          <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground md:text-lg">
+            Launch quickly, onboard your teams, and start running daily stock movements with less manual effort.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Link href="/sign-up">
-              <Button size="lg" className="w-full sm:w-auto h-12 px-8 text-base rounded-full shadow-lg shadow-primary/20">
-                Start Your Free Trial
+              <Button size="lg" className="h-11 w-full gap-2 rounded-xl px-7 sm:w-auto">
+                Start free trial
+                <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
-            <Link href="#">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto h-12 px-8 text-base rounded-full">
-                Contact Sales
+            <Link href="/sign-in">
+              <Button variant="outline" size="lg" className="h-11 w-full rounded-xl px-7 sm:w-auto">
+                Talk to your workspace
               </Button>
             </Link>
           </div>
-          <p className="text-sm text-muted-foreground">
-            No credit card required · 14-day free trial · Cancel anytime
+
+          <p className="mt-4 text-sm text-muted-foreground">
+            No credit card required. Setup takes less than 10 minutes.
           </p>
         </div>
       </div>
