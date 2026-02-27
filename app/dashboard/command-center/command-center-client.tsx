@@ -49,16 +49,23 @@ export function CommandCenterClient() {
                     <Card className="relative overflow-hidden h-[600px] flex flex-col items-center justify-center shadow-xl border-border/50 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm group">
                         {/* Animated Background */}
                         <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        
+
                         {/* Floating particles */}
                         <div className="absolute inset-0 overflow-hidden">
-                            {[...Array(6)].map((_, i) => (
+                            {[
+                                { top: 15, left: 25 },
+                                { top: 45, left: 70 },
+                                { top: 75, left: 40 },
+                                { top: 30, left: 85 },
+                                { top: 60, left: 10 },
+                                { top: 85, left: 55 },
+                            ].map((pos, i) => (
                                 <div
                                     key={i}
                                     className="absolute w-1 h-1 bg-orange-500/20 rounded-full animate-float"
                                     style={{
-                                        top: `${Math.random() * 100}%`,
-                                        left: `${Math.random() * 100}%`,
+                                        top: `${pos.top}%`,
+                                        left: `${pos.left}%`,
                                         animationDelay: `${i * 0.3}s`,
                                         animationDuration: `${3 + i}s`
                                     }}
@@ -73,7 +80,7 @@ export function CommandCenterClient() {
                                     <MessageSquare className="h-10 w-10 text-orange-500/60" />
                                 </div>
                             </div>
-                            
+
                             <div className="space-y-2">
                                 <h3 className="text-xl font-semibold">AI Chatbot Interface</h3>
                                 <p className="text-sm text-muted-foreground max-w-md">
@@ -119,7 +126,7 @@ export function CommandCenterClient() {
                     {/* How It Works Card */}
                     <Card className="relative overflow-hidden border-border/50 bg-gradient-to-br from-blue-500/5 to-indigo-500/5 backdrop-blur-sm">
                         <div className="absolute inset-0 bg-grid-slate-900/[0.02] dark:bg-grid-slate-100/[0.02]" />
-                        
+
                         <div className="relative p-5">
                             <div className="flex items-center gap-2 mb-4">
                                 <div className="h-8 w-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
@@ -132,7 +139,7 @@ export function CommandCenterClient() {
                                 {agents.map((agent, index) => {
                                     const Icon = agent.icon;
                                     return (
-                                        <div 
+                                        <div
                                             key={agent.name}
                                             className="group flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors duration-200 animate-in fade-in slide-in-from-left-2"
                                             style={{ animationDelay: `${index * 100}ms` }}

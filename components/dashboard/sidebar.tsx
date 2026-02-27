@@ -21,6 +21,8 @@ import {
   Menu,
   X,
   Sparkles,
+  Brain,
+  Cpu,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -114,7 +116,7 @@ const sidebarGroups = [
     title: "Configuration",
     items: [
       {
-        title: "Users",
+        title: "Contacts",
         href: "/dashboard/contacts",
         icon: Users,
       },
@@ -144,6 +146,9 @@ function SidebarGroup({
   const isActiveGroup = group.items.some((item) => item.href === pathname);
   const [isOpen, setIsOpen] = useState(true);
 
+  // Special styling for AI Intelligence section
+  const isAISection = group.title === "AI Intelligence";
+
   return (
     <div
       className="px-3 py-1.5 animate-in fade-in slide-in-from-left-2 duration-300"
@@ -153,18 +158,36 @@ function SidebarGroup({
         variant="ghost"
         className={cn(
           "w-full justify-between hover:bg-primary/5 hover:text-primary p-0 h-auto mb-2 px-4 group transition-all duration-200",
-          isActiveGroup && "text-primary"
+          isActiveGroup && "text-primary",
+          isAISection && "relative overflow-hidden"
         )}
         onClick={() => setIsOpen(!isOpen)}
       >
+        {/* AI Section Background Effect */}
+        {isAISection && (
+          <>
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-transparent" />
+            <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 to-transparent rounded-lg blur opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          </>
+        )}
+        
         <h3 className={cn(
-          "text-xs font-semibold uppercase tracking-wider transition-colors duration-200",
-          isActiveGroup ? "text-primary" : "text-muted-foreground group-hover:text-primary"
+          "text-xs font-semibold uppercase tracking-wider transition-colors duration-200 relative z-10",
+          isActiveGroup ? "text-primary" : "text-muted-foreground group-hover:text-primary",
+          isAISection && "flex items-center gap-1.5"
         )}>
-          {group.title}
+          {isAISection && (
+            <>
+              <Brain className="h-3 w-3 text-purple-500" />
+              <span className="bg-gradient-to-r from-purple-500 to-orange-500 bg-clip-text text-transparent">
+                {group.title}
+              </span>
+            </>
+          )}
+          {!isAISection && group.title}
         </h3>
         <div className={cn(
-          "transition-transform duration-200",
+          "transition-transform duration-200 relative z-10",
           isOpen ? "rotate-180" : "rotate-0"
         )}>
           <ChevronDown className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors" />
@@ -177,6 +200,8 @@ function SidebarGroup({
       )}>
         {group.items.map((item) => {
           const isActive = pathname === item.href;
+          const isCommandCenter = item.title === "Command Center";
+          
           return (
             <Button
               key={item.href}
@@ -185,24 +210,46 @@ function SidebarGroup({
                 "w-full justify-start transition-all duration-200 relative group/item",
                 "hover:translate-x-1 hover:bg-primary/5",
                 isActive && "bg-primary/10 text-primary font-medium shadow-sm",
-                !isActive && "text-muted-foreground hover:text-foreground"
+                !isActive && "text-muted-foreground hover:text-foreground",
+                isCommandCenter && "relative overflow-hidden"
               )}
               asChild
             >
               <Link href={item.href as Route}>
+                {/* Command Center special background */}
+                {isCommandCenter && !isActive && (
+                  <>
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-transparent" />
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/10 to-orange-500/10 rounded-lg blur opacity-0 group-hover/item:opacity-100 transition-opacity duration-500" />
+                  </>
+                )}
+                
                 {isActive && (
                   <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-primary rounded-r-full animate-in fade-in slide-in-from-left-1" />
                 )}
+                
                 <item.icon
                   className={cn(
-                    "mr-3 h-4 w-4 transition-all duration-200",
+                    "mr-3 h-4 w-4 transition-all duration-200 relative z-10",
                     isActive ? "text-primary" : "text-muted-foreground group-hover/item:text-primary",
-                    "group-hover/item:scale-110"
+                    "group-hover/item:scale-110",
+                    isCommandCenter && !isActive && "text-purple-500"
                   )}
                 />
-                <span className="text-sm">{item.title}</span>
-                {isActive && (
-                  <Sparkles className="ml-auto h-3 w-3 text-primary/50 animate-pulse" />
+                <span className={cn(
+                  "text-sm relative z-10",
+                  isCommandCenter && !isActive && "bg-gradient-to-r from-purple-500 to-orange-500 bg-clip-text text-transparent"
+                )}>
+                  {item.title}
+                </span>
+                {isActive && isCommandCenter && (
+                  <Cpu className="ml-auto h-3 w-3 text-purple-500 animate-pulse relative z-10" />
+                )}
+                {isActive && !isCommandCenter && (
+                  <Sparkles className="ml-auto h-3 w-3 text-primary/50 animate-pulse relative z-10" />
+                )}
+                {!isActive && isCommandCenter && (
+                  <Sparkles className="ml-auto h-3 w-3 text-purple-500/30 opacity-0 group-hover/item:opacity-100 transition-opacity duration-200 relative z-10" />
                 )}
               </Link>
             </Button>

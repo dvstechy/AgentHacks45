@@ -45,13 +45,22 @@ export default async function CommandCenterPage() {
 
           {/* Floating particles - AI themed */}
           <div className="absolute inset-0">
-            {[...Array(8)].map((_, i) => (
+            {[
+              { top: 10, left: 20 },
+              { top: 35, left: 65 },
+              { top: 70, left: 35 },
+              { top: 25, left: 80 },
+              { top: 55, left: 15 },
+              { top: 80, left: 50 },
+              { top: 45, left: 90 },
+              { top: 90, left: 30 },
+            ].map((pos, i) => (
               <div
                 key={i}
                 className="absolute w-1.5 h-1.5 bg-orange-500/30 rounded-full animate-float"
                 style={{
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
+                  top: `${pos.top}%`,
+                  left: `${pos.left}%`,
                   animationDelay: `${i * 0.5}s`,
                   animationDuration: `${4 + i}s`
                 }}
