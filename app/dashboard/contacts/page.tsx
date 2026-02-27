@@ -26,7 +26,7 @@ export default async function ContactsPage() {
   return (
     <div className="flex-1 space-y-8 pb-8">
       {/* Header Section with Gradient */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-blue-500/5 to-transparent p-8">
+      <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/10 via-blue-500/5 to-transparent p-4 sm:p-6 md:p-8">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-primary/20 animate-pulse" />
@@ -53,11 +53,11 @@ export default async function ContactsPage() {
         <div className="relative z-10">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="space-y-3">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div className="h-10 w-1 bg-gradient-to-b from-primary to-blue-500 rounded-full" />
                 <div>
                   <div className="flex items-center gap-2">
-                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
                       Contacts
                     </h1>
                     <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20">
@@ -97,51 +97,51 @@ export default async function ContactsPage() {
           </div>
 
           {/* Quick Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
-            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Users className="h-5 w-5 text-primary" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 mt-4 sm:mt-6">
+            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-3 sm:p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Total Contacts</p>
-                  <p className="text-2xl font-bold">{contactCount}</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">Total Contacts</p>
+                  <p className="text-xl sm:text-2xl font-bold">{contactCount}</p>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                  <Building2 className="h-5 w-5 text-purple-500" />
+            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-3 sm:p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                  <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-purple-500" />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Vendors</p>
-                  <p className="text-2xl font-bold text-purple-500">{vendors}</p>
+                  <p className="text-xl sm:text-2xl font-bold text-purple-500">{vendors}</p>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-300">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-green-500/10 flex items-center justify-center">
-                  <Users className="h-5 w-5 text-green-500" />
+            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-3 sm:p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-300">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg bg-green-500/10 flex items-center justify-center">
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Customers</p>
-                  <p className="text-2xl font-bold text-green-500">{customers}</p>
+                  <p className="text-xl sm:text-2xl font-bold text-green-500">{customers}</p>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-400">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                  <Mail className="h-5 w-5 text-blue-500" />
+            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-3 sm:p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-400">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                  <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Active</p>
-                  <p className="text-2xl font-bold text-blue-500">{activeContacts}</p>
+                  <p className="text-xl sm:text-2xl font-bold text-blue-500">{activeContacts}</p>
                 </div>
               </div>
             </div>
@@ -154,7 +154,7 @@ export default async function ContactsPage() {
       {/* Main Content */}
       <div className="space-y-4">
         {/* Section Header */}
-        <div className="flex items-center justify-between px-1">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-1">
           <div className="flex items-center gap-2">
             <div className="h-6 w-1 bg-gradient-to-b from-primary to-blue-500 rounded-full" />
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
@@ -163,7 +163,7 @@ export default async function ContactsPage() {
           </div>
 
           {/* Legend */}
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-muted-foreground">
             <div className="flex items-center gap-1">
               <div className="h-2 w-2 rounded-full bg-purple-500" />
               <span>Vendor</span>
@@ -229,7 +229,7 @@ export default async function ContactsPage() {
                   <span className="font-medium text-foreground">{activeContacts}</span> active
                 </span>
               </div>
-              <div className="text-xs ml-auto">
+              <div className="text-xs w-full sm:w-auto sm:ml-auto mt-2 sm:mt-0">
                 Last updated: {new Date().toLocaleString()}
               </div>
             </div>
