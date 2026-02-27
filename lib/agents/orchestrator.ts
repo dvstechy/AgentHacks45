@@ -1,6 +1,4 @@
 import { prisma } from "@/lib/prisma"
-
-import { getLowStockProducts } from "./inventory.agent"
 import { forecastDemand } from "./forecast.agent"
 import { calculateReorder } from "./reorder.agent"
 import { selectBestSupplier } from "./supplier.agent"
@@ -8,16 +6,17 @@ import { selectBestSupplier } from "./supplier.agent"
 export async function runAgentSystem(userId: string) {
   console.log("🚀 Agent system started")
 
-  const lowStockProducts = await getLowStockProducts()
-  console.log("Low stock products:", lowStockProducts)
+  const products = await prisma.product.findMany({
+    where: { userId }
+  })
 
-  for (const productId of lowStockProducts) {
-    console.log("Processing product:", productId)
+  for (const product of products) {
+    console.log("Processing product:", product.id)
 
-    const forecast = await forecastDemand(productId)
+    const forecast = await forecastDemand(product.id)
     console.log("Forecast:", forecast)
 
-    const reorder = await calculateReorder(productId, forecast)
+    const reorder = await calculateReorder(product.id, forecast)
     console.log("Reorder result:", reorder)
 
     if (!reorder) continue
@@ -34,7 +33,7 @@ export async function runAgentSystem(userId: string) {
         userId,
         stockMoves: {
           create: {
-            productId,
+            productId: product.id,
             quantity: reorder.quantity,
             userId
           }
