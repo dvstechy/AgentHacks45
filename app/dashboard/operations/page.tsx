@@ -10,6 +10,7 @@ import {
   ArrowUpFromLine,
   Package
 } from "lucide-react";
+import { ClientTime } from "@/components/ui/client-time";
 import Link from "next/link";
 
 export default async function OperationsPage() {
@@ -62,7 +63,7 @@ export default async function OperationsPage() {
                 </div>
                 <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary border border-primary/20 animate-in fade-in slide-in-from-left-2 duration-500 delay-300">
                   <Activity className="h-3.5 w-3.5" />
-                  <span>Updated: {new Date().toLocaleTimeString()}</span>
+                  <span>Updated: <ClientTime /></span>
                 </div>
               </div>
             </div>

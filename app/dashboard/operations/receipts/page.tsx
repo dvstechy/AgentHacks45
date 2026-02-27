@@ -4,6 +4,7 @@ import { TransferDialog } from "@/components/operations/transfer-dialog";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { ArrowDownToLine, Package, Truck, Clock, ArrowRight } from "lucide-react";
+import { ClientTime } from "@/components/ui/client-time";
 import Link from "next/link";
 
 export default async function ReceiptsPage() {
@@ -39,7 +40,7 @@ export default async function ReceiptsPage() {
               </div>
               <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary border border-primary/20 animate-in fade-in slide-in-from-left-2 duration-500 delay-100">
                 <Clock className="h-3.5 w-3.5" />
-                <span>Last updated: {new Date().toLocaleTimeString()}</span>
+                <span>Last updated: <ClientTime /></span>
               </div>
             </div>
           </div>
