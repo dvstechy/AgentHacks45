@@ -227,3 +227,7 @@
 .animate-enter-up-delay {
   animation: enter-up 0.8s ease-out 0.15s both;
 }
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
