@@ -26,8 +26,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import type { Route } from "next";
 
 const sidebarGroups = [
@@ -132,14 +132,10 @@ function SidebarGroup({
   pathname: string;
   index: number;
 }) {
+  const router = useRouter();
   const isActiveGroup = group.items.some((item) => item.href === pathname);
   const [isOpen, setIsOpen] = useState(true);
-
-  useEffect(() => {
-    if (isActiveGroup) {
-      setIsOpen(true);
-    }
-  }, [isActiveGroup]);
+  const expanded = isOpen || isActiveGroup;
 
   return (
     <div 
@@ -162,9 +158,9 @@ function SidebarGroup({
         </h3>
         <div className={cn(
           "transition-transform duration-200",
-          isOpen ? "rotate-180" : "rotate-0"
+          expanded ? "rotate-180" : "rotate-0"
         )}>
-          {isOpen ? (
+          {expanded ? (
             <ChevronDown className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors" />
           ) : (
             <ChevronRight className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors" />
@@ -174,9 +170,9 @@ function SidebarGroup({
       
       <div className={cn(
         "space-y-1 overflow-hidden transition-all duration-300 ease-in-out",
-        isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        expanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
       )}>
-        {group.items.map((item, itemIndex) => {
+        {group.items.map((item) => {
           const isActive = pathname === item.href;
           return (
             <Button
@@ -190,7 +186,12 @@ function SidebarGroup({
               )}
               asChild
             >
-              <Link href={item.href as Route}>
+              <Link
+                href={item.href as Route}
+                prefetch
+                onMouseEnter={() => router.prefetch(item.href as Route)}
+                onFocus={() => router.prefetch(item.href as Route)}
+              >
                 {isActive && (
                   <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-primary rounded-r-full animate-in fade-in slide-in-from-left-1" />
                 )}
@@ -216,15 +217,6 @@ function SidebarGroup({
 
 export function Sidebar({ className, mobile, onMobileClose }: SidebarProps) {
   const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <>
