@@ -1,0 +1,165 @@
+﻿
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\app\actions\contact.ts
+  33:14  warning  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+  57:14  warning  'e' is defined but never used       @typescript-eslint/no-unused-vars
+  75:14  warning  '_e' is defined but never used      @typescript-eslint/no-unused-vars
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\app\actions\operation.ts
+   63:14  warning  '_error' is defined but never used           @typescript-eslint/no-unused-vars
+   75:11  warning  'prefix' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  257:14  warning  '_error' is defined but never used           @typescript-eslint/no-unused-vars
+  299:14  warning  '_error' is defined but never used           @typescript-eslint/no-unused-vars
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\app\actions\product.ts
+   53:14  warning  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+  134:14  warning  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\app\actions\warehouse.ts
+   34:14  warning  'error' is defined but never used   @typescript-eslint/no-unused-vars
+  130:14  warning  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+  168:14  warning  'error' is defined but never used   @typescript-eslint/no-unused-vars
+  272:14  warning  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\app\sign-up\page.tsx
+  108:24  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\app\sign-up\page.tsx:108:24
+  106 |               <line
+  107 |                 key={i}
+> 108 |                 x1={`${Math.random() * 100}% `}
+      |                        ^^^^^^^^^^^^^ Cannot call impure function
+  109 |                 y1={`${Math.random() * 100}% `}
+  110 |                 x2={`${Math.random() * 100}% `}
+  111 |                 y2={`${Math.random() * 100}% `}                          react-hooks/purity
+  109:24  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\app\sign-up\page.tsx:109:24
+  107 |                 key={i}
+  108 |                 x1={`${Math.random() * 100}% `}
+> 109 |                 y1={`${Math.random() * 100}% `}
+      |                        ^^^^^^^^^^^^^ Cannot call impure function
+  110 |                 x2={`${Math.random() * 100}% `}
+  111 |                 y2={`${Math.random() * 100}% `}
+  112 |                 stroke="url(#grad)"          react-hooks/purity
+  110:24  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\app\sign-up\page.tsx:110:24
+  108 |                 x1={`${Math.random() * 100}% `}
+  109 |                 y1={`${Math.random() * 100}% `}
+> 110 |                 x2={`${Math.random() * 100}% `}
+      |                        ^^^^^^^^^^^^^ Cannot call impure function
+  111 |                 y2={`${Math.random() * 100}% `}
+  112 |                 stroke="url(#grad)"
+  113 |                 strokeWidth="1"  react-hooks/purity
+  111:24  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\app\sign-up\page.tsx:111:24
+  109 |                 y1={`${Math.random() * 100}% `}
+  110 |                 x2={`${Math.random() * 100}% `}
+> 111 |                 y2={`${Math.random() * 100}% `}
+      |                        ^^^^^^^^^^^^^ Cannot call impure function
+  112 |                 stroke="url(#grad)"
+  113 |                 strokeWidth="1"
+  114 |                 className="animate-draw-line"    react-hooks/purity
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\auth\forgot-password-form.tsx
+   10:3   warning  'InputOTP' is defined but never used                             @typescript-eslint/no-unused-vars
+   11:3   warning  'InputOTPGroup' is defined but never used                        @typescript-eslint/no-unused-vars
+   12:3   warning  'InputOTPSlot' is defined but never used                         @typescript-eslint/no-unused-vars
+  145:37  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  189:77  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  241:37  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\auth\sign-in-form.tsx
+  29:10  warning  'Mail' is defined but never used          @typescript-eslint/no-unused-vars
+  61:32  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\auth\sign-up-form.tsx
+   73:32  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  207:87  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\dashboard\header.tsx
+  15:9  warning  'initials' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\dashboard\sidebar.tsx
+  11:3  warning  'ChevronRight' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\inventory\category-dialog.tsx
+   53:20  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  132:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\inventory\inventory-map.tsx
+    7:10  warning  'Badge' is defined but never used                           @typescript-eslint/no-unused-vars
+   58:12  error    Unexpected any. Specify a different type                    @typescript-eslint/no-explicit-any
+  229:7   error    'currentPosition' is never reassigned. Use 'const' instead  prefer-const
+  229:7   warning  'currentPosition' is assigned a value but never used        @typescript-eslint/no-unused-vars
+  231:7   error    'startTime' is never reassigned. Use 'const' instead        prefer-const
+  258:25  error    Unexpected any. Specify a different type                    @typescript-eslint/no-explicit-any
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\inventory\location-dialog.tsx
+  140:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  169:38  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\inventory\moves-container.tsx
+  14:10  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\inventory\product-dialog.tsx
+   57:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  104:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\inventory\product-list.tsx
+  53:16  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\inventory\products-view.tsx
+  12:20  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\inventory\warehouse-dialog.tsx
+  29:16  warning  'Pencil' is defined but never used        @typescript-eslint/no-unused-vars
+  88:52  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\inventory\warehouse-list.tsx
+  40:14  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\landing\site-footer.tsx
+  260:27  warning  'index' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\operations\receipt-view.tsx
+    7:31  warning  'Printer' is defined but never used       @typescript-eslint/no-unused-vars
+   24:13  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   31:25  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  100:53  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  307:47  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\operations\transfer-dialog.tsx
+   39:24  warning  'ArrowRight' is defined but never used    @typescript-eslint/no-unused-vars
+  130:24  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\operations\transfer-list.tsx
+   45:15  error  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+   64:7   error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  159:31  error  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\components\ui\loader.tsx
+  273:7  warning  'styles' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\lib\session.ts
+   4:10  warning  'redirect' is defined but never used  @typescript-eslint/no-unused-vars
+  37:14  warning  'error' is defined but never used     @typescript-eslint/no-unused-vars
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\prisma\seed.ts
+  512:9  warning  'inventoryLoss' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\harpr\OneDrive\Desktop\AgentHacks45\proxy.ts
+  28:18  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 63 problems (33 errors, 30 warnings)
+  2 errors and 0 warnings potentially fixable with the `--fix` option.
+
