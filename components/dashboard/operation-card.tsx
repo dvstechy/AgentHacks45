@@ -2,20 +2,16 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Clock, AlertCircle, ArrowRight } from "lucide-react";
+import { LucideIcon, Clock, AlertCircle, ArrowRight } from "lucide-react";
 import type { Route } from "next";
-
-interface OperationStats {
-  toProcess: number;
-  late: number;
-  waiting: number;
-}
+import type { OperationStats } from "@/app/actions/dashboard";
 
 interface OperationCardProps {
   title: string;
   stats: OperationStats;
   href: string;
   color?: "blue" | "green" | "purple" | "orange";
+  icon?: LucideIcon;
 }
 
 export function OperationCard({
@@ -23,12 +19,13 @@ export function OperationCard({
   stats,
   href,
   color = "blue",
+  icon: Icon = ArrowRight,
 }: OperationCardProps) {
   const colorMap = {
-    blue: "text-blue-500 bg-blue-500/10 border-blue-500/20",
-    green: "text-green-500 bg-green-500/10 border-green-500/20",
-    purple: "text-purple-500 bg-purple-500/10 border-purple-500/20",
-    orange: "text-orange-500 bg-orange-500/10 border-orange-500/20",
+    blue: "text-blue-500 bg-blue-500/10 border-blue-500/20 theme-blue",
+    green: "text-green-500 bg-green-500/10 border-green-500/20 theme-green",
+    purple: "text-purple-500 bg-purple-500/10 border-purple-500/20 theme-purple",
+    orange: "text-orange-500 bg-orange-500/10 border-orange-500/20 theme-orange",
   };
 
   return (
@@ -39,7 +36,7 @@ export function OperationCard({
             {title}
           </CardTitle>
           <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:scale-110", colorMap[color])}>
-             <ArrowRight className="h-4 w-4" />
+            <Icon className="h-4 w-4" />
           </div>
         </div>
       </CardHeader>

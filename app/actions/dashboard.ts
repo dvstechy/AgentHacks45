@@ -8,6 +8,10 @@ export type OperationStats = {
     toProcess: number
     late: number
     waiting: number
+    total: number
+    completed: number
+    pending: number
+    issues: number
 }
 
 export type DashboardStats = {
@@ -17,12 +21,14 @@ export type DashboardStats = {
     lowStockCount: number
     totalProducts: number
     totalValue: number
+    warehouseCount: number
+    categoryCount: number
 }
 
 async function getOperationStats(type: TransferType, userId: string): Promise<OperationStats> {
     const now = new Date()
 
-    const [toProcess, late, waiting] = await prisma.$transaction([
+    const [toProcess, late, waiting, total, completed, pending, issues] = await prisma.$transaction([
         // To Process: Not done, not canceled
         prisma.stockTransfer.count({
             where: {
@@ -53,10 +59,41 @@ async function getOperationStats(type: TransferType, userId: string): Promise<Op
                 status: TransferStatus.WAITING,
                 userId
             }
+        }),
+        // Total: All operations of this type
+        prisma.stockTransfer.count({
+            where: { type, userId }
+        }),
+        // Completed: Done status
+        prisma.stockTransfer.count({
+            where: { type, status: TransferStatus.DONE, userId }
+        }),
+        // Pending: Not done/canceled
+        prisma.stockTransfer.count({
+            where: {
+                type,
+                status: {
+                    in: [TransferStatus.DRAFT, TransferStatus.WAITING, TransferStatus.READY]
+                },
+                userId
+            }
+        }),
+        // Issues: For now, let's say Late = Issues for stats
+        prisma.stockTransfer.count({
+            where: {
+                type,
+                status: {
+                    in: [TransferStatus.DRAFT, TransferStatus.WAITING, TransferStatus.READY]
+                },
+                scheduledDate: {
+                    lt: now
+                },
+                userId
+            }
         })
     ])
 
-    return { toProcess, late, waiting }
+    return { toProcess, late, waiting, total, completed, pending, issues }
 }
 
 export async function getDashboardStats() {
@@ -123,7 +160,9 @@ export async function getDashboardStats() {
                 internal,
                 lowStockCount,
                 totalProducts: allProducts.length,
-                totalValue
+                totalValue,
+                warehouseCount: await prisma.warehouse.count({ where: { userId } }),
+                categoryCount: await prisma.category.count({ where: { userId } })
             }
         }
     } catch (error) {
