@@ -33,21 +33,6 @@ export default async function SignInPage() {
     { icon: Warehouse, label: "Multi-warehouse", color: "orange" }
   ];
 
-  const testimonials = [
-    {
-      quote: "Reduced stockouts by 40% within first month",
-      author: "Sarah Chen",
-      role: "Operations Manager",
-      company: "TechFlow Solutions"
-    },
-    {
-      quote: "The most intuitive inventory system we've used",
-      author: "Marcus Rodriguez",
-      role: "Supply Chain Director",
-      company: "Global Distribution Inc"
-    }
-  ];
-
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-background via-background to-primary/5">
       <SiteHeader session={session} />
@@ -140,39 +125,6 @@ export default async function SignInPage() {
                     </div>
                   );
                 })}
-              </div>
-
-              {/* Testimonials */}
-              <div className="space-y-4 pt-4">
-                {testimonials.map((testimonial, index) => (
-                  <div
-                    key={index}
-                    className="relative p-4 rounded-xl bg-secondary/30 border border-border/50 backdrop-blur-sm hover:bg-secondary/40 transition-all duration-300 group animate-in fade-in slide-in-from-bottom-2"
-                    style={{ animationDelay: `${400 + index * 100}ms` }}
-                  >
-                    <div className="absolute -top-2 -right-2">
-                      <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center">
-                        <Sparkles className="h-3 w-3 text-primary" />
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground italic mb-2">
-                      &quot;{testimonial.quote}&quot;
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/30 flex items-center justify-center">
-                        <span className="text-xs font-medium text-primary">
-                          {testimonial.author.split(' ').map(n => n[0]).join('')}
-                        </span>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">{testimonial.author}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {testimonial.role}, {testimonial.company}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
 
