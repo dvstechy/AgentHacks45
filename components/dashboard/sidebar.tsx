@@ -21,9 +21,10 @@ import {
   Warehouse,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import Link, { LinkProps } from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, ComponentProps } from "react";
+import type { Route } from "next";
 
 const sidebarGroups = [
   {
@@ -162,7 +163,7 @@ function SidebarGroup({
                 )}
                 asChild
               >
-                <Link href={item.href as any}>
+                <Link href={item.href as Route}>
                   <item.icon
                     className={cn(
                       "mr-2 h-4 w-4",
