@@ -27,6 +27,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, Lock, ArrowRight, Sparkles, Eye, EyeOff, User } from "lucide-react";
+import type { Route } from "next";
 
 const signInSchema = z.object({
   identifier: z.string().min(1, "Email or Login ID is required"),
@@ -69,7 +70,7 @@ export function SignInForm() {
     <Card className="w-full max-w-md mx-auto relative overflow-hidden border border-border/50 bg-background/80 backdrop-blur-xl shadow-2xl">
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none"></div>
-      
+
       {/* Shine Effect */}
       <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-linear-to-r from-transparent via-white/5 to-transparent pointer-events-none"></div>
 
@@ -154,7 +155,7 @@ export function SignInForm() {
 
             <div className="flex items-center justify-end">
               <Link
-                href={"/forgot-password" as any}
+                href={"/forgot-password" as Route}
                 className="text-sm font-medium text-primary hover:underline transition-colors"
               >
                 Forgot password?
