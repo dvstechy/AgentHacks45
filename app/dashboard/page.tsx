@@ -1,15 +1,19 @@
-import { getDashboardStats } from "@/app/actions/dashboard";
+import { getDashboardStats, getReorderRecommendations } from "@/app/actions/dashboard";
 import { OperationCard } from "@/components/dashboard/operation-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Loader } from "@/components/ui/loader";
-import { AlertTriangle, DollarSign, Package, Plus, Truck, TrendingUp, Activity, ArrowUpRight } from "lucide-react";
+import { AlertTriangle, IndianRupee, Package, Plus, Truck, TrendingUp, Activity, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { formatINR } from "@/lib/currency";
 
 export default async function DashboardPage() {
-  const { data: stats } = await getDashboardStats();
+  const [{ data: stats }, { data: recommendations }] = await Promise.all([
+    getDashboardStats(),
+    getReorderRecommendations(),
+  ]);
 
   if (!stats) {
     return <Loader variant="logo" size="lg" text="Loading dashboard..." fullScreen />;
@@ -87,13 +91,13 @@ export default async function DashboardPage() {
                 Total Value
               </CardTitle>
               <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-all duration-300">
-                <DollarSign className="h-4 w-4 text-primary" />
+                <IndianRupee className="h-4 w-4 text-primary" />
               </div>
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline gap-2">
                 <div className="text-2xl font-bold">
-                  ${stats.totalValue.toLocaleString()}
+                  {formatINR(stats.totalValue)}
                 </div>
                 <div className="flex items-center text-[10px] text-green-500 font-medium">
                   <TrendingUp className="h-3 w-3 mr-0.5" />
@@ -159,6 +163,66 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
         </div>
+      </div>
+
+      {/* Reorder Recommendations */}
+      <div>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="h-6 w-1 bg-primary rounded-full"></div>
+          <h2 className="text-lg font-bold">Reorder Recommendations</h2>
+        </div>
+        <Card className="border border-border/60">
+          <CardContent className="p-0">
+            {!recommendations || recommendations.length === 0 ? (
+              <div className="p-6 text-sm text-muted-foreground">
+                No critical reorder signals right now.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-muted/50 text-muted-foreground">
+                    <tr>
+                      <th className="px-4 py-3 text-left font-medium">Product</th>
+                      <th className="px-4 py-3 text-left font-medium">On Hand</th>
+                      <th className="px-4 py-3 text-left font-medium">Daily Demand</th>
+                      <th className="px-4 py-3 text-left font-medium">Reorder Point</th>
+                      <th className="px-4 py-3 text-left font-medium">Suggested Qty</th>
+                      <th className="px-4 py-3 text-left font-medium">Coverage</th>
+                      <th className="px-4 py-3 text-left font-medium">Priority</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {recommendations.map((item) => (
+                      <tr key={item.productId} className="border-t">
+                        <td className="px-4 py-3">
+                          <div className="font-medium">{item.productName}</div>
+                          <div className="text-xs text-muted-foreground">{item.sku}</div>
+                        </td>
+                        <td className="px-4 py-3">{item.currentStock}</td>
+                        <td className="px-4 py-3">{item.dailyDemand}</td>
+                        <td className="px-4 py-3">{item.reorderPoint}</td>
+                        <td className="px-4 py-3 font-semibold">{item.suggestedOrderQty}</td>
+                        <td className="px-4 py-3">
+                          {item.coverageDays === null ? "N/A" : `${item.coverageDays} days`}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span
+                            className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${item.priority === "HIGH"
+                                ? "bg-destructive/15 text-destructive"
+                                : "bg-amber-500/15 text-amber-700"
+                              }`}
+                          >
+                            {item.priority}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
