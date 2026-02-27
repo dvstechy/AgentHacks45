@@ -138,10 +138,12 @@ function SidebarGroup({
   group,
   pathname,
   index,
+  onItemClick,
 }: {
   group: (typeof sidebarGroups)[0];
   pathname: string;
   index: number;
+  onItemClick?: () => void;
 }) {
   const isActiveGroup = group.items.some((item) => item.href === pathname);
   const [isOpen, setIsOpen] = useState(true);
@@ -215,7 +217,7 @@ function SidebarGroup({
               )}
               asChild
             >
-              <Link href={item.href as Route}>
+              <Link href={item.href as Route} onClick={onItemClick}>
                 {/* Command Center special background */}
                 {isCommandCenter && !isActive && (
                   <>
@@ -318,6 +320,7 @@ export function Sidebar({ className, mobile, onMobileClose }: SidebarProps) {
                 group={group}
                 pathname={pathname}
                 index={index}
+                onItemClick={onMobileClose}
               />
             ))}
           </div>

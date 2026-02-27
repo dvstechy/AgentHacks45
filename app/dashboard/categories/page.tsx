@@ -48,7 +48,7 @@ export default async function CategoriesPage() {
   return (
     <div className="flex-1 space-y-8 pb-8">
       {/* Header Section with Gradient */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-purple-500/5 to-transparent p-8">
+      <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/10 via-purple-500/5 to-transparent p-4 sm:p-6 md:p-8">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-primary/20 animate-pulse" />
@@ -75,11 +75,11 @@ export default async function CategoriesPage() {
         <div className="relative z-10">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="space-y-3">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div className="h-10 w-1 bg-gradient-to-b from-primary to-purple-500 rounded-full" />
                 <div>
                   <div className="flex items-center gap-2">
-                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
                       Categories
                     </h1>
                     <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20">
@@ -127,7 +127,7 @@ export default async function CategoriesPage() {
       {/* Main Content */}
       <div className="space-y-4">
         {/* Section Header */}
-        <div className="flex items-center justify-between px-1">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-1">
           <div className="flex items-center gap-2">
             <div className="h-6 w-1 bg-gradient-to-b from-primary to-purple-500 rounded-full" />
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
@@ -175,7 +175,7 @@ export default async function CategoriesPage() {
                 <span className="font-medium text-foreground">{totalProducts}</span> products categorized
               </span>
             </div>
-            <div className="text-xs ml-auto">
+            <div className="text-xs w-full sm:w-auto sm:ml-auto mt-2 sm:mt-0">
               Last updated: {new Date().toLocaleString()}
             </div>
           </div>

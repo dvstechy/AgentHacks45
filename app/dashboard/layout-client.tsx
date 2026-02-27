@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { Header } from "@/components/dashboard/header";
+import { BottomNav } from "@/components/dashboard/bottom-nav";
 import { cn } from "@/lib/utils";
 
 interface DashboardLayoutClientProps {
@@ -41,7 +42,7 @@ export default function DashboardLayoutClient({
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <Sidebar className="border-r" />
+        <Sidebar className="border-r" onMobileClose={() => setIsSidebarOpen(false)} />
       </div>
 
       {/* Main Content Area */}
@@ -50,12 +51,13 @@ export default function DashboardLayoutClient({
           user={user}
           onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
         />
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 pb-20 md:pb-6">
           {children}
         </main>
       </div>
 
-      {/* TODO: Re-add Chainlit ChatWidget once @chainlit/react-client is installed */}
+      {/* Mobile Bottom Navigation */}
+      <BottomNav onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
     </div>
   );
 }

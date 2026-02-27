@@ -48,7 +48,7 @@ export default async function DashboardPage() {
   return (
     <div className="flex-1 space-y-8 pb-8">
       {/* Header Section with Gradient Background */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/5 via-transparent to-transparent p-6 md:p-8">
+      <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/5 via-transparent to-transparent p-4 sm:p-6 md:p-8">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-primary/10 animate-pulse" />
@@ -159,7 +159,7 @@ export default async function DashboardPage() {
                   </div>
                 </div>
                 <div className="flex items-baseline justify-between">
-                  <span className="text-xl lg:text-2xl font-bold">{stat.value}</span>
+                  <span className="text-xl lg:text-xl sm:text-2xl font-bold">{stat.value}</span>
                   <span className={cn("text-xs font-medium flex items-center gap-0.5",
                     stat.trend === 'up' ? 'text-green-500' : 'text-red-500'
                   )}>
@@ -176,7 +176,7 @@ export default async function DashboardPage() {
       {/* Operations Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className="h-8 w-1 bg-gradient-to-b from-primary to-primary/50 rounded-full" />
             <h2 className="text-xl font-bold tracking-tight">Operations Overview</h2>
           </div>
@@ -223,7 +223,7 @@ export default async function DashboardPage() {
       {/* Inventory Summary Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className="h-8 w-1 bg-gradient-to-b from-primary to-primary/50 rounded-full" />
             <h2 className="text-xl font-bold tracking-tight">Inventory Overview</h2>
           </div>
@@ -251,7 +251,7 @@ export default async function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline gap-2">
-                <div className="text-2xl font-bold">
+                <div className="text-xl sm:text-2xl font-bold">
                   {formatINR(stats.totalValue)}
                 </div>
                 <div className="flex items-center text-xs font-medium text-green-500 bg-green-500/10 px-1.5 py-0.5 rounded-full">
@@ -276,7 +276,7 @@ export default async function DashboardPage() {
                 Low Stock Alerts
               </CardTitle>
               <div className="h-10 w-10 rounded-xl bg-destructive/10 flex items-center justify-center group-hover:bg-destructive/20 group-hover:scale-110 transition-all duration-300">
-                <AlertTriangle className="h-5 w-5 text-destructive" />
+                <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
               </div>
             </CardHeader>
             <CardContent>
@@ -317,7 +317,7 @@ export default async function DashboardPage() {
                 Total Products
               </CardTitle>
               <div className="h-10 w-10 rounded-xl bg-secondary flex items-center justify-center group-hover:bg-secondary/80 group-hover:scale-110 transition-all duration-300">
-                <Package className="h-5 w-5 text-foreground" />
+                <Package className="h-4 w-4 sm:h-5 sm:w-5 text-foreground" />
               </div>
             </CardHeader>
             <CardContent>
@@ -342,7 +342,7 @@ export default async function DashboardPage() {
       {/* Reorder Recommendations Section */}
       {recommendations && recommendations.length > 0 && (
         <div className="space-y-4">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className="h-8 w-1 bg-gradient-to-b from-orange-500 to-orange-500/50 rounded-full" />
             <h2 className="text-xl font-bold tracking-tight">Reorder Recommendations</h2>
           </div>
