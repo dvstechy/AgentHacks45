@@ -1,0 +1,9 @@
+﻿app/api/agent/run/route.ts
+components/inventory/category-dialog.tsx
+components/inventory/location-dialog.tsx
+components/inventory/product-dialog.tsx
+components/inventory/warehouse-dialog.tsx
+components/inventory/warehouse-list.tsx
+components/operations/receipt-view.tsx
+components/operations/transfer-dialog.tsx
+components/operations/transfer-list.tsx

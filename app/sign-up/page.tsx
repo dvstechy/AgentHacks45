@@ -122,15 +122,6 @@ export default async function SignUpPage() {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
             {/* Left Side - Value Proposition */}
             <div className="hidden lg:block space-y-8 animate-in fade-in slide-in-from-left-2 duration-700">
-              {/* Welcome Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/20 to-purple-500/20 border border-primary/30 backdrop-blur-sm">
-                <Rocket className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-                  Start Your Journey Today
-                </span>
-                <Sparkles className="h-3.5 w-3.5 text-purple-500" />
-              </div>
-
               {/* Main Heading */}
               <div className="space-y-4">
                 <h1 className="text-5xl xl:text-6xl font-bold tracking-tight">
@@ -195,47 +186,6 @@ export default async function SignUpPage() {
                   );
                 })}
               </div>
-
-              {/* Feature Pills */}
-              <div className="flex flex-wrap gap-2 pt-2">
-                {features.map((feature, index) => {
-                  const Icon = feature.icon;
-                  const iconColors = {
-                    blue: "text-blue-500",
-                    green: "text-green-500",
-                    purple: "text-purple-500",
-                    orange: "text-orange-500"
-                  };
-                  return (
-                    <div
-                      key={feature.text}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary/50 border border-border/50 text-xs hover:bg-secondary/70 transition-all duration-300 hover:scale-105"
-                      style={{ animationDelay: `${600 + index * 50}ms` }}
-                    >
-                      <Icon className={cn("h-3 w-3", iconColors[feature.color as keyof typeof iconColors])} />
-                      <span>{feature.text}</span>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Review Badges */}
-              <div className="flex items-center gap-4 pt-4">
-                {reviews.map((review, index) => (
-                  <div
-                    key={review.author}
-                    className="flex items-center gap-1 text-xs"
-                    style={{ animationDelay: `${700 + index * 100}ms` }}
-                  >
-                    <div className="flex">
-                      {[...Array(review.rating)].map((_, i) => (
-                        <Star key={i} className="h-3 w-3 fill-yellow-500 text-yellow-500" />
-                      ))}
-                    </div>
-                    <span className="text-muted-foreground">{review.author}</span>
-                  </div>
-                ))}
-              </div>
             </div>
 
             {/* Right Side - Sign Up Form */}
@@ -259,79 +209,12 @@ export default async function SignUpPage() {
               {/* Form Container */}
               <div className="relative">
                 {/* Animated Gradient Border */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-2xl opacity-30 blur-sm group-hover:opacity-50 transition-opacity duration-500 animate-gradient-xy" />
+                {/* <div className="absolute -inset-0.5 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-2xl opacity-30 blur-sm group-hover:opacity-50 transition-opacity duration-500 animate-gradient-xy" /> */}
 
                 {/* Form Card */}
-                <div className="relative bg-card/90 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl overflow-hidden">
-                  {/* Header Gradient with Offer */}
-                  <div className="relative h-2 bg-gradient-to-r from-primary via-purple-500 to-pink-500">
-                    <div className="absolute -bottom-3 right-4">
-                      <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white text-xs font-medium shadow-lg">
-                        <Gift className="h-3 w-3" />
-                        <span>14 days free</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-6 md:p-8">
-                    <SignUpForm />
-                  </div>
-
-                  {/* Footer with Social Proof */}
-                  <div className="px-6 md:px-8 py-4 bg-muted/30 border-t border-border/50">
-                    <div className="flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2">
-                        <Medal className="h-4 w-4 text-yellow-500" />
-                        <span className="text-muted-foreground">#1 Rated Inventory System</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3 text-green-500" />
-                        <span className="text-muted-foreground">No spam, ever</span>
-                      </div>
-                    </div>
-                  </div>
+                <div className="p-6 md:p-8">
+                  <SignUpForm />
                 </div>
-              </div>
-
-              {/* Trust Indicators */}
-              <div className="mt-8 grid grid-cols-3 gap-2 text-center">
-                <div className="p-2 rounded-lg bg-secondary/30 backdrop-blur-sm">
-                  <Shield className="h-4 w-4 mx-auto mb-1 text-primary" />
-                  <p className="text-[10px] text-muted-foreground">SSL Secure</p>
-                </div>
-                <div className="p-2 rounded-lg bg-secondary/30 backdrop-blur-sm">
-                  <Clock className="h-4 w-4 mx-auto mb-1 text-primary" />
-                  <p className="text-[10px] text-muted-foreground">Instant Access</p>
-                </div>
-                <div className="p-2 rounded-lg bg-secondary/30 backdrop-blur-sm">
-                  <Users className="h-4 w-4 mx-auto mb-1 text-primary" />
-                  <p className="text-[10px] text-muted-foreground">Team Ready</p>
-                </div>
-              </div>
-
-              {/* Help Links */}
-              <div className="mt-4 flex items-center justify-center gap-4 text-xs">
-                <Link
-                  href={"/help" as Route}
-                  className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 group"
-                >
-                  Need help?
-                  <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-                </Link>
-                <span className="text-muted-foreground/30">•</span>
-                <Link
-                  href={"/terms" as Route}
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Terms
-                </Link>
-                <span className="text-muted-foreground/30">•</span>
-                <Link
-                  href={"/privacy" as Route}
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Privacy
-                </Link>
               </div>
             </div>
           </div>

@@ -12,6 +12,7 @@ const warehouseSchema = z.object({
     name: z.string().min(2, "Name is required"),
     shortCode: z.string().min(2, "Short code is required").max(10, "Short code too long"),
     address: z.string().optional(),
+    status: z.enum(['ACTIVE', 'MAINTENANCE', 'INACTIVE']).optional(),
 })
 
 export async function getWarehouses() {

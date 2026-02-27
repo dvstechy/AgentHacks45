@@ -1,46 +1,45 @@
+import { prisma } from "@/lib/prisma"
 import { runMultiAgentSystem } from "@/lib/agents/langgraph-agent";
 import { randomUUID } from "crypto";
 
-export async function GET() {
-  const userId = "cmm4lmteq0000rzepq19zanls";
+async function executeAgent() {
+  const user = await prisma.user.findFirst({
+    where: { email: "bhosvivek123@gmail.com" }
+  })
+
+  if (!user) {
+    console.log("User not found")
+    return { error: "User not found" }
+  }
+
   const traceId = randomUUID();
-  
   try {
-    const result = await runMultiAgentSystem(userId, traceId);
-    return Response.json({ 
-      message: "Agent executed (GET)",
+    const result = await runMultiAgentSystem(user.id, traceId);
+    return {
+      message: "Agent executed",
       traceId,
       summary: {
         alerts: result.lowStockAlerts.length,
         actions: result.rebalancingActions.length,
       }
-    });
+    };
   } catch (error) {
-    return Response.json(
-      { error: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 }
-    );
+    return { error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
 
-export async function POST() {
-  const userId = "cmm4lmteq0000rzepq19zanls";
-  const traceId = randomUUID();
-  
-  try {
-    const result = await runMultiAgentSystem(userId, traceId);
-    return Response.json({ 
-      message: "Agent executed (POST)",
-      traceId,
-      summary: {
-        alerts: result.lowStockAlerts.length,
-        actions: result.rebalancingActions.length,
-      }
-    });
-  } catch (error) {
-    return Response.json(
-      { error: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 }
-    );
+export async function GET() {
+  const result = await executeAgent()
+  if ('error' in result) {
+    return Response.json(result, { status: 500 })
   }
+  return Response.json({ ...result, message: result.message + " (GET)" })
+}
+
+export async function POST() {
+  const result = await executeAgent()
+  if ('error' in result) {
+    return Response.json(result, { status: 500 })
+  }
+  return Response.json({ ...result, message: result.message + " (POST)" })
 }
