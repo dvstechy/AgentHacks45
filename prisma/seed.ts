@@ -5,25 +5,33 @@ const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 Starting seed...');
+  const seedEmail = 'bhosvivek123@gmail.com';
 
-  // Clear existing data
-  console.log('🗑️  Cleaning existing data...');
-  await prisma.stockMove.deleteMany();
-  await prisma.stockTransfer.deleteMany();
-  await prisma.stockLevel.deleteMany();
-  await prisma.contact.deleteMany();
-  await prisma.product.deleteMany();
-  await prisma.category.deleteMany();
-  await prisma.location.deleteMany();
-  await prisma.warehouse.deleteMany();
-  await prisma.user.deleteMany();
+  // Clear existing data only for target user
+  console.log(`🗑️  Cleaning existing data for ${seedEmail}...`);
+  const existingUser = await prisma.user.findUnique({
+    where: { email: seedEmail },
+    select: { id: true },
+  });
+
+  if (existingUser) {
+    await prisma.stockMove.deleteMany({ where: { userId: existingUser.id } });
+    await prisma.stockTransfer.deleteMany({ where: { userId: existingUser.id } });
+    await prisma.stockLevel.deleteMany({ where: { userId: existingUser.id } });
+    await prisma.contact.deleteMany({ where: { userId: existingUser.id } });
+    await prisma.product.deleteMany({ where: { userId: existingUser.id } });
+    await prisma.category.deleteMany({ where: { userId: existingUser.id } });
+    await prisma.location.deleteMany({ where: { userId: existingUser.id } });
+    await prisma.warehouse.deleteMany({ where: { userId: existingUser.id } });
+    await prisma.user.delete({ where: { id: existingUser.id } });
+  }
 
   // Create User
   console.log('👤 Creating user...');
   const hashedPassword = await bcrypt.hash('Vivek@123', 10);
   const user = await prisma.user.create({
     data: {
-      email: 'bhosvivek123@gmail.com',
+      email: seedEmail,
       password: hashedPassword,
       name: 'Vivek Bhos',
       role: UserRole.ADMIN,
@@ -585,8 +593,12 @@ async function main() {
   console.log(`✅ Created contacts`);
 
   // Get all products for stock operations
-  const allProducts = await prisma.product.findMany();
-  const allContacts = await prisma.contact.findMany();
+  const allProducts = await prisma.product.findMany({
+    where: { userId: user.id },
+  });
+  const allContacts = await prisma.contact.findMany({
+    where: { userId: user.id },
+  });
 
   // Create Initial Stock Levels
   console.log('📊 Creating initial stock levels...');

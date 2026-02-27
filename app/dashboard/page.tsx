@@ -1,33 +1,19 @@
-import { getDashboardStats } from "@/app/actions/dashboard";
+import { getDashboardStats, getReorderRecommendations } from "@/app/actions/dashboard";
 import { OperationCard } from "@/components/dashboard/operation-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Loader } from "@/components/ui/loader";
-import { 
-  AlertTriangle, 
-  DollarSign, 
-  Package, 
-  Plus, 
-  Truck, 
-  TrendingUp, 
-  Activity, 
-  ArrowUpRight,
-  ArrowDownToLine,
-  ArrowUpFromLine,
-  ArrowRightLeft,
-  Sparkles,
-  BarChart3,
-  Clock,
-  CheckCircle2,
-  XCircle,
-  RefreshCw
-} from "lucide-react";
+import { AlertTriangle, DollarSign, Package, Plus, Truck, TrendingUp, Activity, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { formatINR } from "@/lib/currency";
 
 export default async function DashboardPage() {
-  const { data: stats } = await getDashboardStats();
+  const [{ data: stats }, { data: recommendations }] = await Promise.all([
+    getDashboardStats(),
+    getReorderRecommendations(),
+  ]);
 
   if (!stats) {
     return <Loader variant="logo" size="lg" text="Loading dashboard..." fullScreen />;
@@ -229,13 +215,13 @@ export default async function DashboardPage() {
               <CardTitle className="text-sm font-semibold text-muted-foreground group-hover:text-foreground transition-colors">
                 Total Inventory Value
               </CardTitle>
-              <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
-                <DollarSign className="h-5 w-5 text-primary" />
+              <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-all duration-300">
+                <DollarSign className="h-4 w-4 text-primary" />
               </div>
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline gap-2">
-                <div className="text-2xl lg:text-3xl font-bold">
+                <div className="text-2xl font-bold">
                   ${stats.totalValue.toLocaleString()}
                 </div>
                 <div className="flex items-center text-xs font-medium text-green-500 bg-green-500/10 px-1.5 py-0.5 rounded-full">
@@ -320,32 +306,6 @@ export default async function DashboardPage() {
               </div>
             </CardContent>
           </Card>
-        </div>
-      </div>
-
-      {/* Recent Activity Preview */}
-      <div className="rounded-xl border border-border/50 bg-card/30 backdrop-blur-sm p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-400">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold">Recent Activity</h3>
-          <Button variant="ghost" size="sm" className="h-8 text-xs">
-            View all
-          </Button>
-        </div>
-        <div className="space-y-2">
-          {[1, 2, 3].map((_, i) => (
-            <div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors group">
-              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Package className="h-4 w-4 text-primary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">Product {i + 1} was updated</p>
-                <p className="text-xs text-muted-foreground">{i + 1} hour ago</p>
-              </div>
-              <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
-                <ArrowUpRight className="h-4 w-4" />
-              </Button>
-            </div>
-          ))}
         </div>
       </div>
     </div>
