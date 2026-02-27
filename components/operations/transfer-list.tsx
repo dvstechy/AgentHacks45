@@ -11,7 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { Check, Trash2, Calendar, Package } from "lucide-react";
+import { Check, Trash2, Calendar, Package, Search } from "lucide-react";
 import {
   deleteTransfer,
   validateTransfer,
@@ -30,6 +30,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
 
 import Link from "next/link";
 
@@ -56,6 +57,7 @@ export function TransferList({
 }: TransferListProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [validatingId, setValidatingId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const queryClient = useQueryClient();
 
   const { data: transfers = [] } = useQuery({
@@ -122,8 +124,36 @@ export function TransferList({
     }
   };
 
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const filteredTransfers = transfers.filter((transfer) => {
+    if (!normalizedSearch) return true;
+
+    return (
+      transfer.reference.toLowerCase().includes(normalizedSearch) ||
+      (transfer.contact?.name || "").toLowerCase().includes(normalizedSearch) ||
+      (transfer.sourceLocation?.name || "")
+        .toLowerCase()
+        .includes(normalizedSearch) ||
+      (transfer.destinationLocation?.name || "")
+        .toLowerCase()
+        .includes(normalizedSearch) ||
+      transfer.status.toLowerCase().includes(normalizedSearch) ||
+      transfer.type.toLowerCase().includes(normalizedSearch)
+    );
+  });
+
   return (
     <>
+      <div className="relative max-w-sm">
+        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="search"
+          placeholder="Search operations by reference, contact, status..."
+          className="pl-8"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -139,17 +169,19 @@ export function TransferList({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {transfers.length === 0 ? (
+            {filteredTransfers.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={8}
                   className="text-center text-muted-foreground"
                 >
-                  No transfers found.
+                  {transfers.length === 0
+                    ? "No transfers found."
+                    : "No transfers match your search."}
                 </TableCell>
               </TableRow>
             ) : (
-              transfers.map((transfer) => (
+              filteredTransfers.map((transfer) => (
                 <TableRow key={transfer.id}>
                   <TableCell className="font-medium">
                     <Link

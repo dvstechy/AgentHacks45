@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Box, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { MapPin, Box, MoreVertical, Pencil, Trash2, Search } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +31,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
 
 interface Warehouse {
   id: string;
@@ -49,6 +50,7 @@ export function WarehouseList({
     null
   );
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const queryClient = useQueryClient();
 
   const { data: warehouses = [] } = useQuery({
@@ -82,66 +84,87 @@ export function WarehouseList({
     setDeletingId(null);
   };
 
-  if (warehouses.length === 0) {
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const filteredWarehouses = warehouses.filter((warehouse) => {
+    if (!normalizedSearch) return true;
+
     return (
-      <div className="text-center p-8 border rounded-lg bg-muted/10">
-        <p className="text-muted-foreground">
-          No warehouses found. Create one to get started.
-        </p>
-      </div>
+      warehouse.name.toLowerCase().includes(normalizedSearch) ||
+      warehouse.shortCode.toLowerCase().includes(normalizedSearch) ||
+      (warehouse.address || "").toLowerCase().includes(normalizedSearch)
     );
-  }
+  });
 
   return (
     <>
+      <div className="relative max-w-sm">
+        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="search"
+          placeholder="Search warehouses by name, code, address..."
+          className="pl-8"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {warehouses.map((warehouse) => (
-          <Card key={warehouse.id}>
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center justify-between text-lg">
-                <span className="flex items-center gap-2">
-                  <Box className="h-5 w-5 text-primary" />
-                  {warehouse.name}
-                </span>
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline">{warehouse.shortCode}</Badge>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        onClick={() => setEditingWarehouse(warehouse)}
-                      >
-                        <Pencil className="mr-2 h-4 w-4" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="text-red-600"
-                        onClick={() => setDeletingId(warehouse.id)}
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+        {filteredWarehouses.length === 0 ? (
+          <div className="text-center p-8 border rounded-lg bg-muted/10 md:col-span-2 lg:col-span-3">
+            <p className="text-muted-foreground">
+              {warehouses.length === 0
+                ? "No warehouses found. Create one to get started."
+                : "No warehouses match your search."}
+            </p>
+          </div>
+        ) : (
+          filteredWarehouses.map((warehouse) => (
+            <Card key={warehouse.id}>
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center justify-between text-lg">
+                  <span className="flex items-center gap-2">
+                    <Box className="h-5 w-5 text-primary" />
+                    {warehouse.name}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline">{warehouse.shortCode}</Badge>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => setEditingWarehouse(warehouse)}
+                        >
+                          <Pencil className="mr-2 h-4 w-4" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="text-red-600"
+                          onClick={() => setDeletingId(warehouse.id)}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </CardTitle>
+                <CardDescription className="flex items-center gap-1">
+                  <MapPin className="h-3 w-3" />
+                  {warehouse.address || "No address provided"}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Locations</span>
+                  <Badge variant="secondary">{warehouse.locations.length}</Badge>
                 </div>
-              </CardTitle>
-              <CardDescription className="flex items-center gap-1">
-                <MapPin className="h-3 w-3" />
-                {warehouse.address || "No address provided"}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Locations</span>
-                <Badge variant="secondary">{warehouse.locations.length}</Badge>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>
 
       <WarehouseDialog
