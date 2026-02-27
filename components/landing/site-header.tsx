@@ -25,7 +25,7 @@ export function SiteHeader({ session }: SiteHeaderProps) {
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-md">
       <div className="container mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-6">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.png" alt="AgentHacks IMS" width={34} height={34} />
+          <Image src="/logo_1.png" alt="AgentHacks IMS" width={34} height={34} />
           <span className="text-base font-extrabold tracking-tight md:text-lg">
             AgentHacks <span className="text-primary">IMS</span>
           </span>

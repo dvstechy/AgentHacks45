@@ -84,11 +84,6 @@ export default async function SignInPage() {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left Side - Brand Message */}
             <div className="hidden lg:block space-y-8 animate-in fade-in slide-in-from-left-2 duration-700">
-              {/* Brand Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
-                <Shield className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-primary">Enterprise-Grade Inventory Management</span>
-              </div>
 
               {/* Main Heading */}
               <div className="space-y-4">
@@ -198,50 +193,16 @@ export default async function SignInPage() {
               {/* Form Container */}
               <div className="relative">
                 {/* Gradient Border */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-2xl opacity-20 blur" />
+                {/* <div className="absolute -inset-0.5 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-2xl opacity-20 blur" /> */}
 
                 {/* Form Card */}
-                <div className="relative bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl overflow-hidden">
+                {/* <div className="relative bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl overflow-hidden"> */}
                   {/* Header Gradient */}
-                  <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-primary via-purple-500 to-pink-500" />
+                  {/* <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-primary via-purple-500 to-pink-500" /> */}
 
                   <div className="p-8">
                     <SignInForm />
                   </div>
-
-                  {/* Footer Links */}
-                  <div className="px-8 py-4 bg-muted/30 border-t border-border/50 flex items-center justify-between text-sm">
-                    <Link
-                      href={"/help" as Route}
-                      className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 group"
-                    >
-                      Need help?
-                      <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-                    </Link>
-                    <Link
-                      href={"/privacy" as Route}
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      Privacy
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* Trust Badges */}
-              <div className="mt-6 flex items-center justify-center gap-6 text-xs text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <CheckCircle2 className="h-3 w-3 text-green-500" />
-                  <span>SSL Encrypted</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <CheckCircle2 className="h-3 w-3 text-green-500" />
-                  <span>GDPR Compliant</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <CheckCircle2 className="h-3 w-3 text-green-500" />
-                  <span>24/7 Support</span>
-                </div>
               </div>
             </div>
           </div>

@@ -117,7 +117,7 @@ export function SiteFooter() {
               <div className="relative">
                 <div className="absolute inset-0 bg-primary/20 rounded-lg blur group-hover:bg-primary/30 transition-all duration-300" />
                 <Image
-                  src="/logo.png"
+                  src="/logo_1.png"
                   alt="AgentHacks IMS"
                   width={44}
                   height={44}
