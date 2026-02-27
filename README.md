@@ -1,16 +1,16 @@
-# 🚀 Navonmesh Hackathon | Odoo X Spit
+# 🚀 Navonmesh Hackathon |   X  
 
 ## **Official Submission: AgentHacks IMS**
 
 ### **Next-Generation Inventory & Warehouse Management System**
 
-_A premium, mobile-first ERP solution inspired by Odoo, built for efficiency and scale, exclusively submitted for the **Navonmesh Hackathon**._
+_A premium, mobile-first ERP solution inspired by  , built for efficiency and scale, exclusively submitted for the **Navonmesh Hackathon**._
 
 ---
 
 ## 🌟 Overview
 
-**Odoo X Spit** (by AgentHacks) is a high-performance, modern Inventory Management System (IMS) designed to streamline warehouse operations, product tracking, and stock movements. Developed as a flagship project for the **Navonmesh Hackathon**, it offers a glassmorphic UI, real-time data handling, and a seamless mobile-friendly experience.
+ It (by AgentHacks) is a high-performance, modern Inventory Management System (IMS) designed to streamline warehouse operations, product tracking, and stock movements. Developed as a flagship project for the **Navonmesh Hackathon**, it offers a glassmorphic UI, real-time data handling, and a seamless mobile-friendly experience.
 
 ---
 
