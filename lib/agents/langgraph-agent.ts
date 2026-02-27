@@ -5,7 +5,7 @@
 
 import { StateGraph, Annotation } from "@langchain/langgraph";
 import { prisma } from "@/lib/prisma";
-import { findNearestWarehouse } from "@/lib/utils/geo";
+import { findNearestWarehouse, haversineDistance } from "@/lib/utils/geo";
 import { forecastDemand } from "./forecast.agent"
 import { calculateReorder } from "./reorder.agent"
 
@@ -35,7 +35,8 @@ export interface NearbyWarehouse {
   latitude: number | null;
   longitude: number | null;
   availableQuantity: number;
-  distance?: number;
+  distanceKm: number;
+  surplus: number;
 }
 
 export interface RebalancingAction {
@@ -127,11 +128,18 @@ export async function perceptionNode(state: AgentState): Promise<Partial<AgentSt
 
     const alerts: StockAlert[] = []
 
+    // ─────────────────────────────
+    // Idempotency Check
+    // ─────────────────────────────
+    if (state.lowStockAlerts && state.lowStockAlerts.length > 0) {
+      return {};
+    }
+
     for (const sl of stockLevels) {
       const forecast = await forecastDemand(sl.product.id)
       const reorder = await calculateReorder(sl.product.id, forecast)
 
-      if (reorder) {
+      if (reorder && reorder.quantity > 0) {
         alerts.push({
           productId: sl.product.id,
           productName: sl.product.name,
@@ -147,18 +155,21 @@ export async function perceptionNode(state: AgentState): Promise<Partial<AgentSt
       }
       // --- Overstock Detection ---
       if (sl.quantity > sl.product.minStock * 2) {
-        alerts.push({
-          productId: sl.product.id,
-          productName: sl.product.name,
-          sku: sl.product.sku,
-          currentQuantity: sl.quantity,
-          minStock: sl.product.minStock,
-          shortfall: -Math.floor(sl.quantity - sl.product.minStock * 1.2), // excess amount
-          warehouseId: sl.location.warehouse?.id,
-          warehouseName: sl.location.warehouse?.name,
-          locationId: sl.location.id,
-          attributes: sl.product.attributes as Record<string, unknown>,
-        });
+        const excessAmount = Math.floor(sl.quantity - sl.product.minStock * 1.2);
+        if (excessAmount > 0) {
+          alerts.push({
+            productId: sl.product.id,
+            productName: sl.product.name,
+            sku: sl.product.sku,
+            currentQuantity: sl.quantity,
+            minStock: sl.product.minStock,
+            shortfall: -excessAmount,
+            warehouseId: sl.location.warehouse?.id,
+            warehouseName: sl.location.warehouse?.name,
+            locationId: sl.location.id,
+            attributes: sl.product.attributes as Record<string, unknown>,
+          });
+        }
       }
     }
 
@@ -258,6 +269,10 @@ export async function forecastNode(
 
 export async function geocodingNode(state: AgentState): Promise<Partial<AgentState>> {
   const { lowStockAlerts } = state;
+
+  if (Object.keys(state.geocodedLocations || {}).length > 0) {
+    return {};
+  }
 
   const geocoded: Record<string, { lat: number; lon: number } | null> = {};
 
@@ -359,71 +374,99 @@ export async function rebalancingNode(state: AgentState): Promise<Partial<AgentS
   });
 
   const nearbyWarehouses: NearbyWarehouse[] = surplusWarehouses
-    .filter(sw => sw.location.warehouse && sw.quantity > optimizedQty)
-    .map(sw => ({
-      id: sw.location.warehouse!.id,
-      name: sw.location.warehouse!.name,
-      shortCode: sw.location.warehouse!.shortCode,
-      latitude: sw.location.warehouse!.latitude,
-      longitude: sw.location.warehouse!.longitude,
-      availableQuantity: sw.quantity,
-    }));
+    .filter(sw => sw.location.warehouse)
+    .map(sw => {
+      const warehouse = sw.location.warehouse!;
+      const destCoords =
+        currentAlert.warehouseId && geocodedLocations[currentAlert.warehouseId]
+          ? geocodedLocations[currentAlert.warehouseId]
+          : null;
 
-  let action: RebalancingAction;
+      const distanceKm =
+        destCoords && warehouse.latitude && warehouse.longitude
+          ? haversineDistance(
+            destCoords.lat,
+            destCoords.lon,
+            warehouse.latitude,
+            warehouse.longitude
+          )
+          : 9999;
 
-  const nearest = currentAlert.warehouseId
-    ? findNearestWarehouse(
-      {
-        latitude: geocodedLocations[currentAlert.warehouseId]?.lat ?? null,
-        longitude: geocodedLocations[currentAlert.warehouseId]?.lon ?? null,
-      },
-      nearbyWarehouses,
-      15
-    )
-    : null;
+      return {
+        id: warehouse.id,
+        name: warehouse.name,
+        shortCode: warehouse.shortCode,
+        latitude: warehouse.latitude,
+        longitude: warehouse.longitude,
+        availableQuantity: sw.quantity,
+        distanceKm,
+        surplus: sw.quantity, // Current available is our surplus pool
+      };
+    });
 
+  // ─────────────────────────────
+  // Multi-Warehouse Split Logic
+  // ─────────────────────────────
 
-  // --- Cost Model ---
-  const transferCostPerUnit = 5
-  const vendorCostPerUnit = 8
-  const orderingFixedCost = 200
+  let remainingShortage = optimizedQty;
+  const actions: RebalancingAction[] = [];
 
-  const transferCost = transferCostPerUnit * optimizedQty
-  const vendorCost =
-    vendorCostPerUnit * optimizedQty + orderingFixedCost
+  // Sort warehouses by distance (nearest first)
+  const sortedWarehouses = nearbyWarehouses
+    .filter(w => w.surplus > 0)
+    .sort((a, b) => a.distanceKm - b.distanceKm);
 
-  if (nearest) {
-    if (transferCost < vendorCost) {
-      action = {
+  for (const warehouse of sortedWarehouses) {
+    if (remainingShortage <= 0) break;
+
+    const transferableQty = Math.min(
+      warehouse.surplus,
+      remainingShortage
+    );
+
+    if (transferableQty > 0) {
+      actions.push({
         type: "INTERNAL_TRANSFER",
-        sourceWarehouseId: nearest.id,
+        sourceWarehouseId: warehouse.id,
         destinationWarehouseId: currentAlert.warehouseId,
-        quantity: optimizedQty,
-        reason: `Transfer cheaper (₹${transferCost}) vs Vendor (₹${vendorCost})`,
+        quantity: transferableQty,
+        reason: `Partial transfer from warehouse ${warehouse.id}`,
         validationPassed: false,
-      }
-    } else {
-      action = {
-        type: "VENDOR_ORDER",
-        destinationWarehouseId: currentAlert.warehouseId,
-        quantity: optimizedQty,
-        reason: `Vendor cheaper (₹${vendorCost}) vs Transfer (₹${transferCost})`,
-        validationPassed: false,
-      }
-    }
-  } else {
-    action = {
-      type: "VENDOR_ORDER",
-      destinationWarehouseId: currentAlert.warehouseId,
-      quantity: optimizedQty,
-      reason: "No surplus warehouse available",
-      validationPassed: false,
+        constraints: [],
+      });
+
+      remainingShortage -= transferableQty;
     }
   }
 
+  // ─────────────────────────────
+  // Vendor for Remaining Shortage
+  // ─────────────────────────────
+
+  if (remainingShortage > 0) {
+    actions.push({
+      type: "VENDOR_ORDER",
+      destinationWarehouseId: currentAlert.warehouseId,
+      quantity: remainingShortage,
+      reason: `Vendor order for remaining shortage after transfers`,
+      validationPassed: false,
+      constraints: [],
+    });
+  }
+
   return {
-    rebalancingActions: [action],
+    rebalancingActions: actions,
     nearbyWarehouses,
+    auditLogs: [
+      ...(state.auditLogs || []),
+      {
+        nodeName: "Rebalancing",
+        inputData: { shortage: optimizedQty },
+        outputData: { actions },
+        reasoningString: `Split shortage across ${actions.length} actions`,
+        decision: "Multi-warehouse optimization executed",
+      },
+    ],
   };
 }
 
@@ -582,37 +625,103 @@ export async function runMultiAgentSystem(
     impactMetrics: null,
   };
 
-  // 1️⃣ Run graph once to populate lowStockAlerts
+  // 1️⃣ Run scan (Perception + Geocoding)
   const firstPass = await graph.invoke(initialState);
+
+  if (!firstPass.lowStockAlerts || firstPass.lowStockAlerts.length === 0) {
+    return firstPass;
+  }
 
   // 2️⃣ Prepare accumulators
   const allActions: any[] = [];
-  const allAuditLogs: any[] = [];
+  const allAuditLogs: any[] = [...(firstPass.auditLogs || [])];
 
-  // 3️⃣ Loop each alert
+  // 3️⃣ Loop each alert for Optimization
+  // We avoid re-running perception by passing the firstPass state
   for (const alert of firstPass.lowStockAlerts) {
     const loopState: AgentState = {
-      ...initialState,
-      lowStockAlerts: firstPass.lowStockAlerts,
+      ...firstPass,
       currentAlert: alert,
       rebalancingActions: [],
-      auditLogs: [],
+      auditLogs: [], // Clear per-loop logs to avoid duplication
     };
 
+    // By passing firstPass, perceptionNode and geocodingNode will return {} due to guards
     const result = await graph.invoke(loopState);
 
-    allActions.push(...result.rebalancingActions);
-    allAuditLogs.push(...result.auditLogs);
+    allActions.push(...(result.rebalancingActions || []));
+    // Filter out perception/geocoding logs if they accidentally made it into result.auditLogs
+    const newLogs = (result.auditLogs || []).filter(l => l.nodeName !== "Perception" && l.nodeName !== "Geocoding");
+    allAuditLogs.push(...newLogs);
   }
 
   // ─────────────────────────────
-  // Impact Metrics Calculation
+  // 4️⃣ Executive Summary & Aggregation
+  // ─────────────────────────────
+
+  // Filter out low-impact actions (Demo Rule: Hide < 20 unit overstock)
+  const filteredActions = allActions.filter(a =>
+    a.type !== "OVERSTOCK" || Math.abs(a.quantity) >= 20
+  );
+
+  const overstockItems = filteredActions.filter(a => a.type === "OVERSTOCK");
+  const rebalancingActions = filteredActions.filter(a => a.type !== "OVERSTOCK");
+
+  if (overstockItems.length > 0) {
+    const totalExcessUnits = overstockItems.reduce((sum, a) => sum + Math.abs(a.quantity), 0);
+    // Estimated capital locked: using a business estimate of ₹120 per unit (Cost + Carrying Cost)
+    const capitalLocked = (totalExcessUnits * 120).toLocaleString('en-IN');
+
+    rebalancingActions.push({
+      type: "OVERSTOCK",
+      quantity: totalExcessUnits,
+      reason: `Excess Inventory Optimization: ${overstockItems.length} SKUs affected. | Estimated Working Capital Locked: ₹${capitalLocked}. Recommended Action: Discount / Redistribute`,
+      validationPassed: true,
+      constraints: [`Aggregated from ${overstockItems.length} low-priority items`]
+    });
+  }
+
+  // Calculate Process Summary Stats
+  const totalSKUs = firstPass.lowStockAlerts.length;
+  const overstockCount = overstockItems.length;
+  const transferCount = rebalancingActions.filter(a => a.type === "INTERNAL_TRANSFER").length;
+  const vendorCount = rebalancingActions.filter(a => a.type === "VENDOR_ORDER").length;
+
+  // Compute Average Risk
+  const totalRisk = firstPass.lowStockAlerts.reduce((sum, a) => sum + (a.riskScore || 0), 0);
+  const avgRiskValue = totalSKUs > 0 ? (totalRisk / totalSKUs).toFixed(2) : "0.00";
+  let executiveRiskLevel = "LOW";
+  if (Number(avgRiskValue) > 1.5) executiveRiskLevel = "HIGH";
+  else if (Number(avgRiskValue) > 0.8) executiveRiskLevel = "MEDIUM";
+
+  const processSummary: AuditLogEntry = {
+    nodeName: "AI Process Summary",
+    inputData: { totalSKUsAnalyzed: totalSKUs },
+    outputData: {
+      overstockCount,
+      transferCount,
+      vendorCount,
+      avgRiskScore: avgRiskValue,
+      riskLevel: executiveRiskLevel
+    },
+    reasoningString: `Analyzed ${totalSKUs} SKUs | ${overstockCount} Overstock detected | ${transferCount} Internal Transfer suggested | ${vendorCount} Vendor Orders required | Average Risk: ${executiveRiskLevel}`,
+    decision: "Executive summary generated"
+  };
+
+  // Replace granular logs with the summary (optionally keep initial Perception)
+  const collapsedLogs = [
+    ...(allAuditLogs.filter(l => l.nodeName === "Perception") || []),
+    processSummary
+  ];
+
+  // ─────────────────────────────
+  // 5️⃣ Impact Metrics Calculation
   // ─────────────────────────────
 
   let totalTransferCost = 0;
   let totalVendorCost = 0;
 
-  for (const action of allActions) {
+  for (const action of rebalancingActions) {
     if (action.type === "INTERNAL_TRANSFER") {
       totalTransferCost += action.quantity * 5;
     }
@@ -624,10 +733,11 @@ export async function runMultiAgentSystem(
 
   const optimizedCost = totalTransferCost + totalVendorCost;
 
-  // Assume worst case = all vendor orders
   let worstCaseCost = 0;
-  for (const action of allActions) {
-    worstCaseCost += action.quantity * 8 + 200;
+  for (const action of rebalancingActions) {
+    if (action.type === "INTERNAL_TRANSFER" || action.type === "VENDOR_ORDER") {
+      worstCaseCost += action.quantity * 8 + 200;
+    }
   }
 
   const estimatedSavings = worstCaseCost - optimizedCost;
@@ -639,11 +749,11 @@ export async function runMultiAgentSystem(
     estimatedSavings,
   };
 
-  // 4️⃣ Return aggregated result
+  // 6️⃣ Return final aggregated result
   return {
     ...firstPass,
-    rebalancingActions: allActions,
-    auditLogs: allAuditLogs,
+    rebalancingActions,
+    auditLogs: collapsedLogs,
     impactMetrics,
   };
 }
