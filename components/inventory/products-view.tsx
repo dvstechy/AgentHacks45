@@ -25,6 +25,7 @@ interface ProductsViewProps {
     type: string;
     salesPrice: number;
     costPrice: number;
+    minStock?: number;
     category?: { name: string } | null;
     stockLevels: { quantity: number; location?: { name: string; type: string } | null }[];
     [key: string]: unknown;
@@ -36,8 +37,14 @@ export function ProductsView({ initialProducts }: ProductsViewProps) {
   const productCount = initialProducts.length;
 
   // Calculate some basic stats from products
-  const lowStockCount = initialProducts.filter(p => p.stock <= (p.minStock || 0)).length;
-  const totalValue = initialProducts.reduce((sum, p) => sum + (p.stock * p.costPrice), 0);
+  const getStock = (p: ProductsViewProps["initialProducts"][number]) =>
+    p.stockLevels.reduce((acc, sl) => {
+      if (sl.location?.type?.toUpperCase().trim() === "INTERNAL") return acc + sl.quantity;
+      return acc;
+    }, 0);
+
+  const lowStockCount = initialProducts.filter(p => getStock(p) <= (p.minStock ?? 0)).length;
+  const totalValue = initialProducts.reduce((sum, p) => sum + (getStock(p) * p.costPrice), 0);
   const categoryCount = new Set(initialProducts.map(p => p.category?.name).filter(Boolean)).size;
 
   return (
@@ -107,7 +114,7 @@ export function ProductsView({ initialProducts }: ProductsViewProps) {
                 <div>
                   <p className="text-xs text-muted-foreground">In Stock</p>
                   <p className="text-lg font-bold">
-                    {initialProducts.reduce((sum, p) => sum + (p.stock || 0), 0)}
+                    {initialProducts.reduce((sum, p) => sum + getStock(p), 0)}
                   </p>
                 </div>
               </div>

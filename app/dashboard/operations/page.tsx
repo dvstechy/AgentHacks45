@@ -171,17 +171,17 @@ export default async function OperationsPage() {
               Get started by creating your first receipt, delivery, or internal transfer
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
-              <Link href="/dashboard/operations/receipts">
+              <Link href={"/dashboard/operations/receipts" as "/dashboard/operations"}>
                 <button className="px-4 py-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-sm font-medium hover:bg-blue-500/20 transition-all duration-200 hover:scale-105">
                   Create Receipt
                 </button>
               </Link>
-              <Link href="/dashboard/operations/deliveries">
+              <Link href={"/dashboard/operations/deliveries" as "/dashboard/operations"}>
                 <button className="px-4 py-2 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 text-sm font-medium hover:bg-green-500/20 transition-all duration-200 hover:scale-105">
                   Create Delivery
                 </button>
               </Link>
-              <Link href="/dashboard/operations/internal">
+              <Link href={"/dashboard/operations/internal" as "/dashboard/operations"}>
                 <button className="px-4 py-2 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 text-sm font-medium hover:bg-purple-500/20 transition-all duration-200 hover:scale-105">
                   Create Transfer
                 </button>
