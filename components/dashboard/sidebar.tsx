@@ -26,7 +26,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import type { Route } from "next";
 
@@ -132,13 +132,11 @@ function SidebarGroup({
   pathname: string;
   index: number;
 }) {
-  const router = useRouter();
   const isActiveGroup = group.items.some((item) => item.href === pathname);
-  const [isOpen, setIsOpen] = useState(true);
-  const expanded = isOpen || isActiveGroup;
+  const [isOpen, setIsOpen] = useState(isActiveGroup);
 
   return (
-    <div 
+    <div
       className="px-3 py-1.5 animate-in fade-in slide-in-from-left-2 duration-300"
       style={{ animationDelay: `${index * 50}ms` }}
     >
@@ -158,19 +156,15 @@ function SidebarGroup({
         </h3>
         <div className={cn(
           "transition-transform duration-200",
-          expanded ? "rotate-180" : "rotate-0"
+          isOpen ? "rotate-180" : "rotate-0"
         )}>
-          {expanded ? (
-            <ChevronDown className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors" />
-          ) : (
-            <ChevronRight className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors" />
-          )}
+          <ChevronDown className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors" />
         </div>
       </Button>
-      
+
       <div className={cn(
         "space-y-1 overflow-hidden transition-all duration-300 ease-in-out",
-        expanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
       )}>
         {group.items.map((item) => {
           const isActive = pathname === item.href;
@@ -186,12 +180,7 @@ function SidebarGroup({
               )}
               asChild
             >
-              <Link
-                href={item.href as Route}
-                prefetch
-                onMouseEnter={() => router.prefetch(item.href as Route)}
-                onFocus={() => router.prefetch(item.href as Route)}
-              >
+              <Link href={item.href as Route}>
                 {isActive && (
                   <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-primary rounded-r-full animate-in fade-in slide-in-from-left-1" />
                 )}
@@ -222,12 +211,12 @@ export function Sidebar({ className, mobile, onMobileClose }: SidebarProps) {
     <>
       {/* Mobile Overlay */}
       {mobile && (
-        <div 
+        <div
           className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 lg:hidden animate-in fade-in duration-300"
           onClick={onMobileClose}
         />
       )}
-      
+
       {/* Sidebar */}
       <div className={cn(
         "flex flex-col h-full bg-gradient-to-b from-background to-background/95 backdrop-blur-sm border-r border-border/50",
@@ -268,10 +257,10 @@ export function Sidebar({ className, mobile, onMobileClose }: SidebarProps) {
         <div className="flex-1 overflow-y-auto py-6 scrollbar-thin scrollbar-thumb-primary/10 scrollbar-track-transparent hover:scrollbar-thumb-primary/20">
           <div className="space-y-2">
             {sidebarGroups.map((group, index) => (
-              <SidebarGroup 
-                key={group.title} 
-                group={group} 
-                pathname={pathname} 
+              <SidebarGroup
+                key={group.title}
+                group={group}
+                pathname={pathname}
                 index={index}
               />
             ))}
@@ -284,7 +273,7 @@ export function Sidebar({ className, mobile, onMobileClose }: SidebarProps) {
             <span className="text-xs text-muted-foreground">Theme</span>
             <ThemeToggle />
           </div>
-          
+
           <form action={signOut}>
             <Button
               variant="ghost"
@@ -293,11 +282,11 @@ export function Sidebar({ className, mobile, onMobileClose }: SidebarProps) {
               <LogOut className="mr-3 h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
               <span>Sign Out</span>
               <span className="ml-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                → 
+                →
               </span>
             </Button>
           </form>
-          
+
           <div className="pt-2 text-center">
             <p className="text-[10px] text-muted-foreground/50">
               v2.0.0 • {new Date().getFullYear()}
