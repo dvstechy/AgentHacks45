@@ -36,19 +36,20 @@ import { createTransfer } from "@/app/actions/operation";
 import { getContacts } from "@/app/actions/contact";
 import { getLocations } from "@/app/actions/warehouse";
 import { getProducts } from "@/app/actions/product";
-import {
-  Plus,
-  Trash2,
-  ArrowRight,
-  Package,
-  MapPin,
-  Building2,
+import { 
+  Plus, 
+  Trash2, 
+  ArrowRight, 
+  Package, 
+  MapPin, 
+  Building2, 
   User,
   ArrowDownToLine,
   ArrowUpFromLine,
   ArrowRightLeft,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  Sparkles
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -140,7 +141,7 @@ export function TransferDialog({
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: z.infer<typeof transferSchema>) => createTransfer({ ...data, type }),
+    mutationFn: (data: any) => createTransfer({ ...data, type }),
     onSuccess: (result) => {
       if (result.success) {
         setOpen(false);
@@ -222,9 +223,9 @@ export function TransferDialog({
     // Sanitize optional fields
     const data = {
       ...values,
-      contactId: contactId || undefined,
-      sourceLocationId: sourceLocationId || undefined,
-      destinationLocationId: destinationLocationId || undefined,
+      contactId: contactId || null,
+      sourceLocationId: sourceLocationId || null,
+      destinationLocationId: destinationLocationId || null,
     };
     createMutation.mutate(data);
   };
@@ -259,8 +260,8 @@ export function TransferDialog({
     type === "INCOMING"
       ? "Receive Goods"
       : type === "OUTGOING"
-        ? "Deliver Goods"
-        : "Transfer Stock";
+      ? "Deliver Goods"
+      : "Transfer Stock";
 
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
@@ -270,10 +271,11 @@ export function TransferDialog({
             <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
             <Plus className="mr-2 h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
             Create {type === "INCOMING" ? "Receipt" : type === "OUTGOING" ? "Delivery" : "Transfer"}
+            <Sparkles className="ml-2 h-3.5 w-3.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </Button>
         </DialogTrigger>
       )}
-
+      
       <DialogContent className="sm:max-w-[960px] max-h-[90vh] overflow-y-auto p-0 border-border/50 bg-background/95 backdrop-blur-xl">
         {/* Header with Gradient */}
         <DialogHeader className={cn(
@@ -458,7 +460,7 @@ export function TransferDialog({
                         {index + 1}
                       </span>
                     </div>
-
+                    
                     <div className="flex items-start gap-4">
                       <FormField
                         control={form.control}
@@ -535,16 +537,16 @@ export function TransferDialog({
             </div>
 
             <DialogFooter className="border-t border-border/50 pt-6">
-              <Button
-                type="button"
-                variant="outline"
+              <Button 
+                type="button" 
+                variant="outline" 
                 onClick={() => setOpen(false)}
                 className="border-border/50 hover:bg-muted/80 transition-all duration-200"
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
+              <Button 
+                type="submit" 
                 className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 disabled:hover:scale-100"
                 disabled={isSubmitting}
               >
