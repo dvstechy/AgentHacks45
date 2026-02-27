@@ -36,7 +36,20 @@ import { createTransfer } from "@/app/actions/operation";
 import { getContacts } from "@/app/actions/contact";
 import { getLocations } from "@/app/actions/warehouse";
 import { getProducts } from "@/app/actions/product";
-import { Plus, Trash2, ArrowRight } from "lucide-react";
+import { 
+  Plus, 
+  Trash2, 
+  ArrowRight, 
+  Package, 
+  MapPin, 
+  Building2, 
+  User,
+  ArrowDownToLine,
+  ArrowUpFromLine,
+  ArrowRightLeft,
+  AlertCircle,
+  CheckCircle2
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -132,18 +145,30 @@ export function TransferDialog({
       if (result.success) {
         setOpen(false);
         form.reset();
-        toast.success("Transfer created");
+        toast.success("Transfer created successfully", {
+          icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
+          style: {
+            background: "hsl(var(--background))",
+            color: "hsl(var(--foreground))",
+            border: "1px solid hsl(var(--border))",
+          },
+        });
         queryClient.invalidateQueries({ queryKey: ["transfers", type] });
       } else {
         toast.error(
           typeof result.error === "string"
             ? result.error
-            : "Failed to create transfer"
+            : "Failed to create transfer",
+          {
+            icon: <AlertCircle className="h-4 w-4 text-red-500" />,
+          }
         );
       }
     },
     onError: () => {
-      toast.error("Failed to create transfer");
+      toast.error("Failed to create transfer", {
+        icon: <AlertCircle className="h-4 w-4 text-red-500" />,
+      });
     },
   });
   const isSubmitting = createMutation.isPending;
@@ -204,6 +229,32 @@ export function TransferDialog({
     createMutation.mutate(data);
   };
 
+  const getTypeIcon = () => {
+    switch (type) {
+      case "INCOMING":
+        return <ArrowDownToLine className="h-5 w-5 text-blue-500" />;
+      case "OUTGOING":
+        return <ArrowUpFromLine className="h-5 w-5 text-green-500" />;
+      case "INTERNAL":
+        return <ArrowRightLeft className="h-5 w-5 text-purple-500" />;
+      default:
+        return <Package className="h-5 w-5 text-primary" />;
+    }
+  };
+
+  const getTypeColor = () => {
+    switch (type) {
+      case "INCOMING":
+        return "from-blue-500/10 to-blue-500/5 border-blue-500/20";
+      case "OUTGOING":
+        return "from-green-500/10 to-green-500/5 border-green-500/20";
+      case "INTERNAL":
+        return "from-purple-500/10 to-purple-500/5 border-purple-500/20";
+      default:
+        return "from-primary/10 to-primary/5 border-primary/20";
+    }
+  };
+
   const title =
     type === "INCOMING"
       ? "Receive Goods"
@@ -215,29 +266,51 @@ export function TransferDialog({
     <Dialog open={isOpen} onOpenChange={setOpen}>
       {controlledOpen === undefined && (
         <DialogTrigger asChild>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Create {type === "INCOMING" ? "Receipt" : "Delivery"}
+          <Button className="group relative overflow-hidden bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95">
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+            <Plus className="mr-2 h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
+            Create {type === "INCOMING" ? "Receipt" : type === "OUTGOING" ? "Delivery" : "Transfer"}
           </Button>
         </DialogTrigger>
       )}
-      <DialogContent className="sm:max-w-[960px] max-h-[90vh] overflow-y-auto p-0">
-        <DialogHeader className="border-b bg-muted/20 px-6 py-5">
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Create a new {type.toLowerCase()} transfer.
-          </DialogDescription>
+      
+      <DialogContent className="sm:max-w-[960px] max-h-[90vh] overflow-y-auto p-0 border-border/50 bg-background/95 backdrop-blur-xl">
+        {/* Header with Gradient */}
+        <DialogHeader className={cn(
+          "border-b bg-gradient-to-r p-6",
+          getTypeColor()
+        )}>
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-background/80 backdrop-blur-sm flex items-center justify-center">
+              {getTypeIcon()}
+            </div>
+            <div>
+              <DialogTitle className="text-xl font-bold">{title}</DialogTitle>
+              <DialogDescription className="text-muted-foreground">
+                Create a new {type.toLowerCase()} transfer. All fields with * are required.
+              </DialogDescription>
+            </div>
+          </div>
         </DialogHeader>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6">
             {/* General Info Section */}
-            <div className="grid gap-6">
+            <div className="space-y-6">
+              <div className="flex items-center gap-2">
+                <div className="h-6 w-1 bg-primary rounded-full" />
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  General Information
+                </h3>
+              </div>
+
               <FormField
                 control={form.control}
                 name="contactId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <User className="h-4 w-4 text-muted-foreground" />
                       {type === "INCOMING" ? "Vendor" : "Customer"}
                     </FormLabel>
                     <Select
@@ -245,20 +318,20 @@ export function TransferDialog({
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select contact" />
+                        <SelectTrigger className="bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary transition-colors">
+                          <SelectValue placeholder="Select contact (optional)" />
                         </SelectTrigger>
                       </FormControl>
-                    <SelectContent>
-                      <SelectItem value="none">None</SelectItem>
-                      {contacts?.map((c) => (
-                        <SelectItem key={c.id} value={c.id}>
-                          {c.name}
+                      <SelectContent>
+                        <SelectItem value="none">None</SelectItem>
+                        {contacts?.map((c) => (
+                          <SelectItem key={c.id} value={c.id}>
+                            {c.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                    <FormDescription>
+                    <FormDescription className="text-xs">
                       {type === "INCOMING"
                         ? "Optional vendor reference for incoming goods."
                         : "Optional customer reference for outgoing goods."}
@@ -274,14 +347,20 @@ export function TransferDialog({
                   name="sourceLocationId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Source Location</FormLabel>
+                      <FormLabel className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                        Source Location
+                        {(type === "OUTGOING" || type === "INTERNAL") && (
+                          <span className="text-xs text-red-500">*</span>
+                        )}
+                      </FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select source" />
+                          <SelectTrigger className="bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary transition-colors">
+                            <SelectValue placeholder="Select source location" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -293,7 +372,7 @@ export function TransferDialog({
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormDescription>
+                      <FormDescription className="text-xs">
                         {type === "OUTGOING" || type === "INTERNAL"
                           ? "Required for deliveries/internal transfers."
                           : "Optional for this transfer type."}
@@ -307,14 +386,20 @@ export function TransferDialog({
                   name="destinationLocationId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Destination Location</FormLabel>
+                      <FormLabel className="flex items-center gap-2">
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
+                        Destination Location
+                        {(type === "INCOMING" || type === "INTERNAL") && (
+                          <span className="text-xs text-red-500">*</span>
+                        )}
+                      </FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select destination" />
+                          <SelectTrigger className="bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary transition-colors">
+                            <SelectValue placeholder="Select destination location" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -326,7 +411,7 @@ export function TransferDialog({
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormDescription>
+                      <FormDescription className="text-xs">
                         {type === "INCOMING" || type === "INTERNAL"
                           ? "Required for receipts/internal transfers."
                           : "Optional for this transfer type."}
@@ -338,21 +423,25 @@ export function TransferDialog({
               </div>
             </div>
 
-            <Separator />
+            <Separator className="bg-border/50" />
 
             {/* Products Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <FormLabel className="text-base font-semibold">
-                  Products
-                </FormLabel>
+                <div className="flex items-center gap-2">
+                  <div className="h-6 w-1 bg-primary rounded-full" />
+                  <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                    Products
+                  </h3>
+                </div>
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => append({ productId: "", quantity: 1 })}
+                  className="border-border/50 hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-200 group"
                 >
-                  <Plus className="mr-2 h-4 w-4" />
+                  <Plus className="mr-2 h-4 w-4 transition-transform group-hover:rotate-90" />
                   Add Item
                 </Button>
               </div>
@@ -361,81 +450,115 @@ export function TransferDialog({
                 {fields.map((field, index) => (
                   <div
                     key={field.id}
-                    className="flex items-start gap-4 rounded-lg border bg-muted/20 p-4"
+                    className="group relative rounded-xl border border-border/50 bg-gradient-to-r from-background to-muted/30 p-4 transition-all duration-200 hover:border-primary/30 hover:shadow-md animate-in fade-in slide-in-from-bottom-2"
+                    style={{ animationDelay: `${index * 50}ms` }}
                   >
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.productId`}
-                      render={({ field }) => (
-                        <FormItem className="flex-1">
-                          <FormLabel className={index !== 0 ? "sr-only" : ""}>
-                            Product
-                          </FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
+                    <div className="absolute -top-2 -left-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary">
+                        {index + 1}
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-start gap-4">
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.productId`}
+                        render={({ field }) => (
+                          <FormItem className="flex-1">
+                            <FormLabel className={index !== 0 ? "sr-only" : "text-xs"}>
+                              Product
+                            </FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary transition-colors">
+                                  <SelectValue placeholder="Select product" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {products?.map((p) => (
+                                  <SelectItem key={p.id} value={p.id}>
+                                    {p.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`items.${index}.quantity`}
+                        render={({ field }) => (
+                          <FormItem className="w-32">
+                            <FormLabel className={index !== 0 ? "sr-only" : "text-xs"}>
+                              Quantity
+                            </FormLabel>
                             <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select product" />
-                              </SelectTrigger>
+                              <Input
+                                type="number"
+                                min="1"
+                                {...field}
+                                value={field.value as number}
+                                className="bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary transition-colors"
+                              />
                             </FormControl>
-                            <SelectContent>
-                              {products?.map((p) => (
-                                <SelectItem key={p.id} value={p.id}>
-                                  {p.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.quantity`}
-                      render={({ field }) => (
-                        <FormItem className="w-32">
-                          <FormLabel className={index !== 0 ? "sr-only" : ""}>
-                            Quantity
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              min="1"
-                              {...field}
-                              value={field.value as number}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <div className={index === 0 ? "pt-8" : "pt-0"}>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => remove(index)}
-                        disabled={fields.length === 1}
-                        className="text-muted-foreground hover:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className={index === 0 ? "pt-8" : "pt-0"}>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => remove(index)}
+                          disabled={fields.length === 1}
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200 disabled:opacity-50"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
-              <FormMessage>{form.formState.errors.items?.message}</FormMessage>
+              {form.formState.errors.items?.message && (
+                <p className="text-sm text-red-500 flex items-center gap-1">
+                  <AlertCircle className="h-4 w-4" />
+                  {form.formState.errors.items.message}
+                </p>
+              )}
             </div>
 
-            <DialogFooter className="border-t pt-4">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <DialogFooter className="border-t border-border/50 pt-6">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setOpen(false)}
+                className="border-border/50 hover:bg-muted/80 transition-all duration-200"
+              >
                 Cancel
               </Button>
-              <Button type="submit" className="w-full sm:w-auto" disabled={isSubmitting}>
-                {isSubmitting ? "Creating..." : "Create Transfer"}
+              <Button 
+                type="submit" 
+                className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 disabled:hover:scale-100"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
+                    Creating...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    Create Transfer
+                    <ArrowRight className="h-4 w-4" />
+                  </span>
+                )}
               </Button>
             </DialogFooter>
           </form>
@@ -443,4 +566,9 @@ export function TransferDialog({
       </DialogContent>
     </Dialog>
   );
+}
+
+// Helper function for conditional classes
+function cn(...classes: (string | boolean | undefined)[]) {
+  return classes.filter(Boolean).join(' ');
 }

@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default async function ReceiptsPage() {
   const result = await getTransfers("INCOMING");
-  const transfers = result.success ? result.data : [];
+  const transfers = result.success ? (result.data ?? []) : [];
   const transferCount = transfers?.length || 0;
 
   return (

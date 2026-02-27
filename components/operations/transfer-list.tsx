@@ -22,7 +22,9 @@ import {
   CheckCircle2,
   XCircle,
   Eye,
-  Search
+  Search,
+  Filter,
+  X
 } from "lucide-react";
 import {
   deleteTransfer,
@@ -192,18 +194,39 @@ export function TransferList({
   return (
     <>
       <div className="space-y-4">
-        <div className="relative max-w-sm">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search operations by reference, contact, status..."
-            className="pl-8 bg-card/50 backdrop-blur-sm border-border/50 focus-visible:ring-primary/20"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+        {/* Search Header */}
+        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+          <div className="relative flex-1 max-w-md group animate-in fade-in slide-in-from-left-2 duration-500">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
+            <Input
+              type="search"
+              placeholder="Search by reference, contact, location, status..."
+              className="pl-9 pr-10 bg-card/50 backdrop-blur-sm border-border/50 focus-visible:ring-primary/20 focus-visible:border-primary transition-all duration-200"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+          
+          {/* Results Count */}
+          <div className="flex items-center gap-2 text-sm text-muted-foreground animate-in fade-in slide-in-from-right-2 duration-500">
+            <Filter className="h-4 w-4" />
+            <span>
+              Showing <span className="font-medium text-foreground">{filteredTransfers.length}</span> of{" "}
+              <span className="font-medium text-foreground">{transfers.length}</span> transfers
+            </span>
+          </div>
         </div>
 
-        <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-500">
+        {/* Table Container */}
+        <div className="rounded-xl border border-border/50 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-500">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -223,15 +246,30 @@ export function TransferList({
                   <TableRow>
                     <TableCell colSpan={8} className="text-center py-12">
                       <div className="flex flex-col items-center justify-center text-muted-foreground">
-                        <Package className="h-12 w-12 mb-3 text-muted-foreground/30" />
-                        <p className="text-sm font-medium">
-                          {transfers.length === 0 ? "No transfers found" : "No results for this search"}
-                        </p>
-                        <p className="text-xs mt-1">
-                          {transfers.length === 0
-                            ? "Create a new transfer to get started"
-                            : "Try adjusting your search filters"}
-                        </p>
+                        {searchQuery ? (
+                          <>
+                            <Search className="h-12 w-12 mb-3 text-muted-foreground/30" />
+                            <p className="text-sm font-medium">No results found</p>
+                            <p className="text-xs mt-1">
+                              No transfers match your search criteria
+                            </p>
+                            <Button
+                              variant="link"
+                              onClick={() => setSearchQuery("")}
+                              className="mt-2 text-primary"
+                            >
+                              Clear search
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <Package className="h-12 w-12 mb-3 text-muted-foreground/30" />
+                            <p className="text-sm font-medium">No transfers found</p>
+                            <p className="text-xs mt-1">
+                              Create a new transfer to get started
+                            </p>
+                          </>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -240,7 +278,7 @@ export function TransferList({
                     <TableRow
                       key={transfer.id}
                       className="group hover:bg-muted/50 transition-colors duration-200 border-b border-border/50 animate-in fade-in slide-in-from-bottom-1"
-                      style={{ animationDelay: `${index * 50}ms` }}
+                      style={{ animationDelay: `${index * 30}ms` }}
                     >
                       <TableCell className="font-medium">
                         <Link
@@ -253,7 +291,7 @@ export function TransferList({
                       </TableCell>
                       <TableCell>
                         {transfer.contact?.name ? (
-                          <span className="text-sm">{transfer.contact.name}</span>
+                          <span className="text-sm font-medium">{transfer.contact.name}</span>
                         ) : (
                           <span className="text-sm text-muted-foreground/50">—</span>
                         )}
@@ -276,7 +314,9 @@ export function TransferList({
                         {transfer.scheduledDate ? (
                           <div className="flex items-center text-sm text-muted-foreground">
                             <Calendar className="mr-2 h-3.5 w-3.5" />
-                            {format(new Date(transfer.scheduledDate), "MMM d, yyyy")}
+                            <span className="font-medium">
+                              {format(new Date(transfer.scheduledDate), "MMM d, yyyy")}
+                            </span>
                           </div>
                         ) : (
                           <span className="text-sm text-muted-foreground/50">—</span>
@@ -286,7 +326,7 @@ export function TransferList({
                         <div className="flex items-center text-sm">
                           <Package className="mr-2 h-3.5 w-3.5 text-muted-foreground" />
                           <span className="font-medium">{transfer.stockMoves?.length || 0}</span>
-                          <span className="text-muted-foreground ml-1">items</span>
+                          <span className="text-muted-foreground ml-1 text-xs">items</span>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -328,10 +368,11 @@ export function TransferList({
                           ) : (
                             <Link
                               href={`/dashboard/operations/${getLinkPath(transfer.type)}/${transfer.id}` as any}
-                              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
+                              className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-primary transition-colors group/view"
                             >
                               <Eye className="h-3.5 w-3.5" />
                               <span>View</span>
+                              <ArrowRight className="h-3 w-3 opacity-0 group-hover/view:opacity-100 transition-all duration-200 group-hover/view:translate-x-0.5" />
                             </Link>
                           )}
                         </div>
@@ -342,6 +383,25 @@ export function TransferList({
               </TableBody>
             </Table>
           </div>
+
+          {/* Table Footer with Summary */}
+          {filteredTransfers.length > 0 && (
+            <div className="border-t border-border/50 bg-muted/30 px-4 py-2 text-xs text-muted-foreground">
+              <div className="flex items-center justify-between">
+                <span>Showing {filteredTransfers.length} transfers</span>
+                <div className="flex items-center gap-3">
+                  <span className="flex items-center gap-1">
+                    <CheckCircle2 className="h-3 w-3 text-green-500" />
+                    {transfers.filter(t => t.status === "DONE").length} Completed
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Clock className="h-3 w-3 text-yellow-500" />
+                    {transfers.filter(t => t.status === "DRAFT").length} Pending
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -350,9 +410,9 @@ export function TransferList({
         open={!!deletingId}
         onOpenChange={(open) => !open && setDeletingId(null)}
       >
-        <AlertDialogContent className="border-border/50 bg-card/90 backdrop-blur-sm">
+        <AlertDialogContent className="border-border/50 bg-card/95 backdrop-blur-xl">
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
+            <AlertDialogTitle className="flex items-center gap-2 text-lg">
               <AlertCircle className="h-5 w-5 text-red-500" />
               Delete Transfer?
             </AlertDialogTitle>
@@ -362,12 +422,12 @@ export function TransferList({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-border/50 hover:bg-muted/80 transition-colors">
+            <AlertDialogCancel className="border-border/50 hover:bg-muted/80 transition-all duration-200">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700 text-white border-0 transition-all duration-200 hover:scale-105"
+              className="bg-red-600 hover:bg-red-700 text-white border-0 transition-all duration-200 hover:scale-105 active:scale-95"
               disabled={deleteMutation.isPending}
             >
               {deleteMutation.isPending ? (
@@ -388,9 +448,9 @@ export function TransferList({
         open={!!validatingId}
         onOpenChange={(open) => !open && setValidatingId(null)}
       >
-        <AlertDialogContent className="border-border/50 bg-card/90 backdrop-blur-sm">
+        <AlertDialogContent className="border-border/50 bg-card/95 backdrop-blur-xl">
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
+            <AlertDialogTitle className="flex items-center gap-2 text-lg">
               <CheckCircle2 className="h-5 w-5 text-green-500" />
               Validate Transfer?
             </AlertDialogTitle>
@@ -399,12 +459,12 @@ export function TransferList({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-border/50 hover:bg-muted/80 transition-colors">
+            <AlertDialogCancel className="border-border/50 hover:bg-muted/80 transition-all duration-200">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleValidate}
-              className="bg-green-600 hover:bg-green-700 text-white border-0 transition-all duration-200 hover:scale-105"
+              className="bg-green-600 hover:bg-green-700 text-white border-0 transition-all duration-200 hover:scale-105 active:scale-95"
               disabled={validateMutation.isPending}
             >
               {validateMutation.isPending ? (

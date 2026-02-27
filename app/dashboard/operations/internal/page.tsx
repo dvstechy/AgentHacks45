@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 
 export default async function InternalTransfersPage() {
     const result = await getTransfers("INTERNAL");
-    const transfers = result.success ? result.data : [];
+    const transfers = result.success ? (result.data ?? []) : [];
 
     return (
         <div className="space-y-6">
