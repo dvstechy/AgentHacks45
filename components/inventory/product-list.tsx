@@ -38,6 +38,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { formatINR } from "@/lib/currency";
 
 interface Product {
   id: string;
@@ -149,10 +150,10 @@ export function ProductList({ products: initialProducts }: ProductListProps) {
                       <Badge variant="secondary">{product.type}</Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      ${Number(product.salesPrice).toFixed(2)}
+                      {formatINR(Number(product.salesPrice))}
                     </TableCell>
                     <TableCell className="text-right">
-                      ${Number(product.costPrice).toFixed(2)}
+                      {formatINR(Number(product.costPrice))}
                     </TableCell>
                     <TableCell className="text-right">
                       <TooltipProvider>

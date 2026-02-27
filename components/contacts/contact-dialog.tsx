@@ -17,6 +17,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -89,6 +90,7 @@ export function ContactDialog({
       toast.error("Failed to create contact");
     },
   });
+  const isSubmitting = createMutation.isPending;
 
   const onSubmit = (values: z.infer<typeof contactSchema>) => {
     createMutation.mutate(values);
@@ -104,15 +106,15 @@ export function ContactDialog({
           </Button>
         </DialogTrigger>
       )}
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[560px] p-0">
+        <DialogHeader className="border-b bg-muted/20 px-6 py-5">
           <DialogTitle>Add Contact</DialogTitle>
           <DialogDescription>
             Create a new customer or vendor.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 p-6">
             <FormField
               control={form.control}
               name="name"
@@ -122,11 +124,14 @@ export function ContactDialog({
                   <FormControl>
                     <Input placeholder="Contact Name" {...field} />
                   </FormControl>
+                  <FormDescription>
+                    Use company or person name used in transactions.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="type"
@@ -191,8 +196,13 @@ export function ContactDialog({
                 </FormItem>
               )}
             />
-            <DialogFooter>
-              <Button type="submit">Create Contact</Button>
+            <DialogFooter className="border-t pt-4">
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Creating..." : "Create Contact"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>

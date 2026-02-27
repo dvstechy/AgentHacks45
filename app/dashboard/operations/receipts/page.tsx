@@ -9,7 +9,7 @@ export default async function ReceiptsPage() {
   const transfers = result.success ? result.data : [];
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <Heading
           title={`Receipts (${transfers?.length || 0})`}

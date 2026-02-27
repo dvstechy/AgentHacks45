@@ -12,7 +12,7 @@ export default async function StockMovesPage({
   const { data: moves } = await getStockMoves(query);
 
   return (
-    <div className="space-y-6 p-8 pt-6">
+    <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">
           Stock Moves History
