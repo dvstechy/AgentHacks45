@@ -17,6 +17,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -158,6 +159,7 @@ export function LocationDialog({
       console.error(error);
     },
   });
+  const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
   useEffect(() => {
     if (locationToEdit) {
@@ -197,8 +199,8 @@ export function LocationDialog({
           </Button>
         </DialogTrigger>
       )}
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[620px] p-0">
+        <DialogHeader className="border-b bg-muted/20 px-6 py-5">
           <DialogTitle>
             {locationToEdit ? "Edit Location" : "Create Location"}
           </DialogTitle>
@@ -209,33 +211,41 @@ export function LocationDialog({
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. Shelf 1" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="shortCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Short Code</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. WH/STOCK/S1" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 p-6">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. Shelf 1" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Human-readable location name for teams.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="shortCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Short Code</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. WH/STOCK/S1" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Unique code used in stock movement references.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="type"
@@ -323,9 +333,18 @@ export function LocationDialog({
                 </FormItem>
               )}
             />
-            <DialogFooter>
-              <Button type="submit">
-                {locationToEdit ? "Update Location" : "Create Location"}
+            <DialogFooter className="border-t pt-4">
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting
+                  ? locationToEdit
+                    ? "Updating..."
+                    : "Creating..."
+                  : locationToEdit
+                  ? "Update Location"
+                  : "Create Location"}
               </Button>
             </DialogFooter>
           </form>

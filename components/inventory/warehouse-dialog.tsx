@@ -17,6 +17,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -106,6 +107,7 @@ export function WarehouseDialog({
       console.error(error);
     },
   });
+  const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -150,8 +152,8 @@ export function WarehouseDialog({
           </Button>
         </DialogTrigger>
       )}
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[520px] p-0">
+        <DialogHeader className="border-b bg-muted/20 px-6 py-5">
           <DialogTitle>
             {warehouseToEdit ? "Edit Warehouse" : "Add Warehouse"}
           </DialogTitle>
@@ -162,7 +164,7 @@ export function WarehouseDialog({
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 p-6">
             <FormField
               control={form.control}
               name="name"
@@ -172,6 +174,9 @@ export function WarehouseDialog({
                   <FormControl>
                     <Input placeholder="Main Warehouse" {...field} />
                   </FormControl>
+                  <FormDescription>
+                    Example: Mumbai Main Warehouse.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -185,6 +190,9 @@ export function WarehouseDialog({
                   <FormControl>
                     <Input placeholder="WH" {...field} />
                   </FormControl>
+                  <FormDescription>
+                    Used in references and location codes.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -202,8 +210,13 @@ export function WarehouseDialog({
                 </FormItem>
               )}
             />
-            <DialogFooter>
-              <Button type="submit">Save</Button>
+            <DialogFooter className="border-t pt-4">
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save Warehouse"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>

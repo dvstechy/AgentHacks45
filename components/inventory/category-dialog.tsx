@@ -17,6 +17,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -150,6 +151,7 @@ export function CategoryDialog({
       console.error(error);
     },
   });
+  const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
   async function onSubmit(values: z.infer<typeof categorySchema>) {
     const data = {
@@ -174,8 +176,8 @@ export function CategoryDialog({
           </Button>
         </DialogTrigger>
       )}
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[560px] p-0">
+        <DialogHeader className="border-b bg-muted/20 px-6 py-5">
           <DialogTitle>
             {categoryToEdit ? "Edit Category" : "Create Category"}
           </DialogTitle>
@@ -186,7 +188,7 @@ export function CategoryDialog({
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 p-6">
             <FormField
               control={form.control}
               name="name"
@@ -196,6 +198,9 @@ export function CategoryDialog({
                   <FormControl>
                     <Input placeholder="Category Name" {...field} />
                   </FormControl>
+                  <FormDescription>
+                    Keep names short and distinct for filtering.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -242,14 +247,26 @@ export function CategoryDialog({
                       {...field}
                     />
                   </FormControl>
+                  <FormDescription>
+                    Optional: add scope or examples for your team.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <DialogFooter>
-              <Button type="submit">
-                {categoryToEdit ? "Update Category" : "Create Category"}
+            <DialogFooter className="border-t pt-4">
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting
+                  ? categoryToEdit
+                    ? "Updating..."
+                    : "Creating..."
+                  : categoryToEdit
+                  ? "Update Category"
+                  : "Create Category"}
               </Button>
             </DialogFooter>
           </form>
