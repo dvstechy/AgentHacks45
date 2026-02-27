@@ -10,6 +10,7 @@ import { useRef, useState } from "react";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
 import { Badge } from "@/components/ui/badge";
+import { formatINR } from "@/lib/currency";
 import {
   Table,
   TableBody,
@@ -26,6 +27,10 @@ interface ReceiptViewProps {
 export function ReceiptView({ transfer }: ReceiptViewProps) {
   const receiptRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const subtotal = transfer.stockMoves.reduce(
+    (acc: number, move: any) => acc + move.quantity * move.product.costPrice,
+    0
+  );
 
   const handleDownloadPDF = async () => {
     if (!receiptRef.current) return;
@@ -306,10 +311,10 @@ export function ReceiptView({ transfer }: ReceiptViewProps) {
                   </TableCell>
                   <TableCell className="text-right">{move.quantity}</TableCell>
                   <TableCell className="text-right">
-                    ${move.product.costPrice.toFixed(2)}
+                    {formatINR(move.product.costPrice)}
                   </TableCell>
                   <TableCell className="text-right font-medium">
-                    ${(move.quantity * move.product.costPrice).toFixed(2)}
+                    {formatINR(move.quantity * move.product.costPrice)}
                   </TableCell>
                 </TableRow>
               ))}
@@ -322,34 +327,16 @@ export function ReceiptView({ transfer }: ReceiptViewProps) {
           <div className="w-1/3 space-y-3">
             <div className="flex justify-between text-sm text-gray-600">
               <span>Subtotal</span>
-              <span>
-                $
-                {transfer.stockMoves
-                  .reduce(
-                    (acc: number, move: any) =>
-                      acc + move.quantity * move.product.costPrice,
-                    0
-                  )
-                  .toFixed(2)}
-              </span>
+              <span>{formatINR(subtotal)}</span>
             </div>
             <div className="flex justify-between text-sm text-gray-600">
               <span>Tax (0%)</span>
-              <span>$0.00</span>
+              <span>{formatINR(0)}</span>
             </div>
             <Separator />
             <div className="flex justify-between font-bold text-xl text-primary">
               <span>Total</span>
-              <span>
-                $
-                {transfer.stockMoves
-                  .reduce(
-                    (acc: number, move: any) =>
-                      acc + move.quantity * move.product.costPrice,
-                    0
-                  )
-                  .toFixed(2)}
-              </span>
+              <span>{formatINR(subtotal)}</span>
             </div>
           </div>
         </div>
