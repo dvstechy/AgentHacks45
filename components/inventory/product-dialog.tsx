@@ -17,6 +17,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -122,6 +123,7 @@ export function ProductDialog({
       console.error(error);
     },
   });
+  const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
   const form = useForm({
     resolver: zodResolver(productSchema),
@@ -185,8 +187,8 @@ export function ProductDialog({
           </Button>
         </DialogTrigger>
       )}
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[680px] max-h-[90vh] overflow-y-auto p-0">
+        <DialogHeader className="border-b bg-muted/20 px-6 py-5">
           <DialogTitle>
             {productToEdit ? "Edit Product" : "Create Product"}
           </DialogTitle>
@@ -197,8 +199,8 @@ export function ProductDialog({
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="name"
@@ -208,6 +210,9 @@ export function ProductDialog({
                     <FormControl>
                       <Input placeholder="Product Name" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      Use a clear and searchable product name.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -221,13 +226,16 @@ export function ProductDialog({
                     <FormControl>
                       <Input placeholder="SKU-123" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      Keep SKU unique (e.g. CAT-ITEM-001).
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="type"
@@ -285,7 +293,7 @@ export function ProductDialog({
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="salesPrice"
@@ -296,10 +304,12 @@ export function ProductDialog({
                       <Input
                         type="number"
                         step="0.01"
+                        min="0"
                         {...field}
                         value={field.value as number}
                       />
                     </FormControl>
+                    <FormDescription>INR selling price.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -314,10 +324,12 @@ export function ProductDialog({
                       <Input
                         type="number"
                         step="0.01"
+                        min="0"
                         {...field}
                         value={field.value as number}
                       />
                     </FormControl>
+                    <FormDescription>INR purchase/cost price.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -330,17 +342,26 @@ export function ProductDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Product description..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormControl>
+                      <Textarea placeholder="Product description..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <DialogFooter>
-              <Button type="submit">
-                {productToEdit ? "Update Product" : "Create Product"}
+            <DialogFooter className="border-t pt-4">
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting
+                  ? productToEdit
+                    ? "Updating..."
+                    : "Creating..."
+                  : productToEdit
+                  ? "Update Product"
+                  : "Create Product"}
               </Button>
             </DialogFooter>
           </form>
