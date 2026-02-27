@@ -30,7 +30,7 @@ export default async function DeliveriesPage() {
   return (
     <div className="flex-1 space-y-8 pb-8">
       {/* Header Section with Gradient */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-500/10 via-green-500/5 to-transparent p-6 md:p-8">
+      <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-green-500/10 via-green-500/5 to-transparent p-4 sm:p-6 md:p-8">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-green-500/20 animate-pulse" />
@@ -40,7 +40,7 @@ export default async function DeliveriesPage() {
 
         <div className="relative z-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="space-y-2">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div className="h-8 w-1 bg-gradient-to-b from-green-500 to-emerald-500 rounded-full" />
               <Heading
                 title={`Deliveries (${transferCount})`}
@@ -82,7 +82,7 @@ export default async function DeliveriesPage() {
         </div>
 
         {/* Quick Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 mt-4 sm:mt-6">
           <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-3 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100">
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-lg bg-green-500/10 flex items-center justify-center">
@@ -144,7 +144,7 @@ export default async function DeliveriesPage() {
       {/* Content Section */}
       <div className="space-y-4">
         {/* Section Header */}
-        <div className="flex items-center justify-between px-1">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-1">
           <div className="flex items-center gap-2">
             <div className="h-6 w-1 bg-gradient-to-b from-green-500 to-emerald-500 rounded-full" />
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
