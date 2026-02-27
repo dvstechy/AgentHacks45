@@ -15,7 +15,7 @@ export default async function ReceiptsPage() {
   return (
     <div className="flex-1 space-y-8 pb-8">
       {/* Header Section with Gradient */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/5 via-transparent to-transparent p-6 md:p-8">
+      <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/5 via-transparent to-transparent p-4 sm:p-6 md:p-8">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-blue-500/10 animate-pulse" />
@@ -24,7 +24,7 @@ export default async function ReceiptsPage() {
 
         <div className="relative z-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="space-y-2">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div className="h-8 w-1 bg-gradient-to-b from-blue-500 to-primary rounded-full" />
               <Heading
                 title={`Receipts (${transferCount})`}
