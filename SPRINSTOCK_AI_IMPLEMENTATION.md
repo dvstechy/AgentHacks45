@@ -1,12 +1,12 @@
-﻿# SprintStock AI Command Center - Implementation Summary
+# SprintStock AI Command Center - Implementation Summary
 
-## âœ… Completed Implementation
+## ✅ Completed Implementation
 
 A comprehensive **multi-agent AI system** for intelligent inventory rebalancing has been successfully implemented in the AgentHacks45 Next.js application.
 
 ---
 
-## ðŸ“¦ New Dependencies Installed
+## 📦 New Dependencies Installed
 
 ```
 @ai-sdk/groq@3.0.25           # Groq AI SDK for Llama-3.3-70b
@@ -23,7 +23,7 @@ socket.io-client@latest        # WebSocket client
 
 ---
 
-## ðŸ—ï¸ Architecture Overview
+## 🏗️ Architecture Overview
 
 ### 1. **Prisma Schema Extensions**
 Updated `prisma/schema.prisma` with:
@@ -45,7 +45,7 @@ Five-node orchestrated workflow:
 
 #### **Node 1: Perception**
 - Queries stock levels from `StockLevel` + `Product` + `Warehouse`
-- Fetches real-time weather from Open-Meteo API (Pune: 18.5204Â°, 73.8567Â°)
+- Fetches real-time weather from Open-Meteo API (Pune: 18.5204°, 73.8567°)
 - Calculates shortfall: `minStock - currentQuantity`
 - Outputs: Low stock alerts array
 
@@ -67,14 +67,14 @@ Five-node orchestrated workflow:
 
 #### **Node 5: Arbiter**
 - Validates rebalancing actions against constraints:
-  - **Cold Chain**: If product requires fridge (attributes.fridge_required) and ambient temp > 20Â°C â†’ flag as invalid
+  - **Cold Chain**: If product requires fridge (attributes.fridge_required) and ambient temp > 20°C → flag as invalid
   - **Capacity**: Checks warehouse capacityStats
   - **Lead Times**: Factors supplier lead days into decision
 - Sets `validationPassed` flag
 
 ---
 
-## ðŸ“¡ API Routes
+## 📡 API Routes
 
 ### **POST/GET `/api/agent/run`**
 Trigger agent system for hardcoded userId.
@@ -97,7 +97,7 @@ Fetch `AgentAuditLog` records by `traceId`:
 
 ---
 
-## ðŸŽ¨ UI Components
+## 🎨 UI Components
 
 ### **Chainlit Chatbot** (`components/chainlit/chatbot.tsx`)
 - **Real-time streaming**: Displays agent thoughts as they execute
@@ -119,16 +119,16 @@ Fetch `AgentAuditLog` records by `traceId`:
 - **Step numbering**: Visual sequence of agent execution
 - **Expandable entries**: View full decision logic, input/output data
 - **Color-coded nodes**:
-  - Perception â†’ Blue
-  - Geocoding â†’ Purple
-  - Rebalancing â†’ Amber
-  - PageIndex â†’ Green
-  - Arbiter â†’ Indigo
+  - Perception → Blue
+  - Geocoding → Purple
+  - Rebalancing → Amber
+  - PageIndex → Green
+  - Arbiter → Indigo
 - **JSON visualization**: Pretty-printed input/output objects
 
 ---
 
-## ðŸŽ¯ Dashboard Integration
+## 🎯 Dashboard Integration
 
 ### **New Page**: `/dashboard/command-center`
 
@@ -144,50 +144,51 @@ Fetch `AgentAuditLog` records by `traceId`:
 
 ---
 
-## ðŸ”„ Data Flow Example
+## 🔄 Data Flow Example
 
 ```
 User: "Analyze low stock"
-  â†“
+  ↓
 API Route /api/chainlit (POST)
-  â†“
-1ï¸âƒ£ PERCEPTION NODE
-   â””â”€ Query: SELECT * FROM StockLevel WHERE quantity < minStock
-   â””â”€ Weather: GET https://api.open-meteo.com/v1/forecast?latitude=18.5204...
-   â””â”€ Output: [{productId, shortfall, warehouseId, ...}]
-  â†“
-2ï¸âƒ£ GEOCODING NODE
-   â””â”€ Converts warehouse addresses â†’ lat/long
-   â””â”€ Output: {warehouseId: {lat, lon}, ...}
-  â†“
-3ï¸âƒ£ REBALANCING NODE
-   â””â”€ Query: SELECT * FROM StockLevel WHERE productId=X AND quantity > 0
-   â””â”€ Haversine: Find donors within 15km
-   â””â”€ Decision: INTERNAL_TRANSFER or VENDOR_ORDER
-   â””â”€ Output: [{type, sourceId, destId, quantity, reason}]
-  â†“
-4ï¸âƒ£ PAGEINDEX NODE
-   â””â”€ Query: SELECT * FROM SupplierProfile
-   â””â”€ Output: {supplierId: {reliabilityScore, leadDays}}
-  â†“
-5ï¸âƒ£ ARBITER NODE
-   â””â”€ Validate: fridge requirements, capacity, lead times
-   â””â”€ Final: [{...action, validationPassed: true/false}]
-  â†“
+  ↓
+1️⃣ PERCEPTION NODE
+   └─ Query: SELECT * FROM StockLevel WHERE quantity < minStock
+   └─ Weather: GET https://api.open-meteo.com/v1/forecast?latitude=18.5204...
+   └─ Output: [{productId, shortfall, warehouseId, ...}]
+  ↓
+2️⃣ GEOCODING NODE
+   └─ Converts warehouse addresses → lat/long
+   └─ Output: {warehouseId: {lat, lon}, ...}
+  ↓
+3️⃣ REBALANCING NODE
+   └─ Query: SELECT * FROM StockLevel WHERE productId=X AND quantity > 0
+   └─ Haversine: Find donors within 15km
+   └─ Decision: INTERNAL_TRANSFER or VENDOR_ORDER
+   └─ Output: [{type, sourceId, destId, quantity, reason}]
+  ↓
+4️⃣ PAGEINDEX NODE
+   └─ Query: SELECT * FROM SupplierProfile
+   └─ Output: {supplierId: {reliabilityScore, leadDays}}
+  ↓
+5️⃣ ARBITER NODE
+   └─ Validate: fridge requirements, capacity, lead times
+   └─ Final: [{...action, validationPassed: true/false}]
+  ↓
 Save to DB: INSERT INTO AgentAuditLog (traceId, nodeName=X, ...)
-  â†“
+  ↓
 Stream to Client (SSE): data: {type:'audit', nodeName:'Perception', ...}\n\n
 ```
 
 ---
 
-## ðŸŒ Environment Setup
+## 🌐 Environment Setup
 
 **`.env` file** (created):
 ```env
-DATABASE_URL="postgresql://localhost:5432/sprintstock"
-DIRECT_URL="postgresql://localhost:5432/sprintstock"
+DATABASE_URL="your_postgresql_connection_string"
+DIRECT_URL="your_postgresql_direct_connection_string"
 GROQ_API_KEY="your_groq_api_key"
+PAGEINDEX_API_KEY="your_pageindex_api_key"
 ```
 
 > **Note**: Replace DB URLs with your actual PostgreSQL credentials  
@@ -195,7 +196,7 @@ GROQ_API_KEY="your_groq_api_key"
 
 ---
 
-## ðŸš€ Quick Start
+## 🚀 Quick Start
 
 ### 1. **Setup Database** (if not already done)
 ```bash
@@ -218,25 +219,25 @@ npm run dev  # or: npm exec --yes pnpm -- dev
 
 ---
 
-## ðŸ“Š Agent Decision Examples
+## 📊 Agent Decision Examples
 
 ### Scenario 1: Internal Rebalancing (15km proximity)
 ```
-Product: Widget A (minStock: 100, current: 30 â†’ shortfall: 70)
-Location: Warehouse Main (18.5204Â°, 73.8567Â°)
+Product: Widget A (minStock: 100, current: 30 → shortfall: 70)
+Location: Warehouse Main (18.5204°, 73.8567°)
 
 Detection: Warehouse Distribution Center 8.2km away has 200 units
 Decision: INTERNAL_TRANSFER (cost-effective, fast)
-Constraints: âœ… No fridge needed, âœ… Capacity OK, âœ… No lead time
+Constraints: ✅ No fridge needed, ✅ Capacity OK, ✅ No lead time
 Result: Create StockTransfer DRAFT with INTERNAL type
 ```
 
 ### Scenario 2: Temp-Sensitive Product
 ```
-Product: Frozen Meals (fridge_required: true, current: 10 â†’ shortfall: 40)
-Weather: 25Â°C ambient temperature
+Product: Frozen Meals (fridge_required: true, current: 10 → shortfall: 40)
+Weather: 25°C ambient temperature
 Decision: Validation FAILED (cold chain risk)
-Reason: Temp exceeds 20Â°C threshold for fridge products
+Reason: Temp exceeds 20°C threshold for fridge products
 Action: VENDOR_ORDER only (use cold-chain supplier)
 ```
 
@@ -251,7 +252,7 @@ Output: Create StockTransfer DRAFT with VENDOR origin
 
 ---
 
-## ðŸ” Debugging & Monitoring
+## 🔍 Debugging & Monitoring
 
 ### View Audit Logs
 ```
@@ -286,7 +287,7 @@ SELECT * FROM "Warehouse" WHERE latitude IS NOT NULL AND longitude IS NOT NULL;
 
 ---
 
-## ðŸ“ Files Created/Modified
+## 📝 Files Created/Modified
 
 ### New Files Created:
 - `lib/utils/geo.ts` - Geospatial calculations
@@ -305,11 +306,11 @@ SELECT * FROM "Warehouse" WHERE latitude IS NOT NULL AND longitude IS NOT NULL;
 - `package.json` - 10 new dependencies installed
 
 ### TypeScript Validation:
-âœ… **0 TypeScript errors** - Full strict mode compliance
+✅ **0 TypeScript errors** - Full strict mode compliance
 
 ---
 
-## ðŸŽ“ Key Learnings & Features
+## 🎓 Key Learnings & Features
 
 1. **LangGraph State Machine**: 5-node workflow with automatic state threading
 2. **Streaming SSE API**: Real-time agent reasoning visible to user
@@ -324,7 +325,7 @@ SELECT * FROM "Warehouse" WHERE latitude IS NOT NULL AND longitude IS NOT NULL;
 
 ---
 
-## ðŸ”® Future Enhancements
+## 🔮 Future Enhancements
 
 - [ ] Real geocoding API integration (Google Maps, OpenStreetMap Nominatim)
 - [ ] Groq LLM for natural language explanations of decisions
@@ -339,7 +340,7 @@ SELECT * FROM "Warehouse" WHERE latitude IS NOT NULL AND longitude IS NOT NULL;
 
 ---
 
-## âœ¨ Ready to Use!
+## ✨ Ready to Use!
 
 The SprintStock AI Command Center is **fully implemented and type-safe**. Simply:
 1. Ensure PostgreSQL is running with correct credentials in `.env`
@@ -347,4 +348,4 @@ The SprintStock AI Command Center is **fully implemented and type-safe**. Simply
 3. Start dev server: `npm run dev`
 4. Access `/dashboard/command-center` to see AI in action!
 
-**Happy rebalancing! ðŸš€**
+**Happy rebalancing! 🚀**
