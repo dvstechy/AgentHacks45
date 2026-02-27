@@ -1,45 +1,33 @@
-import { prisma } from "@/lib/prisma"
+import { NextResponse } from "next/server";
 import { runMultiAgentSystem } from "@/lib/agents/langgraph-agent";
-import { randomUUID } from "crypto";
 
-async function executeAgent() {
-  const user = await prisma.user.findFirst({
-    where: { email: "bhosvivek123@gmail.com" }
-  })
-
-  if (!user) {
-    console.log("User not found")
-    return { error: "User not found" }
-  }
-
-  const traceId = randomUUID();
+export async function POST(req: Request) {
   try {
-    const result = await runMultiAgentSystem(user.id, traceId);
-    return {
-      message: "Agent executed",
+    const { userId } = await req.json();
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: "userId is required" },
+        { status: 400 }
+      );
+    }
+
+    const traceId = crypto.randomUUID();
+
+    const result = await runMultiAgentSystem(userId, traceId);
+
+    return NextResponse.json({
       traceId,
-      summary: {
-        alerts: result.lowStockAlerts.length,
-        actions: result.rebalancingActions.length,
-      }
-    };
+      alerts: result.lowStockAlerts,
+      actions: result.rebalancingActions,
+      auditLogs: result.auditLogs,
+    });
+
   } catch (error) {
-    return { error: error instanceof Error ? error.message : "Unknown error" };
+    console.error("AGENT ERROR:", error);
+    return NextResponse.json(
+      { error: "Agent execution failed", details: String(error) },
+      { status: 500 }
+    );
   }
-}
-
-export async function GET() {
-  const result = await executeAgent()
-  if ('error' in result) {
-    return Response.json(result, { status: 500 })
-  }
-  return Response.json({ ...result, message: result.message + " (GET)" })
-}
-
-export async function POST() {
-  const result = await executeAgent()
-  if ('error' in result) {
-    return Response.json(result, { status: 500 })
-  }
-  return Response.json({ ...result, message: result.message + " (POST)" })
 }

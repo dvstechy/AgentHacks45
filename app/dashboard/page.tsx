@@ -26,6 +26,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { formatINR } from "@/lib/currency";
 import { cn } from "@/lib/utils";
+import { AIOptimizer } from "@/components/dashboard/ai-optimizer";
 
 export default async function DashboardPage() {
   const [{ data: stats }, { data: recommendations }] = await Promise.all([
@@ -36,6 +37,7 @@ export default async function DashboardPage() {
   if (!stats) {
     return <Loader variant="logo" size="lg" text="Loading dashboard..." fullScreen />;
   }
+  const demoUserId = "cmm550afg0000rzjo76ot3h1t";
 
   // Calculate additional metrics
   const totalOperations = stats.receipts.total + stats.deliveries.total + stats.internal.total;
@@ -386,6 +388,7 @@ export default async function DashboardPage() {
           </div>
         </div>
       )}
+      <AIOptimizer userId={demoUserId} />
     </div>
   );
 }
