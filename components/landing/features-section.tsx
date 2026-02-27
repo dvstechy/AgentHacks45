@@ -14,42 +14,36 @@ const features = [
     title: "Multi-warehouse control",
     description:
       "Model sites, zones, and bins with clean hierarchy so operators always pick from the right location.",
-    accent: "text-sky-600 bg-sky-500/10",
   },
   {
     icon: Box,
     title: "Product traceability",
     description:
       "Track lots, serials, and variants with fast lookup across inbound, storage, and outbound flow.",
-    accent: "text-emerald-600 bg-emerald-500/10",
   },
   {
     icon: Truck,
     title: "Automated transfers",
     description:
       "Route receipts, deliveries, and internal movements with less manual coordination.",
-    accent: "text-amber-600 bg-amber-500/10",
   },
   {
     icon: BarChart3,
     title: "Realtime analytics",
     description:
       "See turn rate, aging stock, and valuation metrics in one operational command view.",
-    accent: "text-indigo-600 bg-indigo-500/10",
   },
   {
     icon: ShieldCheck,
     title: "Role-based security",
     description:
       "Give each team the right permissions and keep an audit trail for every stock mutation.",
-    accent: "text-rose-600 bg-rose-500/10",
   },
   {
     icon: Globe,
     title: "Global-ready setup",
     description:
       "Scale to new regions with configurable units, taxes, and localized workflows.",
-    accent: "text-cyan-600 bg-cyan-500/10",
   },
 ];
 
@@ -67,10 +61,10 @@ export function FeaturesSection() {
       </div>
 
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-6">
-        {features.map(({ icon: Icon, title, description, accent }) => (
-          <Card key={title} className="border-border/60 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+        {features.map(({ icon: Icon, title, description }) => (
+          <Card key={title} className="bg-card shadow-sm border-border/40 transition-colors hover:border-primary/30 hover:bg-muted/10">
             <CardHeader>
-              <div className={`mb-3 inline-flex h-11 w-11 items-center justify-center rounded-xl ${accent}`}>
+              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Icon className="h-5 w-5" />
               </div>
               <CardTitle className="text-lg">{title}</CardTitle>

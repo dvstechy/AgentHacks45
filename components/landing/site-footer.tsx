@@ -59,7 +59,7 @@ export function SiteFooter() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative border-t border-border/50 bg-gradient-to-b from-background to-muted/30 overflow-hidden">
+    <footer className="relative border-t border-border/50 bg-background overflow-hidden">
       {/* Background Decoration */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent" />
@@ -68,12 +68,7 @@ export function SiteFooter() {
 
       {/* Newsletter Section */}
       <div className="container mx-auto max-w-6xl px-4 pt-12 md:pt-16">
-        <div className="relative rounded-2xl bg-gradient-to-br from-primary/10 via-purple-500/5 to-pink-500/10 p-8 md:p-10 overflow-hidden border border-primary/20">
-          {/* Animated Background */}
-          <div className="absolute inset-0 -z-10">
-            <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
-          </div>
+        <div className="relative rounded-2xl bg-primary/5 p-8 md:p-10 overflow-hidden border border-primary/20">
 
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="space-y-4">
@@ -81,10 +76,10 @@ export function SiteFooter() {
                 <Zap className="h-3.5 w-3.5 text-primary" />
                 <span className="text-xs font-medium text-primary">Stay Updated</span>
               </div>
-              <h3 className="text-2xl md:text-3xl font-bold tracking-tight">
+              <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
                 Get inventory insights
                 <br />
-                <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
+                <span className="text-primary">
                   delivered to your inbox
                 </span>
               </h3>
@@ -99,9 +94,9 @@ export function SiteFooter() {
                 placeholder="Enter your email"
                 className="flex-1 px-4 py-3 rounded-xl bg-background border border-border focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200 outline-none"
               />
-              <button className="px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-purple-500 text-white font-medium hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2 group">
+              <button className="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 group">
                 Subscribe
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="h-4 w-4" />
               </button>
             </div>
           </div>
@@ -124,7 +119,7 @@ export function SiteFooter() {
                   className="relative z-10 transition-transform duration-300 group-hover:scale-110"
                 />
               </div>
-              <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+              <span className="text-xl font-extrabold tracking-tight text-foreground">
                 AgentHacks IMS
               </span>
             </Link>

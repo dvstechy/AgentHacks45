@@ -6,7 +6,7 @@ export function CTASection() {
   return (
     <section id="contact" className="py-16 md:py-20">
       <div className="container mx-auto max-w-5xl px-4 md:px-6">
-        <div className="rounded-3xl border border-border/70 bg-gradient-to-br from-emerald-500/10 via-background to-sky-500/10 p-8 text-center shadow-xl md:p-12">
+        <div className="rounded-2xl border border-primary/20 bg-primary/5 p-8 text-center shadow-sm md:p-12">
           <h2 className="text-balance text-3xl font-extrabold tracking-tight md:text-4xl">
             Ready to simplify your inventory operations?
           </h2>
