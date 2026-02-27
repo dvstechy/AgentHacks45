@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link, { LinkProps } from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, ComponentProps } from "react";
 import type { Route } from "next";
@@ -114,7 +115,7 @@ const sidebarGroups = [
   },
 ];
 
-interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> { }
 
 function SidebarGroup({
   group,
@@ -211,7 +212,8 @@ export function Sidebar({ className }: SidebarProps) {
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t bg-muted/10">
+      <div className="p-4 border-t bg-muted/10 space-y-1">
+        <ThemeToggle />
         <form action={signOut}>
           <Button
             variant="ghost"
