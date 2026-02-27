@@ -3,7 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import { TransferStatus, TransferType } from '@prisma/client'
+import { TransferType } from '@prisma/client'
 import { getSession } from '@/lib/session'
 
 const moveSchema = z.object({
@@ -25,7 +25,7 @@ export async function getTransfers(type?: TransferType) {
     if (!session?.userId) return { success: false, error: "Unauthorized" };
 
     try {
-        const where: any = {
+        const where: Record<string, unknown> = {
             userId: session.userId as string,
         }
         if (type) {
@@ -60,7 +60,7 @@ export async function getTransfers(type?: TransferType) {
         }))
 
         return { success: true, data: serializedTransfers }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Failed to fetch transfers' }
     }
 }
@@ -80,7 +80,7 @@ async function generateReference(type: TransferType, userId: string) {
         }
     })
     const padding = (count + 1).toString().padStart(5, '0')
-    return `₹{prefix}/${padding}`
+    return `${prefix}/${padding}`
 }
 
 export async function createTransfer(data: z.infer<typeof transferSchema>) {
@@ -254,7 +254,7 @@ export async function deleteTransfer(id: string) {
         revalidatePath('/dashboard/operations/deliveries')
         revalidatePath('/dashboard/operations/receipts')
         return { success: true }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Failed to delete transfer' }
     }
 }
@@ -296,7 +296,7 @@ export async function getTransferById(id: string) {
         }
 
         return { success: true, data: serializedTransfer }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Failed to fetch transfer' }
     }
 }

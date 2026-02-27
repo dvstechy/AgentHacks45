@@ -8,7 +8,7 @@ export async function getStockMoves(query?: string) {
     if (!session?.userId) return { success: false, error: "Unauthorized" };
 
     try {
-        const whereClause: any = {
+        const whereClause: Record<string, unknown> = {
             userId: session.userId as string,
         }
 

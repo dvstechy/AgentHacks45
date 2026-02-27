@@ -85,10 +85,10 @@ export default async function SignUpPage() {
                 key={i}
                 className="absolute w-1.5 h-1.5 bg-primary/30 rounded-full animate-float"
                 style={{
-                  top: `${Math.random() * 100}% `,
-                  left: `${Math.random() * 100}% `,
-                  animationDelay: `${Math.random() * 5} s`,
-                  animationDuration: `${4 + Math.random() * 6} s`
+                  top: `${(i * 3.3) % 100}%`,
+                  left: `${(i * 4.7) % 100}%`,
+                  animationDelay: `${(i * 0.167) % 5}s`,
+                  animationDuration: `${4 + (i % 6)}s`
                 }}
               />
             ))}
@@ -105,14 +105,14 @@ export default async function SignUpPage() {
             {[...Array(5)].map((_, i) => (
               <line
                 key={i}
-                x1={`${Math.random() * 100}% `}
-                y1={`${Math.random() * 100}% `}
-                x2={`${Math.random() * 100}% `}
-                y2={`${Math.random() * 100}% `}
+                x1={`${(i * 23 + 10) % 100}%`}
+                y1={`${(i * 37 + 5) % 100}%`}
+                x2={`${(i * 41 + 30) % 100}%`}
+                y2={`${(i * 29 + 15) % 100}%`}
                 stroke="url(#grad)"
                 strokeWidth="1"
                 className="animate-draw-line"
-                style={{ animationDelay: `${i * 0.5} s` }}
+                style={{ animationDelay: `${i * 0.5}s` }}
               />
             ))}
           </svg>

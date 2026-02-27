@@ -70,10 +70,10 @@ export default async function SignInPage() {
                 key={i}
                 className="absolute w-1 h-1 bg-primary/20 rounded-full animate-float"
                 style={{
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 5}s`,
-                  animationDuration: `${3 + Math.random() * 4}s`
+                  top: `${(i * 5.5) % 100}%`,
+                  left: `${(i * 7.3) % 100}%`,
+                  animationDelay: `${(i * 0.25) % 5}s`,
+                  animationDuration: `${3 + (i % 4)}s`
                 }}
               />
             ))}
@@ -161,7 +161,7 @@ export default async function SignInPage() {
                       </div>
                     </div>
                     <p className="text-sm text-muted-foreground italic mb-2">
-                      "{testimonial.quote}"
+                      &quot;{testimonial.quote}&quot;
                     </p>
                     <div className="flex items-center gap-2">
                       <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/30 flex items-center justify-center">

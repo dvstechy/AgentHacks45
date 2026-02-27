@@ -36,7 +36,7 @@ import { createTransfer } from "@/app/actions/operation";
 import { getContacts } from "@/app/actions/contact";
 import { getLocations } from "@/app/actions/warehouse";
 import { getProducts } from "@/app/actions/product";
-import { Plus, Trash2, ArrowRight } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -127,7 +127,7 @@ export function TransferDialog({
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => createTransfer({ ...data, type }),
+    mutationFn: (data: z.infer<typeof transferSchema>) => createTransfer({ ...data, type }),
     onSuccess: (result) => {
       if (result.success) {
         setOpen(false);
@@ -197,9 +197,9 @@ export function TransferDialog({
     // Sanitize optional fields
     const data = {
       ...values,
-      contactId: contactId || null,
-      sourceLocationId: sourceLocationId || null,
-      destinationLocationId: destinationLocationId || null,
+      contactId: contactId || undefined,
+      sourceLocationId: sourceLocationId || undefined,
+      destinationLocationId: destinationLocationId || undefined,
     };
     createMutation.mutate(data);
   };
@@ -208,8 +208,8 @@ export function TransferDialog({
     type === "INCOMING"
       ? "Receive Goods"
       : type === "OUTGOING"
-      ? "Deliver Goods"
-      : "Transfer Stock";
+        ? "Deliver Goods"
+        : "Transfer Stock";
 
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
@@ -249,11 +249,11 @@ export function TransferDialog({
                           <SelectValue placeholder="Select contact" />
                         </SelectTrigger>
                       </FormControl>
-                    <SelectContent>
-                      <SelectItem value="none">None</SelectItem>
-                      {contacts?.map((c) => (
-                        <SelectItem key={c.id} value={c.id}>
-                          {c.name}
+                      <SelectContent>
+                        <SelectItem value="none">None</SelectItem>
+                        {contacts?.map((c) => (
+                          <SelectItem key={c.id} value={c.id}>
+                            {c.name}
                           </SelectItem>
                         ))}
                       </SelectContent>

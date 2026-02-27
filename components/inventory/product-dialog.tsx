@@ -54,7 +54,19 @@ const productSchema = z.object({
 interface ProductDialogProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  productToEdit?: any;
+  productToEdit?: {
+    id: string;
+    name: string;
+    sku: string;
+    description?: string | null;
+    type: "STORABLE" | "CONSUMABLE" | "SERVICE";
+    unitOfMeasure: string;
+    costPrice: number;
+    salesPrice: number;
+    categoryId?: string | null;
+    minStock: number;
+    maxStock?: number | null;
+  } | null;
 }
 
 export function ProductDialog({
@@ -101,7 +113,7 @@ export function ProductDialog({
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
+    mutationFn: ({ id, data }: { id: string; data: z.infer<typeof productSchema> }) =>
       updateProduct(id, data),
     onSuccess: (result) => {
       if (result.success) {
@@ -342,13 +354,13 @@ export function ProductDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Product description..." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  <FormControl>
+                    <Textarea placeholder="Product description..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <DialogFooter className="border-t pt-4">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
@@ -360,8 +372,8 @@ export function ProductDialog({
                     ? "Updating..."
                     : "Creating..."
                   : productToEdit
-                  ? "Update Product"
-                  : "Create Product"}
+                    ? "Update Product"
+                    : "Create Product"}
               </Button>
             </DialogFooter>
           </form>

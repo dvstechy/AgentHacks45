@@ -270,7 +270,8 @@ export function TableSkeleton({ rows = 5 }: { rows?: number }) {
 }
 
 // Custom Animations (add to globals.css or use inline styles)
-const styles = `
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _styles = `
 @keyframes spin-slow {
   from {
     transform: rotate(0deg);

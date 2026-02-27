@@ -50,7 +50,12 @@ const categorySchema = z.object({
 interface CategoryDialogProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  categoryToEdit?: any;
+  categoryToEdit?: {
+    id: string;
+    name: string;
+    description?: string | null;
+    parentId?: string | null;
+  } | null;
 }
 
 export function CategoryDialog({
@@ -129,7 +134,7 @@ export function CategoryDialog({
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
+    mutationFn: ({ id, data }: { id: string; data: z.infer<typeof categorySchema> }) =>
       updateCategory(id, data),
     onSuccess: (result) => {
       if (result.success) {
@@ -265,8 +270,8 @@ export function CategoryDialog({
                     ? "Updating..."
                     : "Creating..."
                   : categoryToEdit
-                  ? "Update Category"
-                  : "Create Category"}
+                    ? "Update Category"
+                    : "Create Category"}
               </Button>
             </DialogFooter>
           </form>

@@ -10,8 +10,32 @@ import { MovesTable } from "./moves-table";
 import { MovesKanban } from "./moves-kanban";
 import { TransferDialog } from "@/components/operations/transfer-dialog";
 
+interface StockMove {
+  id: string;
+  createdAt: Date;
+  product: {
+    name: string;
+    sku: string;
+  };
+  sourceLocation?: {
+    name: string;
+  } | null;
+  destinationLocation?: {
+    name: string;
+  } | null;
+  quantity: number;
+  status: string;
+  transfer?: {
+    reference: string;
+    type: string;
+    contact?: {
+      name: string;
+    } | null;
+  } | null;
+}
+
 interface MovesContainerProps {
-  moves: any[];
+  moves: StockMove[];
 }
 
 export function MovesContainer({ moves }: MovesContainerProps) {

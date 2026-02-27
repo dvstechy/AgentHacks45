@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
-import { ArrowLeft, Download, Printer, Package2 } from "lucide-react";
+import { ArrowLeft, Download, Package2 } from "lucide-react";
 import Link from "next/link";
+import type { Route } from "next";
 import { useRef, useState } from "react";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
@@ -20,15 +21,39 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+interface StockMoveItem {
+  id: string;
+  quantity: number;
+  product: {
+    name: string;
+    costPrice: number;
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+}
+
+interface TransferData {
+  reference: string;
+  type: string;
+  status: string;
+  scheduledDate?: string | Date | null;
+  effectiveDate?: string | Date | null;
+  sourceLocation?: { name: string;[key: string]: unknown } | null;
+  destinationLocation?: { name: string;[key: string]: unknown } | null;
+  contact?: { name: string; email?: string | null; phone?: string | null;[key: string]: unknown } | null;
+  stockMoves: StockMoveItem[];
+  [key: string]: unknown;
+}
+
 interface ReceiptViewProps {
-  transfer: any;
+  transfer: TransferData;
 }
 
 export function ReceiptView({ transfer }: ReceiptViewProps) {
   const receiptRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const subtotal = transfer.stockMoves.reduce(
-    (acc: number, move: any) => acc + move.quantity * move.product.costPrice,
+    (acc: number, move: StockMoveItem) => acc + move.quantity * move.product.costPrice,
     0
   );
 
@@ -97,7 +122,7 @@ export function ReceiptView({ transfer }: ReceiptViewProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link href={getBackLink(transfer.type) as any}>
+          <Link href={getBackLink(transfer.type) as Route}>
             <Button variant="outline" size="icon">
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -304,7 +329,7 @@ export function ReceiptView({ transfer }: ReceiptViewProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {transfer.stockMoves.map((move: any) => (
+              {transfer.stockMoves.map((move: StockMoveItem) => (
                 <TableRow key={move.id}>
                   <TableCell className="font-medium">
                     {move.product.name}

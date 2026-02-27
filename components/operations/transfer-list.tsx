@@ -32,6 +32,7 @@ import {
 import { useState } from "react";
 
 import Link from "next/link";
+import type { Route } from "next";
 
 interface Transfer {
   id: string;
@@ -42,7 +43,7 @@ interface Transfer {
   sourceLocation?: { name: string } | null;
   destinationLocation?: { name: string } | null;
   scheduledDate?: Date | string | null;
-  stockMoves: any[];
+  stockMoves: { id: string }[];
 }
 
 interface TransferListProps {
@@ -61,8 +62,7 @@ export function TransferList({
   const { data: transfers = [] } = useQuery({
     queryKey: ["transfers", type || "ALL"],
     queryFn: async () => {
-      // @ts-ignore
-      const res = await getTransfers(type);
+      const res = await getTransfers(type as "INCOMING" | "OUTGOING" | "INTERNAL" | "ADJUSTMENT" | undefined);
       if (!res.success) throw new Error(res.error as string);
       return res.data as Transfer[];
     },
@@ -154,9 +154,8 @@ export function TransferList({
                   <TableCell className="font-medium">
                     <Link
                       href={
-                        `/dashboard/operations/${getLinkPath(transfer.type)}/${
-                          transfer.id
-                        }` as any
+                        `/dashboard/operations/${getLinkPath(transfer.type)}/${transfer.id
+                        }` as Route
                       }
                       className="hover:underline text-primary"
                     >

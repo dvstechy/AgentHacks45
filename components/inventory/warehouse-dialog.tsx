@@ -26,7 +26,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { updateWarehouse, createWarehouse } from "@/app/actions/warehouse";
 import toast from "react-hot-toast";
-import { Plus, Pencil } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -85,7 +85,7 @@ export function WarehouseDialog({
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
+    mutationFn: ({ id, data }: { id: string; data: z.infer<typeof formSchema> }) =>
       updateWarehouse(id, data),
     onSuccess: (result) => {
       if (result.success) {

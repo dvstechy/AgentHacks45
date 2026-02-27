@@ -44,13 +44,19 @@ interface Product {
   id: string;
   name: string;
   sku: string;
+  description?: string | null;
   type: string;
+  unitOfMeasure?: string;
   salesPrice: number;
   costPrice: number;
+  categoryId?: string | null;
+  minStock?: number;
+  maxStock?: number | null;
   category?: {
     name: string;
-  };
-  stockLevels: any[];
+  } | null;
+  stockLevels: { quantity: number; location?: { name: string; type: string } | null }[];
+  [key: string]: unknown;
 }
 
 interface ProductListProps {
@@ -232,7 +238,7 @@ export function ProductList({ products: initialProducts }: ProductListProps) {
       <ProductDialog
         open={!!editingProduct}
         onOpenChange={(open) => !open && setEditingProduct(null)}
-        productToEdit={editingProduct}
+        productToEdit={editingProduct as unknown as { id: string; name: string; sku: string; description?: string | null; type: "STORABLE" | "CONSUMABLE" | "SERVICE"; unitOfMeasure: string; costPrice: number; salesPrice: number; categoryId?: string | null; minStock: number; maxStock?: number | null } | null}
       />
 
       <AlertDialog

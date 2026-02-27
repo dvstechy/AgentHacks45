@@ -137,7 +137,7 @@ export function LocationDialog({
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
+    mutationFn: ({ id, data }: { id: string; data: z.infer<typeof locationSchema> }) =>
       updateLocation(id, data),
     onSuccess: (result) => {
       if (result.success) {
@@ -166,7 +166,7 @@ export function LocationDialog({
       form.reset({
         name: locationToEdit.name,
         shortCode: locationToEdit.shortCode,
-        type: locationToEdit.type as any,
+        type: locationToEdit.type as z.infer<typeof locationSchema>["type"],
         warehouseId: locationToEdit.warehouseId || "none",
         parentId: locationToEdit.parentId || "none",
       });
@@ -343,8 +343,8 @@ export function LocationDialog({
                     ? "Updating..."
                     : "Creating..."
                   : locationToEdit
-                  ? "Update Location"
-                  : "Create Location"}
+                    ? "Update Location"
+                    : "Create Location"}
               </Button>
             </DialogFooter>
           </form>
