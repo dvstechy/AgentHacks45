@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { MoreVertical, Pencil, Search, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +33,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
 
 interface Location {
   id: string;
@@ -59,6 +60,7 @@ export function LocationList({
 }: LocationListProps) {
   const [editingLocation, setEditingLocation] = useState<Location | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const queryClient = useQueryClient();
 
   const { data: locations = [] } = useQuery({
@@ -92,8 +94,31 @@ export function LocationList({
     setDeletingId(null);
   };
 
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const filteredLocations = locations.filter((location) => {
+    if (!normalizedSearch) return true;
+
+    return (
+      location.name.toLowerCase().includes(normalizedSearch) ||
+      location.shortCode.toLowerCase().includes(normalizedSearch) ||
+      location.type.toLowerCase().includes(normalizedSearch) ||
+      (location.warehouse?.name || "").toLowerCase().includes(normalizedSearch) ||
+      (location.parent?.name || "").toLowerCase().includes(normalizedSearch)
+    );
+  });
+
   return (
     <>
+      <div className="relative max-w-sm">
+        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="search"
+          placeholder="Search locations by name, code, type..."
+          className="pl-8"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -108,17 +133,19 @@ export function LocationList({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {locations.length === 0 ? (
+            {filteredLocations.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={7}
                   className="text-center text-muted-foreground"
                 >
-                  No locations found.
+                  {locations.length === 0
+                    ? "No locations found."
+                    : "No locations match your search."}
                 </TableCell>
               </TableRow>
             ) : (
-              locations.map((location) => (
+              filteredLocations.map((location) => (
                 <TableRow key={location.id}>
                   <TableCell className="font-medium">{location.name}</TableCell>
                   <TableCell>

@@ -21,7 +21,8 @@ import {
   AlertCircle,
   CheckCircle2,
   XCircle,
-  Eye
+  Eye,
+  Search
 } from "lucide-react";
 import {
   deleteTransfer,
@@ -43,6 +44,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
 interface Transfer {
@@ -68,6 +70,7 @@ export function TransferList({
 }: TransferListProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [validatingId, setValidatingId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const queryClient = useQueryClient();
 
   const { data: transfers = [] } = useQuery({
@@ -172,144 +175,173 @@ export function TransferList({
     }
   };
 
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const filteredTransfers = transfers.filter((transfer) => {
+    if (!normalizedSearch) return true;
+
+    return (
+      transfer.reference.toLowerCase().includes(normalizedSearch) ||
+      (transfer.contact?.name || "").toLowerCase().includes(normalizedSearch) ||
+      (transfer.sourceLocation?.name || "").toLowerCase().includes(normalizedSearch) ||
+      (transfer.destinationLocation?.name || "").toLowerCase().includes(normalizedSearch) ||
+      transfer.status.toLowerCase().includes(normalizedSearch) ||
+      transfer.type.toLowerCase().includes(normalizedSearch)
+    );
+  });
+
   return (
     <>
-      <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-500">
-        {/* Table Container with Horizontal Scroll for Mobile */}
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50 hover:bg-muted/50 border-b border-border/50">
-                <TableHead className="font-semibold">Reference</TableHead>
-                <TableHead className="font-semibold">Contact</TableHead>
-                <TableHead className="font-semibold">Source</TableHead>
-                <TableHead className="font-semibold">Destination</TableHead>
-                <TableHead className="font-semibold">Date</TableHead>
-                <TableHead className="font-semibold">Items</TableHead>
-                <TableHead className="font-semibold">Status</TableHead>
-                <TableHead className="text-right font-semibold">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {transfers.length === 0 ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={8}
-                    className="text-center py-12"
-                  >
-                    <div className="flex flex-col items-center justify-center text-muted-foreground">
-                      <Package className="h-12 w-12 mb-3 text-muted-foreground/30" />
-                      <p className="text-sm font-medium">No transfers found</p>
-                      <p className="text-xs mt-1">Create a new transfer to get started</p>
-                    </div>
-                  </TableCell>
+      <div className="space-y-4">
+        <div className="relative max-w-sm">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Search operations by reference, contact, status..."
+            className="pl-8 bg-card/50 backdrop-blur-sm border-border/50 focus-visible:ring-primary/20"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+
+        <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/50 hover:bg-muted/50 border-b border-border/50">
+                  <TableHead className="font-semibold">Reference</TableHead>
+                  <TableHead className="font-semibold">Contact</TableHead>
+                  <TableHead className="font-semibold">Source</TableHead>
+                  <TableHead className="font-semibold">Destination</TableHead>
+                  <TableHead className="font-semibold">Date</TableHead>
+                  <TableHead className="font-semibold">Items</TableHead>
+                  <TableHead className="font-semibold">Status</TableHead>
+                  <TableHead className="text-right font-semibold">Actions</TableHead>
                 </TableRow>
-              ) : (
-                transfers.map((transfer, index) => (
-                  <TableRow
-                    key={transfer.id}
-                    className="group hover:bg-muted/50 transition-colors duration-200 border-b border-border/50 animate-in fade-in slide-in-from-bottom-1"
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    <TableCell className="font-medium">
-                      <Link
-                        href={`/dashboard/operations/${getLinkPath(transfer.type)}/${transfer.id}` as any}
-                        className="inline-flex items-center gap-1 text-primary hover:underline group/link"
-                      >
-                        {transfer.reference}
-                        <ArrowRight className="h-3.5 w-3.5 opacity-0 group-hover/link:opacity-100 transition-all duration-200 group-hover/link:translate-x-0.5" />
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      {transfer.contact?.name ? (
-                        <span className="text-sm">{transfer.contact.name}</span>
-                      ) : (
-                        <span className="text-sm text-muted-foreground/50">—</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {transfer.sourceLocation?.name ? (
-                        <span className="text-sm">{transfer.sourceLocation.name}</span>
-                      ) : (
-                        <span className="text-sm text-muted-foreground/50">—</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {transfer.destinationLocation?.name ? (
-                        <span className="text-sm">{transfer.destinationLocation.name}</span>
-                      ) : (
-                        <span className="text-sm text-muted-foreground/50">—</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {transfer.scheduledDate ? (
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Calendar className="mr-2 h-3.5 w-3.5" />
-                          {format(new Date(transfer.scheduledDate), "MMM d, yyyy")}
-                        </div>
-                      ) : (
-                        <span className="text-sm text-muted-foreground/50">—</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center text-sm">
-                        <Package className="mr-2 h-3.5 w-3.5 text-muted-foreground" />
-                        <span className="font-medium">{transfer.stockMoves?.length || 0}</span>
-                        <span className="text-muted-foreground ml-1">items</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={cn(
-                          "inline-flex items-center border font-medium px-2.5 py-0.5 text-xs",
-                          getStatusColor(transfer.status)
-                        )}
-                      >
-                        {getStatusIcon(transfer.status)}
-                        {transfer.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        {transfer.status === "DRAFT" ? (
-                          <>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setValidatingId(transfer.id)}
-                              className="h-8 px-3 text-xs font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-500/10 transition-all duration-200"
-                              disabled={validateMutation.isPending}
-                            >
-                              <Check className="mr-1.5 h-3.5 w-3.5" />
-                              Validate
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => setDeletingId(transfer.id)}
-                              className="h-8 w-8 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-500/10 transition-all duration-200"
-                              disabled={deleteMutation.isPending}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </>
-                        ) : (
-                          <Link
-                            href={`/dashboard/operations/${getLinkPath(transfer.type)}/${transfer.id}` as any}
-                            className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
-                          >
-                            <Eye className="h-3.5 w-3.5" />
-                            <span>View</span>
-                          </Link>
-                        )}
+              </TableHeader>
+              <TableBody>
+                {filteredTransfers.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-12">
+                      <div className="flex flex-col items-center justify-center text-muted-foreground">
+                        <Package className="h-12 w-12 mb-3 text-muted-foreground/30" />
+                        <p className="text-sm font-medium">
+                          {transfers.length === 0 ? "No transfers found" : "No results for this search"}
+                        </p>
+                        <p className="text-xs mt-1">
+                          {transfers.length === 0
+                            ? "Create a new transfer to get started"
+                            : "Try adjusting your search filters"}
+                        </p>
                       </div>
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                ) : (
+                  filteredTransfers.map((transfer, index) => (
+                    <TableRow
+                      key={transfer.id}
+                      className="group hover:bg-muted/50 transition-colors duration-200 border-b border-border/50 animate-in fade-in slide-in-from-bottom-1"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      <TableCell className="font-medium">
+                        <Link
+                          href={`/dashboard/operations/${getLinkPath(transfer.type)}/${transfer.id}` as any}
+                          className="inline-flex items-center gap-1 text-primary hover:underline group/link"
+                        >
+                          {transfer.reference}
+                          <ArrowRight className="h-3.5 w-3.5 opacity-0 group-hover/link:opacity-100 transition-all duration-200 group-hover/link:translate-x-0.5" />
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        {transfer.contact?.name ? (
+                          <span className="text-sm">{transfer.contact.name}</span>
+                        ) : (
+                          <span className="text-sm text-muted-foreground/50">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {transfer.sourceLocation?.name ? (
+                          <span className="text-sm">{transfer.sourceLocation.name}</span>
+                        ) : (
+                          <span className="text-sm text-muted-foreground/50">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {transfer.destinationLocation?.name ? (
+                          <span className="text-sm">{transfer.destinationLocation.name}</span>
+                        ) : (
+                          <span className="text-sm text-muted-foreground/50">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {transfer.scheduledDate ? (
+                          <div className="flex items-center text-sm text-muted-foreground">
+                            <Calendar className="mr-2 h-3.5 w-3.5" />
+                            {format(new Date(transfer.scheduledDate), "MMM d, yyyy")}
+                          </div>
+                        ) : (
+                          <span className="text-sm text-muted-foreground/50">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center text-sm">
+                          <Package className="mr-2 h-3.5 w-3.5 text-muted-foreground" />
+                          <span className="font-medium">{transfer.stockMoves?.length || 0}</span>
+                          <span className="text-muted-foreground ml-1">items</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className={cn(
+                            "inline-flex items-center border font-medium px-2.5 py-0.5 text-xs",
+                            getStatusColor(transfer.status)
+                          )}
+                        >
+                          {getStatusIcon(transfer.status)}
+                          {transfer.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          {transfer.status === "DRAFT" ? (
+                            <>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setValidatingId(transfer.id)}
+                                className="h-8 px-3 text-xs font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-500/10 transition-all duration-200"
+                                disabled={validateMutation.isPending}
+                              >
+                                <Check className="mr-1.5 h-3.5 w-3.5" />
+                                Validate
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => setDeletingId(transfer.id)}
+                                className="h-8 w-8 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-500/10 transition-all duration-200"
+                                disabled={deleteMutation.isPending}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </>
+                          ) : (
+                            <Link
+                              href={`/dashboard/operations/${getLinkPath(transfer.type)}/${transfer.id}` as any}
+                              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
+                            >
+                              <Eye className="h-3.5 w-3.5" />
+                              <span>View</span>
+                            </Link>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </div>
       </div>
 

@@ -39,6 +39,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { formatINR } from "@/lib/currency";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 interface Product {
   id: string;
@@ -60,6 +62,7 @@ interface ProductListProps {
 export function ProductList({ products: initialProducts }: ProductListProps) {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const queryClient = useQueryClient();
 
   const { data: products = [] } = useQuery({
@@ -93,8 +96,30 @@ export function ProductList({ products: initialProducts }: ProductListProps) {
     setDeletingId(null);
   };
 
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const filteredProducts = products.filter((product) => {
+    if (!normalizedSearch) return true;
+
+    return (
+      product.name.toLowerCase().includes(normalizedSearch) ||
+      product.sku.toLowerCase().includes(normalizedSearch) ||
+      (product.category?.name || "").toLowerCase().includes(normalizedSearch) ||
+      product.type.toLowerCase().includes(normalizedSearch)
+    );
+  });
+
   return (
     <>
+      <div className="relative max-w-sm">
+        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="search"
+          placeholder="Search products by name, SKU, category..."
+          className="pl-8"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -110,17 +135,19 @@ export function ProductList({ products: initialProducts }: ProductListProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.length === 0 ? (
+            {filteredProducts.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={8}
                   className="text-center text-muted-foreground"
                 >
-                  No products found.
+                  {products.length === 0
+                    ? "No products found."
+                    : "No products match your search."}
                 </TableCell>
               </TableRow>
             ) : (
-              products.map((product) => {
+              filteredProducts.map((product) => {
                 const totalStock = product.stockLevels.reduce((acc, curr) => {
                   // Ensure we match INTERNAL regardless of case or whitespace
                   const type = curr.location?.type
