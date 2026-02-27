@@ -131,6 +131,9 @@ model Warehouse {
   address   String?
   locations Location[]
 
+  latitude  Float?      // NEW
+  longitude Float?      // NEW
+
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
