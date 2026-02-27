@@ -228,18 +228,22 @@ export function ReceiptView({ transfer }: ReceiptViewProps) {
             </h3>
             <div className="bg-gray-50 p-4 rounded-lg">
               <p className="font-bold text-gray-900 text-lg mb-1">
-                {transfer.contact?.name || "Unknown Vendor"}
+                {transfer.type === "INCOMING"
+                  ? (transfer.contact?.name || "Vendor")
+                  : "My Company"}
               </p>
               <p className="text-sm text-gray-600 mb-1">
-                {transfer.contact?.email}
+                {transfer.type === "INCOMING" ? transfer.contact?.email : "warehouse@example.com"}
               </p>
-              <p className="text-sm text-gray-600">{transfer.contact?.phone}</p>
+              <p className="text-sm text-gray-600">
+                {transfer.type === "INCOMING" ? transfer.contact?.phone : "+1 234 567 890"}
+              </p>
               <div className="mt-3 pt-3 border-t border-gray-200">
                 <p className="text-xs text-gray-400 uppercase">
                   Source Location
                 </p>
                 <p className="text-sm font-medium">
-                  {transfer.sourceLocation?.name}
+                  {transfer.sourceLocation?.name || "Virtual/Vendor"}
                 </p>
               </div>
             </div>
@@ -249,15 +253,23 @@ export function ReceiptView({ transfer }: ReceiptViewProps) {
               To
             </h3>
             <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="font-bold text-gray-900 text-lg mb-1">My Company</p>
-              <p className="text-sm text-gray-600 mb-1">123 Warehouse St.</p>
-              <p className="text-sm text-gray-600">Logistics City, 12345</p>
+              <p className="font-bold text-gray-900 text-lg mb-1">
+                {transfer.type === "OUTGOING"
+                  ? (transfer.contact?.name || "Customer")
+                  : "My Company"}
+              </p>
+              <p className="text-sm text-gray-600 mb-1">
+                {transfer.type === "OUTGOING" ? transfer.contact?.email : "warehouse@example.com"}
+              </p>
+              <p className="text-sm text-gray-600">
+                {transfer.type === "OUTGOING" ? transfer.contact?.phone : "+1 234 567 890"}
+              </p>
               <div className="mt-3 pt-3 border-t border-gray-200">
                 <p className="text-xs text-gray-400 uppercase">
                   Destination Location
                 </p>
                 <p className="text-sm font-medium">
-                  {transfer.destinationLocation?.name}
+                  {transfer.destinationLocation?.name || "Virtual/Customer"}
                 </p>
               </div>
             </div>

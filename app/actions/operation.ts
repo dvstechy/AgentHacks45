@@ -80,7 +80,7 @@ async function generateReference(type: TransferType, userId: string) {
         }
     })
     const padding = (count + 1).toString().padStart(5, '0')
-    return `₹{prefix}/${padding}`
+    return `${prefix}/${padding}`
 }
 
 export async function createTransfer(data: z.infer<typeof transferSchema>) {
