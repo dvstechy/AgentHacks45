@@ -133,7 +133,7 @@ function SidebarGroup({
   index: number;
 }) {
   const isActiveGroup = group.items.some((item) => item.href === pathname);
-  const [isOpen, setIsOpen] = useState(isActiveGroup);
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <div
