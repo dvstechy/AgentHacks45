@@ -124,12 +124,20 @@ model DemandHistory {
 }
 
 // Warehouse & Locations
+enum WarehouseStatus {
+  ACTIVE
+  MAINTENANCE
+  INACTIVE
+}
+
 model Warehouse {
   id        String     @id @default(cuid())
   name      String
   shortCode String // e.g. WH
   address   String?
   locations Location[]
+
+  status    WarehouseStatus @default(ACTIVE)
 
   latitude  Float?      // NEW
   longitude Float?      // NEW
