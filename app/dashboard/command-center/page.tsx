@@ -36,7 +36,7 @@ export default async function CommandCenterPage() {
   return (
     <div className="flex-1 space-y-8 pb-8">
       {/* Header Section with Gradient */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500/10 via-purple-500/5 to-transparent p-8">
+      <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-orange-500/10 via-purple-500/5 to-transparent p-4 sm:p-6 md:p-8">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-orange-500/20 animate-pulse" />
@@ -99,8 +99,8 @@ export default async function CommandCenterPage() {
               </div>
             </div>
             <div>
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
                   AI Command Center
                 </h1>
                 <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-orange-500/10 to-purple-500/10 border border-orange-500/20">
@@ -138,51 +138,51 @@ export default async function CommandCenterPage() {
           </div>
 
           {/* Quick Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
-            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                  <Bot className="h-5 w-5 text-orange-500" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 mt-4 sm:mt-6">
+            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-3 sm:p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                  <Bot className="h-4 w-4 sm:h-5 sm:w-5 text-orange-500" />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Active Agents</p>
-                  <p className="text-2xl font-bold">3</p>
+                  <p className="text-xl sm:text-2xl font-bold">3</p>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                  <Activity className="h-5 w-5 text-blue-500" />
+            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-3 sm:p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                  <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Tasks Today</p>
-                  <p className="text-2xl font-bold text-blue-500">147</p>
+                  <p className="text-xl sm:text-2xl font-bold text-blue-500">147</p>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-300">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-green-500/10 flex items-center justify-center">
-                  <Zap className="h-5 w-5 text-green-500" />
+            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-3 sm:p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-300">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg bg-green-500/10 flex items-center justify-center">
+                  <Zap className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Success Rate</p>
-                  <p className="text-2xl font-bold text-green-500">98%</p>
+                  <p className="text-xl sm:text-2xl font-bold text-green-500">98%</p>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-400">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                  <Globe className="h-5 w-5 text-purple-500" />
+            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-3 sm:p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-400">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                  <Globe className="h-4 w-4 sm:h-5 sm:w-5 text-purple-500" />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Locations</p>
-                  <p className="text-2xl font-bold">12</p>
+                  <p className="text-xl sm:text-2xl font-bold">12</p>
                 </div>
               </div>
             </div>
@@ -193,7 +193,7 @@ export default async function CommandCenterPage() {
       {/* Main Content Area */}
       <div className="space-y-4">
         {/* Section Header */}
-        <div className="flex items-center justify-between px-1">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-1">
           <div className="flex items-center gap-2">
             <div className="h-6 w-1 bg-gradient-to-b from-orange-500 to-purple-500 rounded-full" />
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
@@ -202,7 +202,7 @@ export default async function CommandCenterPage() {
           </div>
 
           {/* Legend */}
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-muted-foreground">
             <div className="flex items-center gap-1">
               <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
               <span>Active</span>
