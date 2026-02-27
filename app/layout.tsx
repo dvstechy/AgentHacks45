@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Inventory Management System",
-  description: "Streamline your stock operations",
+  title: "AgentHacks IMS | Modern Inventory Management",
+  description: "Next-generation inventory operations by Team AgentHacks",
 };
 
 export default function RootLayout({
