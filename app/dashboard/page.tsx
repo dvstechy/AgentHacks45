@@ -4,10 +4,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Loader } from "@/components/ui/loader";
-import { AlertTriangle, DollarSign, Package, Plus, Truck, TrendingUp, Activity, ArrowUpRight } from "lucide-react";
+import {
+  AlertTriangle,
+  DollarSign,
+  Package,
+  Plus,
+  Truck,
+  TrendingUp,
+  Activity,
+  ArrowUpRight,
+  ArrowDownToLine,
+  ArrowUpFromLine,
+  ArrowRightLeft,
+  Sparkles,
+  BarChart3,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  RefreshCw
+} from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { formatINR } from "@/lib/currency";
+import { cn } from "@/lib/utils";
 
 export default async function DashboardPage() {
   const [{ data: stats }, { data: recommendations }] = await Promise.all([
@@ -21,8 +40,8 @@ export default async function DashboardPage() {
 
   // Calculate additional metrics
   const totalOperations = stats.receipts.total + stats.deliveries.total + stats.internal.total;
-  const completionRate = totalOperations > 0 
-    ? Math.round(((stats.receipts.completed + stats.deliveries.completed + stats.internal.completed) / totalOperations) * 100) 
+  const completionRate = totalOperations > 0
+    ? Math.round(((stats.receipts.completed + stats.deliveries.completed + stats.internal.completed) / totalOperations) * 100)
     : 0;
 
   return (
@@ -44,7 +63,7 @@ export default async function DashboardPage() {
                 description="Here's what's happening with your inventory today"
               />
             </div>
-            
+
             {/* Status Badges */}
             <div className="flex flex-wrap items-center gap-3">
               <div className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-3 py-1 text-xs font-medium text-green-600 dark:text-green-400 border border-green-500/20 animate-in fade-in slide-in-from-left-2 duration-500">
@@ -121,7 +140,7 @@ export default async function DashboardPage() {
           >
             {/* Background Gradient */}
             <div className={`absolute inset-0 bg-gradient-to-br from-${stat.color}-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-            
+
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-medium text-muted-foreground">{stat.label}</span>
@@ -131,9 +150,8 @@ export default async function DashboardPage() {
               </div>
               <div className="flex items-baseline justify-between">
                 <span className="text-xl lg:text-2xl font-bold">{stat.value}</span>
-                <span className={`text-xs font-medium flex items-center gap-0.5 ${
-                  stat.trend === 'up' ? 'text-green-500' : 'text-red-500'
-                }`}>
+                <span className={`text-xs font-medium flex items-center gap-0.5 ${stat.trend === 'up' ? 'text-green-500' : 'text-red-500'
+                  }`}>
                   {stat.change}
                   <TrendingUp className={`h-3 w-3 ${stat.trend === 'down' && 'rotate-180'}`} />
                 </span>
@@ -150,8 +168,8 @@ export default async function DashboardPage() {
             <div className="h-8 w-1 bg-gradient-to-b from-primary to-primary/50 rounded-full" />
             <h2 className="text-xl font-bold tracking-tight">Operations Overview</h2>
           </div>
-          <Link 
-            href="/dashboard/operations" 
+          <Link
+            href="/dashboard/operations"
             className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors group"
           >
             View all
@@ -197,8 +215,8 @@ export default async function DashboardPage() {
             <div className="h-8 w-1 bg-gradient-to-b from-primary to-primary/50 rounded-full" />
             <h2 className="text-xl font-bold tracking-tight">Inventory Overview</h2>
           </div>
-          <Link 
-            href="/dashboard/inventory" 
+          <Link
+            href="/dashboard/inventory"
             className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors group"
           >
             Manage inventory
@@ -210,7 +228,7 @@ export default async function DashboardPage() {
           {/* Total Inventory Value Card */}
           <Card className="group relative overflow-hidden border border-border/50 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:border-primary/30 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            
+
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-semibold text-muted-foreground group-hover:text-foreground transition-colors">
                 Total Inventory Value
@@ -222,7 +240,7 @@ export default async function DashboardPage() {
             <CardContent>
               <div className="flex items-baseline gap-2">
                 <div className="text-2xl font-bold">
-                  ${stats.totalValue.toLocaleString()}
+                  {formatINR(stats.totalValue)}
                 </div>
                 <div className="flex items-center text-xs font-medium text-green-500 bg-green-500/10 px-1.5 py-0.5 rounded-full">
                   <TrendingUp className="h-3 w-3 mr-0.5" />
@@ -240,7 +258,7 @@ export default async function DashboardPage() {
           {/* Low Stock Alerts Card */}
           <Card className="group relative overflow-hidden border border-border/50 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:border-destructive/30 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
             <div className="absolute inset-0 bg-gradient-to-br from-destructive/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            
+
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-semibold text-muted-foreground group-hover:text-foreground transition-colors">
                 Low Stock Alerts
@@ -255,8 +273,8 @@ export default async function DashboardPage() {
                   {stats.lowStockCount}
                 </div>
                 {stats.lowStockCount > 0 && (
-                  <Link 
-                    href="/dashboard/inventory?filter=low-stock" 
+                  <Link
+                    href="/dashboard/inventory?filter=low-stock"
                     className="inline-flex items-center gap-1 text-xs font-medium text-destructive bg-destructive/10 px-2 py-1 rounded-full hover:bg-destructive/20 transition-colors group/link"
                   >
                     View details
@@ -269,7 +287,7 @@ export default async function DashboardPage() {
               </p>
               {stats.lowStockCount > 0 && (
                 <div className="mt-3 h-1.5 w-full bg-destructive/10 rounded-full overflow-hidden">
-                  <div 
+                  <div
                     className="h-full bg-destructive rounded-full transition-all duration-500"
                     style={{ width: `${Math.min((stats.lowStockCount / stats.totalProducts) * 100, 100)}%` }}
                   />
@@ -281,7 +299,7 @@ export default async function DashboardPage() {
           {/* Total Products Card */}
           <Card className="group relative overflow-hidden border border-border/50 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:border-primary/30 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-300">
             <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            
+
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-semibold text-muted-foreground group-hover:text-foreground transition-colors">
                 Total Products
@@ -308,6 +326,56 @@ export default async function DashboardPage() {
           </Card>
         </div>
       </div>
+
+      {/* Reorder Recommendations Section */}
+      {recommendations && recommendations.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-1 bg-gradient-to-b from-orange-500 to-orange-500/50 rounded-full" />
+            <h2 className="text-xl font-bold tracking-tight">Reorder Recommendations</h2>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {recommendations.map((item, index) => (
+              <Card
+                key={item.productId}
+                className="group border border-border/50 bg-card/50 backdrop-blur-sm hover:border-orange-500/30 transition-all duration-300 animate-in fade-in slide-in-from-bottom-2"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <div className={cn(
+                      "text-[10px] font-bold px-2 py-0.5 rounded-full",
+                      item.priority === 'HIGH' ? "bg-red-500/10 text-red-500" : "bg-orange-500/10 text-orange-500"
+                    )}>
+                      {item.priority} PRIORITY
+                    </div>
+                    <span className="text-[10px] text-muted-foreground font-mono">{item.sku}</span>
+                  </div>
+                  <CardTitle className="text-sm font-bold truncate mt-2">{item.productName}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-muted-foreground">Current Stock</span>
+                    <span className="font-bold">{item.currentStock}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-muted-foreground">Suggest Order</span>
+                    <span className="font-bold text-primary">+{item.suggestedOrderQty}</span>
+                  </div>
+                  <div className="pt-2 border-t border-border/50">
+                    <Button variant="outline" size="sm" className="w-full h-8 text-[11px] group-hover:bg-primary group-hover:text-primary-foreground transition-colors" asChild>
+                      <Link href={`/dashboard/operations/receipts?productId=${item.productId}`}>
+                        Create Receipt
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
