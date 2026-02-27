@@ -1,7 +1,13 @@
 import { prisma } from "@/lib/prisma"
 
-export async function calculateReorder(productId: string, forecast: number) {
-  // Get stock and product
+export async function calculateReorder(
+  productId: string,
+  forecast: {
+    mean: number
+    stdDev: number
+    trendFactor: number
+  }
+){
   const stock = await prisma.stockLevel.findFirst({
     where: { productId },
     include: { product: true }
@@ -9,41 +15,28 @@ export async function calculateReorder(productId: string, forecast: number) {
 
   if (!stock) return null
 
-  // Get last 60 days demand
-  const demandHistory = await prisma.demandHistory.findMany({
-    where: { productId },
-    orderBy: { date: "desc" },
-    take: 60
-  })
+  const { mean, stdDev, trendFactor } = forecast
 
-  if (demandHistory.length === 0) return null
+// 🔥 Apply seasonal trend adjustment
+const adjustedMean = mean * trendFactor
 
-  // ===============================
-  // STATISTICAL CALCULATIONS
-  // ===============================
+  if (mean === 0) return null
 
-  const demands = demandHistory.map(d => d.quantity)
+  // Dynamic lead time (use default)
+  const leadTime = 5
 
-  // Mean demand
-  const mean =
-    demands.reduce((sum, val) => sum + val, 0) / demands.length
+  // Service level can be dynamic later
+  const serviceLevel = 0.95
 
-  // Standard deviation
-  const variance =
-    demands.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) /
-    demands.length
+  // Convert service level to Z value
+  const Z = serviceLevel === 0.95 ? 1.65 :
+            serviceLevel === 0.99 ? 2.33 :
+            1.28 // default 90%
 
-  const stdDev = Math.sqrt(variance)
-
-  // Assumptions (can later make dynamic)
-  const leadTime = 5 // days
-  const Z = 1.65 // 95% service level
-
-  // Safety Stock Formula
+  // ✅ Proper Safety Stock Formula
   const safetyStock = Z * stdDev * Math.sqrt(leadTime)
 
-  // Reorder Point
-  const reorderPoint = mean * leadTime + safetyStock
+  const reorderPoint = adjustedMean * leadTime + safetyStock
 
   if (stock.quantity < reorderPoint) {
     return {
