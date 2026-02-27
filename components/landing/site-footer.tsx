@@ -26,7 +26,7 @@ export function SiteFooter() {
                 <Image src="/logo.png" alt="IMS Logo" width={40} height={40} className="object-contain transition-transform duration-300 group-hover:rotate-12" />
               </div>
               <span className="bg-linear-to-r from-primary via-purple-600 to-pink-500 bg-clip-text text-transparent font-extrabold">
-                IMS
+                AgentHacks IMS
               </span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
@@ -114,9 +114,9 @@ export function SiteFooter() {
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-border/40 text-sm text-muted-foreground">
           <p className="flex items-center gap-2">
-            © 2025 IMS Inc. All rights reserved. Made with{" "}
+            © 2025 AgentHacks IMS. All rights reserved. Made with{" "}
             <Heart className="h-4 w-4 text-red-500 fill-red-500 animate-pulse" />{" "}
-            for businesses worldwide.
+            by Team AgentHacks.
           </p>
           <div className="flex flex-wrap gap-6 justify-center">
             <Link href="#status" className="hover:text-primary transition-colors flex items-center gap-1">

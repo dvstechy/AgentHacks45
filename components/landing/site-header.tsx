@@ -25,7 +25,7 @@ export function SiteHeader({ session }: SiteHeaderProps) {
             <Image src="/logo.png" alt="IMS Logo" width={36} height={36} className="object-contain transition-transform duration-300 group-hover:rotate-12" />
           </div>
           <span className="bg-linear-to-r from-primary via-purple-600 to-pink-500 bg-clip-text text-transparent font-extrabold transition-all duration-300">
-            IMS
+            AgentHacks IMS
           </span>
         </Link>
 

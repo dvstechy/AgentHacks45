@@ -196,7 +196,7 @@ export function Sidebar({ className }: SidebarProps) {
           />
         </div>
         <h2 className="text-lg font-bold tracking-tight text-foreground">
-          IMS
+          AgentHacks IMS
         </h2>
       </div>
 

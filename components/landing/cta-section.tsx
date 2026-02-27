@@ -11,7 +11,7 @@ export function CTASection() {
             Ready to optimize your inventory?
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl">
-            Join thousands of businesses that trust IMS to manage their
+            Join thousands of businesses that trust AgentHacks IMS to manage their
             stock efficiently. Start your free trial today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
