@@ -106,7 +106,7 @@ export default function SettingsPage() {
   return (
     <div className="flex-1 space-y-8 pb-8">
       {/* Header Section with Gradient */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-purple-500/5 to-transparent p-8">
+      <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/10 via-purple-500/5 to-transparent p-4 sm:p-6 md:p-8">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-primary/20 animate-pulse" />
@@ -136,8 +136,8 @@ export default function SettingsPage() {
               <Settings className="h-7 w-7 text-white" />
             </div>
             <div>
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
                   Settings
                 </h1>
                 <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20">
@@ -222,10 +222,10 @@ export default function SettingsPage() {
 
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
-                  <div className={`h-10 w-10 rounded-lg bg-gradient-to-br ${colors[section.color as keyof typeof colors]} flex items-center justify-center`}>
+                  <div className={`h-8 w-8 sm:h-10 sm:w-10 rounded-lg bg-gradient-to-br ${colors[section.color as keyof typeof colors]} flex items-center justify-center`}>
                     <Icon className="h-5 w-5" />
                   </div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
 
                 <h3 className="text-lg font-semibold mb-1">{section.title}</h3>
