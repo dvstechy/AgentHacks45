@@ -229,7 +229,7 @@ export function Sidebar({ className, mobile, onMobileClose }: SidebarProps) {
           <div className="relative h-10 w-10 shrink-0 group">
             <div className="absolute inset-0 bg-primary/20 rounded-lg animate-pulse" />
             <Image
-              src="/logo.png"
+              src="/logo_1.png"
               alt="IMS Logo"
               fill
               className="object-contain relative z-10 transition-transform duration-300 group-hover:scale-110"

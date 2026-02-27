@@ -99,7 +99,7 @@ export function SignUpForm() {
       <CardHeader className="space-y-3 flex flex-col items-center text-center relative z-10 pb-8">
         {/* Logo */}
         <div className="relative flex h-16 w-16 items-center justify-center mb-2 group hover:scale-110 transition-transform duration-300">
-          <Image src="/logo.png" alt="IMS Logo" width={64} height={64} className="object-contain transition-transform duration-300 group-hover:rotate-12" />
+          <Image src="/logo_1.png" alt="IMS Logo" width={64} height={64} className="object-contain transition-transform duration-300 group-hover:rotate-12" />
         </div>
 
         {/* Title with Badge */}
