@@ -30,7 +30,7 @@ export default async function ReceiptsPage() {
                 description="Manage incoming shipments from vendors"
               />
             </div>
-            
+
             {/* Quick Stats */}
             <div className="flex flex-wrap items-center gap-3">
               <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 border border-blue-500/20 animate-in fade-in slide-in-from-left-2 duration-500">
@@ -75,20 +75,6 @@ export default async function ReceiptsPage() {
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-700">
           <TransferList transfers={transfers || []} type="INCOMING" />
         </div>
-
-        {/* Empty State (if TransferList doesn't handle it) */}
-        {transferCount === 0 && (
-          <div className="flex flex-col items-center justify-center py-12 text-center animate-in fade-in duration-700">
-            <div className="h-24 w-24 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-              <Package className="h-12 w-12 text-primary/40" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">No receipts yet</h3>
-            <p className="text-sm text-muted-foreground max-w-sm mb-6">
-              Create your first receipt to start tracking incoming inventory
-            </p>
-            <TransferDialog type="INCOMING" />
-          </div>
-        )}
       </div>
     </div>
   );
