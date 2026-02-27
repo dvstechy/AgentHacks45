@@ -599,6 +599,45 @@ async function main() {
   const allContacts = await prisma.contact.findMany({
     where: { userId: user.id },
   });
+  // ===============================
+// DEMAND HISTORY GENERATION (60 DAYS)
+// ===============================
+
+console.log("📊 Generating demand history...")
+
+const today = new Date()
+
+for (const product of allProducts) {
+  for (let i = 60; i >= 1; i--) {
+    const date = new Date()
+    date.setDate(today.getDate() - i)
+
+    let baseDemand = 5
+
+    if (product.sku.includes("ACC")) baseDemand = 15
+    else if (product.sku.includes("COMP")) baseDemand = 12
+    else if (product.sku.includes("PHONE")) baseDemand = 10
+    else if (product.sku.includes("AUD")) baseDemand = 8
+    else if (product.sku.includes("LAP")) baseDemand = 4
+    else if (product.sku.includes("CAM")) baseDemand = 3
+
+    const variation = baseDemand * (0.7 + Math.random() * 0.6)
+    const trendFactor = 1 + (60 - i) * 0.002
+
+    const finalDemand = Math.floor(variation * trendFactor)
+
+    await prisma.demandHistory.create({
+      data: {
+        productId: product.id,
+        userId: user.id,
+        quantity: finalDemand,
+        date,
+      },
+    })
+  }
+}
+
+console.log("✅ Demand history generated.")
 
   // Create Initial Stock Levels
   console.log('📊 Creating initial stock levels...');
