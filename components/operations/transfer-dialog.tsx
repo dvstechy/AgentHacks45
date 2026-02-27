@@ -17,6 +17,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -145,17 +146,29 @@ export function TransferDialog({
       toast.error("Failed to create transfer");
     },
   });
+  const isSubmitting = createMutation.isPending;
 
   const onSubmit = (values: z.infer<typeof transferSchema>) => {
+    const sourceLocationId =
+      values.sourceLocationId && values.sourceLocationId !== "none"
+        ? values.sourceLocationId
+        : "";
+    const destinationLocationId =
+      values.destinationLocationId && values.destinationLocationId !== "none"
+        ? values.destinationLocationId
+        : "";
+    const contactId =
+      values.contactId && values.contactId !== "none" ? values.contactId : "";
+
     // Manual validation based on type
-    if (type === "INCOMING" && !values.destinationLocationId) {
+    if (type === "INCOMING" && !destinationLocationId) {
       form.setError("destinationLocationId", {
         type: "manual",
         message: "Destination location is required for receipts",
       });
       return;
     }
-    if (type === "OUTGOING" && !values.sourceLocationId) {
+    if (type === "OUTGOING" && !sourceLocationId) {
       form.setError("sourceLocationId", {
         type: "manual",
         message: "Source location is required for deliveries",
@@ -164,14 +177,14 @@ export function TransferDialog({
     }
     if (type === "INTERNAL") {
       let hasError = false;
-      if (!values.sourceLocationId) {
+      if (!sourceLocationId) {
         form.setError("sourceLocationId", {
           type: "manual",
           message: "Source location is required",
         });
         hasError = true;
       }
-      if (!values.destinationLocationId) {
+      if (!destinationLocationId) {
         form.setError("destinationLocationId", {
           type: "manual",
           message: "Destination location is required",
@@ -184,9 +197,9 @@ export function TransferDialog({
     // Sanitize optional fields
     const data = {
       ...values,
-      contactId: values.contactId || null,
-      sourceLocationId: values.sourceLocationId || null,
-      destinationLocationId: values.destinationLocationId || null,
+      contactId: contactId || null,
+      sourceLocationId: sourceLocationId || null,
+      destinationLocationId: destinationLocationId || null,
     };
     createMutation.mutate(data);
   };
@@ -208,15 +221,15 @@ export function TransferDialog({
           </Button>
         </DialogTrigger>
       )}
-      <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[960px] max-h-[90vh] overflow-y-auto p-0">
+        <DialogHeader className="border-b bg-muted/20 px-6 py-5">
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
             Create a new {type.toLowerCase()} transfer.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6">
             {/* General Info Section */}
             <div className="grid gap-6">
               <FormField
@@ -236,14 +249,20 @@ export function TransferDialog({
                           <SelectValue placeholder="Select contact" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
-                        {contacts?.map((c) => (
-                          <SelectItem key={c.id} value={c.id}>
-                            {c.name}
+                    <SelectContent>
+                      <SelectItem value="none">None</SelectItem>
+                      {contacts?.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {c.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+                    <FormDescription>
+                      {type === "INCOMING"
+                        ? "Optional vendor reference for incoming goods."
+                        : "Optional customer reference for outgoing goods."}
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -266,6 +285,7 @@ export function TransferDialog({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
+                          <SelectItem value="none">None</SelectItem>
                           {locations?.map((l) => (
                             <SelectItem key={l.id} value={l.id}>
                               {l.name} ({l.shortCode})
@@ -273,6 +293,11 @@ export function TransferDialog({
                           ))}
                         </SelectContent>
                       </Select>
+                      <FormDescription>
+                        {type === "OUTGOING" || type === "INTERNAL"
+                          ? "Required for deliveries/internal transfers."
+                          : "Optional for this transfer type."}
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -293,6 +318,7 @@ export function TransferDialog({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
+                          <SelectItem value="none">None</SelectItem>
                           {locations?.map((l) => (
                             <SelectItem key={l.id} value={l.id}>
                               {l.name} ({l.shortCode})
@@ -300,6 +326,11 @@ export function TransferDialog({
                           ))}
                         </SelectContent>
                       </Select>
+                      <FormDescription>
+                        {type === "INCOMING" || type === "INTERNAL"
+                          ? "Required for receipts/internal transfers."
+                          : "Optional for this transfer type."}
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -330,7 +361,7 @@ export function TransferDialog({
                 {fields.map((field, index) => (
                   <div
                     key={field.id}
-                    className="flex items-start gap-4 p-4 border rounded-lg bg-muted/20"
+                    className="flex items-start gap-4 rounded-lg border bg-muted/20 p-4"
                   >
                     <FormField
                       control={form.control}
@@ -399,9 +430,12 @@ export function TransferDialog({
               <FormMessage>{form.formState.errors.items?.message}</FormMessage>
             </div>
 
-            <DialogFooter>
-              <Button type="submit" className="w-full sm:w-auto">
-                Create Transfer
+            <DialogFooter className="border-t pt-4">
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="w-full sm:w-auto" disabled={isSubmitting}>
+                {isSubmitting ? "Creating..." : "Create Transfer"}
               </Button>
             </DialogFooter>
           </form>
