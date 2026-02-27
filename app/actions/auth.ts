@@ -188,21 +188,21 @@ export async function forgotPassword(prevState: any, formData: FormData) {
 
         // Send email
         const transporter = nodemailer.createTransport({
-            host: process.env.NEXT_SMTP_HOST,
-            port: 587,
-            secure: false,
+            host: process.env.SMTP_HOST,
+            port: Number(process.env.SMTP_PORT) || 587,
+            secure: process.env.SMTP_PORT === '465',
             auth: {
-                user: process.env.NEXT_MAIL_ID,
-                pass: process.env.NEXT_PASSWORD,
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASSWORD,
             },
         })
 
         // For development/demo if env vars are missing, log it
-        if (!process.env.NEXT_MAIL_ID || !process.env.NEXT_PASSWORD) {
+        if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
             console.log(`[DEV MODE] OTP for ${email}: ${otp}`)
         } else {
             await transporter.sendMail({
-                from: process.env.NEXT_MAIL_ID,
+                from: process.env.SMTP_USER,
                 to: email,
                 subject: 'Password Reset OTP',
                 text: `Your OTP for password reset is: ${otp}. It expires in 10 minutes.`,
