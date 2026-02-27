@@ -21,6 +21,7 @@ export async function POST(req: Request) {
       alerts: result.lowStockAlerts,
       actions: result.rebalancingActions,
       auditLogs: result.auditLogs,
+      impactMetrics: result.impactMetrics,
     });
 
   } catch (error) {

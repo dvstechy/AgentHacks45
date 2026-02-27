@@ -24,6 +24,8 @@ export interface StockAlert {
   warehouseName?: string;
   locationId?: string;
   attributes?: Record<string, unknown>;
+  riskScore?: number;
+  riskLevel?: "LOW" | "MEDIUM" | "HIGH";
 }
 
 export interface NearbyWarehouse {
@@ -76,6 +78,12 @@ const AgentStateAnnotation = Annotation.Root({
     demandGrowthRate: number;
   } | null>(),
   auditLogs: Annotation<AuditLogEntry[]>(),
+  impactMetrics: Annotation<{
+    totalTransferCost: number;
+    totalVendorCost: number;
+    optimizedCost: number;
+    estimatedSavings: number;
+  } | null>(),
 });
 
 export type AgentState = typeof AgentStateAnnotation.State;
@@ -198,13 +206,29 @@ export async function forecastNode(
     const forecast = await forecastDemand(currentAlert.productId);
 
     const predictedDemand = forecast?.mean ?? 0;
-    const demandGrowthRate = forecast?.trendFactor ?? 0;
+    const demandGrowthRate = forecast?.trendFactor ?? 1;
+
+    // ─────────────────────────────
+    // Risk Score Calculation
+    // ─────────────────────────────
+    const currentStock = currentAlert.currentQuantity || 1;
+
+    const rawRisk =
+      (predictedDemand / currentStock) *
+      Math.max(demandGrowthRate, 1);
+
+    let riskLevel: "LOW" | "MEDIUM" | "HIGH" = "LOW";
+
+    if (rawRisk > 1.5) riskLevel = "HIGH";
+    else if (rawRisk > 0.8) riskLevel = "MEDIUM";
+
+    const riskScore = Number(rawRisk.toFixed(2));
 
     const auditLog = {
       nodeName: "Forecast",
       inputData: { productId: currentAlert.productId },
-      outputData: { predictedDemand, demandGrowthRate },
-      reasoningString: `Predicted 30-day demand: ${predictedDemand}, Growth rate: ${demandGrowthRate}%`,
+      outputData: { predictedDemand, demandGrowthRate, riskScore, riskLevel },
+      reasoningString: `Predicted 30-day demand: ${predictedDemand}, Growth rate: ${demandGrowthRate}%, Risk: ${riskLevel} (${riskScore})`,
       decision: "Forecast complete",
     };
 
@@ -212,6 +236,11 @@ export async function forecastNode(
       forecast: {
         predictedDemand,
         demandGrowthRate,
+      },
+      currentAlert: {
+        ...currentAlert,
+        riskScore,
+        riskLevel,
       },
       auditLogs: [...(auditLogs || []), auditLog],
     };
@@ -550,6 +579,7 @@ export async function runMultiAgentSystem(
     supplierData: {},
     forecast: null,
     auditLogs: [],
+    impactMetrics: null,
   };
 
   // 1️⃣ Run graph once to populate lowStockAlerts
@@ -575,10 +605,45 @@ export async function runMultiAgentSystem(
     allAuditLogs.push(...result.auditLogs);
   }
 
+  // ─────────────────────────────
+  // Impact Metrics Calculation
+  // ─────────────────────────────
+
+  let totalTransferCost = 0;
+  let totalVendorCost = 0;
+
+  for (const action of allActions) {
+    if (action.type === "INTERNAL_TRANSFER") {
+      totalTransferCost += action.quantity * 5;
+    }
+
+    if (action.type === "VENDOR_ORDER") {
+      totalVendorCost += action.quantity * 8 + 200;
+    }
+  }
+
+  const optimizedCost = totalTransferCost + totalVendorCost;
+
+  // Assume worst case = all vendor orders
+  let worstCaseCost = 0;
+  for (const action of allActions) {
+    worstCaseCost += action.quantity * 8 + 200;
+  }
+
+  const estimatedSavings = worstCaseCost - optimizedCost;
+
+  const impactMetrics = {
+    totalTransferCost,
+    totalVendorCost,
+    optimizedCost,
+    estimatedSavings,
+  };
+
   // 4️⃣ Return aggregated result
   return {
     ...firstPass,
     rebalancingActions: allActions,
     auditLogs: allAuditLogs,
+    impactMetrics,
   };
 }
