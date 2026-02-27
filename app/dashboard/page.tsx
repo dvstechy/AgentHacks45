@@ -132,33 +132,44 @@ export default async function DashboardPage() {
             change: "+2",
             trend: "up"
           }
-        ].map((stat, index) => (
-          <div
-            key={stat.label}
-            className="group relative overflow-hidden rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 transition-all duration-300 hover:shadow-lg hover:border-primary/30 animate-in fade-in slide-in-from-bottom-2"
-            style={{ animationDelay: `${index * 100}ms` }}
-          >
-            {/* Background Gradient */}
-            <div className={`absolute inset-0 bg-gradient-to-br from-${stat.color}-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+        ].map((stat, index) => {
+          const colorVariants = {
+            blue: "bg-blue-500/10 text-blue-500 from-blue-500/5",
+            green: "bg-green-500/10 text-green-500 from-green-500/5",
+            yellow: "bg-yellow-500/10 text-yellow-500 from-yellow-500/5",
+            red: "bg-red-500/10 text-red-500 from-red-500/5",
+          };
+          const colors = colorVariants[stat.color as keyof typeof colorVariants];
 
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-muted-foreground">{stat.label}</span>
-                <div className={`h-8 w-8 rounded-lg bg-${stat.color}-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                  <stat.icon className={`h-4 w-4 text-${stat.color}-500`} />
+          return (
+            <div
+              key={stat.label}
+              className="group relative overflow-hidden rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 transition-all duration-300 hover:shadow-lg hover:border-primary/30 animate-in fade-in slide-in-from-bottom-2"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              {/* Background Gradient */}
+              <div className={cn("absolute inset-0 bg-gradient-to-br to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500", colors.split(' ')[2])} />
+
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-medium text-muted-foreground">{stat.label}</span>
+                  <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300", colors.split(' ').slice(0, 2).join(' '))}>
+                    <stat.icon className="h-4 w-4" />
+                  </div>
+                </div>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-xl lg:text-2xl font-bold">{stat.value}</span>
+                  <span className={cn("text-xs font-medium flex items-center gap-0.5",
+                    stat.trend === 'up' ? 'text-green-500' : 'text-red-500'
+                  )}>
+                    {stat.change}
+                    <TrendingUp className={cn("h-3 w-3", stat.trend === 'down' && 'rotate-180')} />
+                  </span>
                 </div>
               </div>
-              <div className="flex items-baseline justify-between">
-                <span className="text-xl lg:text-2xl font-bold">{stat.value}</span>
-                <span className={`text-xs font-medium flex items-center gap-0.5 ${stat.trend === 'up' ? 'text-green-500' : 'text-red-500'
-                  }`}>
-                  {stat.change}
-                  <TrendingUp className={`h-3 w-3 ${stat.trend === 'down' && 'rotate-180'}`} />
-                </span>
-              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Operations Section */}
