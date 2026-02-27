@@ -50,7 +50,7 @@ export async function getProducts() {
         }))
 
         return { success: true, data: serializedProducts }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Failed to fetch products' }
     }
 }
@@ -131,7 +131,7 @@ export async function deleteProduct(id: string) {
         })
         revalidatePath('/dashboard/inventory')
         return { success: true }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Failed to delete product' }
     }
 }

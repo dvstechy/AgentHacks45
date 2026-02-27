@@ -119,7 +119,7 @@ export function WarehouseDialog({
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
+    mutationFn: ({ id, data }: { id: string; data: z.infer<typeof formSchema> }) =>
       updateWarehouse(id, data),
     onSuccess: (result) => {
       if (result.success) {

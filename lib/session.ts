@@ -1,7 +1,6 @@
 import 'server-only'
 import { SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 
 const secretKey = process.env.SESSION_SECRET
 const encodedKey = new TextEncoder().encode(secretKey)
@@ -34,7 +33,7 @@ export async function getSession() {
             algorithms: ['HS256'],
         })
         return payload
-    } catch (error) {
+    } catch {
         console.log('Failed to verify session')
         return null
     }

@@ -2,7 +2,6 @@ import { getDashboardStats, getReorderRecommendations } from "@/app/actions/dash
 import { OperationCard } from "@/components/dashboard/operation-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
-import { Separator } from "@/components/ui/separator";
 import { Loader } from "@/components/ui/loader";
 import {
   AlertTriangle,

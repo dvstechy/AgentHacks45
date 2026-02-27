@@ -25,7 +25,7 @@ export async function proxy(request: NextRequest) {
                 algorithms: ['HS256'],
             })
             return NextResponse.redirect(new URL('/dashboard', request.url))
-        } catch (error) {
+        } catch {
             // Session invalid, let them stay on auth page (and maybe clear cookie?)
             // For now, just proceed, the session is invalid so they can sign in again.
         }

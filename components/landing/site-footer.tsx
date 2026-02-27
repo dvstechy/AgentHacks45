@@ -257,7 +257,7 @@ function FooterCol({
         {title}
       </h3>
       <ul className="space-y-3">
-        {links.map((link, index) => {
+        {links.map((link) => {
           const Icon = link.icon;
           return (
             <li key={link.label}>

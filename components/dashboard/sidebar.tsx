@@ -8,7 +8,6 @@ import {
   ArrowRightLeft,
   ArrowUpFromLine,
   ChevronDown,
-  ChevronRight,
   ClipboardList,
   History,
   LayoutDashboard,
@@ -31,6 +30,16 @@ import { useState } from "react";
 import type { Route } from "next";
 
 const sidebarGroups = [
+  {
+    title: "AI Intelligence",
+    items: [
+      {
+        title: "Command Center",
+        href: "/dashboard/command-center",
+        icon: Sparkles,
+      },
+    ],
+  },
   {
     title: "Overview",
     items: [

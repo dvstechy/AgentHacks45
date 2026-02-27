@@ -7,11 +7,6 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import {
   Card,
   CardContent,
   CardDescription,
@@ -60,7 +55,7 @@ export function ForgotPasswordForm() {
     <Card className="w-full max-w-md mx-auto relative overflow-hidden border border-border/50 bg-background/80 backdrop-blur-xl shadow-2xl">
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none"></div>
-      
+
       {/* Shine Effect */}
       <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-linear-to-r from-transparent via-white/5 to-transparent pointer-events-none"></div>
 
@@ -142,7 +137,7 @@ function EmailForm({ onSuccess }: { onSuccess: (email: string) => void }) {
 
       if (result?.errors) {
         Object.entries(result.errors).forEach(([key, errors]) => {
-          emailForm.setError(key as any, { message: errors[0] });
+          emailForm.setError(key as keyof EmailValues, { message: errors[0] });
         });
       } else if (result?.message) {
         if (result.success) {
@@ -186,7 +181,7 @@ function EmailForm({ onSuccess }: { onSuccess: (email: string) => void }) {
         {/* Info Box */}
         <div className="bg-muted/30 rounded-lg p-4 border border-border/50">
           <p className="text-xs text-muted-foreground">
-            💡 <strong>Quick tip:</strong> Check your spam folder if you don't see the OTP in your inbox within a few minutes.
+            💡 <strong>Quick tip:</strong> Check your spam folder if you don&apos;t see the OTP in your inbox within a few minutes.
           </p>
         </div>
 
@@ -238,7 +233,7 @@ function ResetForm({ email, onBack }: { email: string; onBack: () => void }) {
 
       if (result?.errors) {
         Object.entries(result.errors).forEach(([key, errors]) => {
-          resetForm.setError(key as any, { message: errors[0] });
+          resetForm.setError(key as keyof ResetValues, { message: errors[0] });
         });
       } else if (result?.message) {
         if (result.success) {

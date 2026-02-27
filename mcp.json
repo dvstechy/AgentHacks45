@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "pageindex": {
+            "type": "http",
+            "url": "https://api.pageindex.ai/mcp",
+            "headers": {
+                "Authorization": "Bearer b5cff2d8671f4bbda655cb0a44e9ddb3"
+            }
+        }
+    }
+}

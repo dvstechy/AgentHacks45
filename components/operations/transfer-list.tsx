@@ -48,6 +48,7 @@ import {
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import type { Route } from "next";
 
 interface Transfer {
   id: string;
@@ -58,7 +59,7 @@ interface Transfer {
   sourceLocation?: { name: string } | null;
   destinationLocation?: { name: string } | null;
   scheduledDate?: Date | string | null;
-  stockMoves: any[];
+  stockMoves: { id: string }[];
 }
 
 interface TransferListProps {
@@ -214,7 +215,7 @@ export function TransferList({
               </button>
             )}
           </div>
-          
+
           {/* Results Count */}
           <div className="flex items-center gap-2 text-sm text-muted-foreground animate-in fade-in slide-in-from-right-2 duration-500">
             <Filter className="h-4 w-4" />

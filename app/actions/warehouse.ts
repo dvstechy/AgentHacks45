@@ -32,7 +32,7 @@ export async function getWarehouses() {
             },
         })
         return { success: true, data: warehouses }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Failed to fetch warehouses' }
     }
 }
@@ -128,7 +128,7 @@ export async function deleteWarehouse(id: string) {
         })
         revalidatePath('/dashboard/warehouses')
         return { success: true }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Failed to delete warehouse' }
     }
 }
@@ -147,7 +147,7 @@ export async function getLocations(warehouseId?: string) {
     if (!session?.userId) return { success: false, error: "Unauthorized" };
 
     try {
-        const where: any = {
+        const where: Record<string, unknown> = {
             userId: session.userId as string,
         }
         if (warehouseId) {
@@ -166,7 +166,7 @@ export async function getLocations(warehouseId?: string) {
             },
         })
         return { success: true, data: locations }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Failed to fetch locations' }
     }
 }
@@ -270,7 +270,7 @@ export async function deleteLocation(id: string) {
         revalidatePath('/dashboard/inventory/locations')
         revalidatePath('/dashboard/warehouses')
         return { success: true }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Failed to delete location' }
     }
 }

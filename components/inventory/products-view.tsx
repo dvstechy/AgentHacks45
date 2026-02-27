@@ -18,7 +18,17 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 
 interface ProductsViewProps {
-  initialProducts: any[];
+  initialProducts: {
+    id: string;
+    name: string;
+    sku: string;
+    type: string;
+    salesPrice: number;
+    costPrice: number;
+    category?: { name: string } | null;
+    stockLevels: { quantity: number; location?: { name: string; type: string } | null }[];
+    [key: string]: unknown;
+  }[];
 }
 
 export function ProductsView({ initialProducts }: ProductsViewProps) {

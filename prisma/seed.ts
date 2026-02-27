@@ -509,7 +509,7 @@ async function main() {
     },
   });
 
-  const inventoryLoss = await prisma.location.create({
+  await prisma.location.create({
     data: {
       name: 'Inventory Adjustments',
       shortCode: 'INV-ADJ',

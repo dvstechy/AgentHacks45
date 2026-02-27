@@ -63,7 +63,7 @@ export async function signUp(data: z.infer<typeof signUpSchema>) {
                 name,
                 email,
                 password: hashedPassword,
-                role: role as any || 'STAFF',
+                role: role || 'STAFF',
             },
         })
 
@@ -85,7 +85,7 @@ const signInSchema = z.object({
     password: z.string().min(1, 'Password is required'),
 })
 
-export async function signIn(prevState: any, formData: FormData) {
+export async function signIn(prevState: unknown, formData: FormData) {
     const validatedFields = signInSchema.safeParse({
         identifier: formData.get('identifier'),
         password: formData.get('password'),
@@ -148,7 +148,7 @@ const forgotPasswordSchema = z.object({
     email: z.string().email('Invalid email address'),
 })
 
-export async function forgotPassword(prevState: any, formData: FormData) {
+export async function forgotPassword(prevState: unknown, formData: FormData) {
     const validatedFields = forgotPasswordSchema.safeParse({
         email: formData.get('email'),
     })
@@ -232,7 +232,7 @@ const resetPasswordSchema = z.object({
     path: ["confirmPassword"],
 })
 
-export async function resetPassword(prevState: any, formData: FormData) {
+export async function resetPassword(prevState: unknown, formData: FormData) {
     const validatedFields = resetPasswordSchema.safeParse({
         email: formData.get('email'),
         otp: formData.get('otp'),

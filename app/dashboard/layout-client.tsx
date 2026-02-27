@@ -1,9 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { Header } from "@/components/dashboard/header";
 import { cn } from "@/lib/utils";
+
+// Dynamic import to avoid SSR issues with Recoil
+const ChatWidget = dynamic(
+  () =>
+    import("@/components/chainlit/chat-widget").then((mod) => mod.ChatWidget),
+  { ssr: false }
+);
 
 interface DashboardLayoutClientProps {
   children: React.ReactNode;
@@ -54,6 +62,9 @@ export default function DashboardLayoutClient({
           {children}
         </main>
       </div>
+
+      {/* Floating AI Chat Widget */}
+      <ChatWidget />
     </div>
   );
 }

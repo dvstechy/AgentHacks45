@@ -37,10 +37,10 @@ import {
   updateCategory,
   getCategories,
 } from "@/app/actions/category";
-import { 
-  Plus, 
-  FolderTree, 
-  Sparkles, 
+import {
+  Plus,
+  FolderTree,
+  Sparkles,
   FileText,
   AlertCircle,
   CheckCircle2,
@@ -60,7 +60,12 @@ const categorySchema = z.object({
 interface CategoryDialogProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  categoryToEdit?: any;
+  categoryToEdit?: {
+    id: string;
+    name: string;
+    description?: string | null;
+    parentId?: string | null;
+  } | null;
 }
 
 export function CategoryDialog({
@@ -151,7 +156,7 @@ export function CategoryDialog({
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
+    mutationFn: ({ id, data }: { id: string; data: z.infer<typeof categorySchema> }) =>
       updateCategory(id, data),
     onSuccess: (result) => {
       if (result.success) {
@@ -207,13 +212,13 @@ export function CategoryDialog({
           </Button>
         </DialogTrigger>
       )}
-      
+
       <DialogContent className="sm:max-w-[560px] p-0 border-border/50 bg-background/95 backdrop-blur-xl">
         {/* Header with Gradient */}
         <DialogHeader className={cn(
           "border-b bg-gradient-to-r p-6",
-          categoryToEdit 
-            ? "from-purple-500/10 to-primary/5 border-purple-500/20" 
+          categoryToEdit
+            ? "from-purple-500/10 to-primary/5 border-purple-500/20"
             : "from-primary/10 to-purple-500/5 border-primary/20"
         )}>
           <div className="flex items-center gap-3">
@@ -249,9 +254,9 @@ export function CategoryDialog({
                     Category Name <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="e.g. Electronics, Furniture, Clothing" 
-                      {...field} 
+                    <Input
+                      placeholder="e.g. Electronics, Furniture, Clothing"
+                      {...field}
                       className="bg-background/50 backdrop-blur-sm border-border/50 focus-visible:ring-primary/20 focus-visible:border-primary transition-all duration-200"
                     />
                   </FormControl>
@@ -343,16 +348,16 @@ export function CategoryDialog({
 
             {/* Form Footer */}
             <DialogFooter className="border-t border-border/50 pt-6">
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => setOpen(false)}
                 className="border-border/50 hover:bg-muted/80 transition-all duration-200"
               >
                 Cancel
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 disabled:hover:scale-100"
                 disabled={isSubmitting}
               >

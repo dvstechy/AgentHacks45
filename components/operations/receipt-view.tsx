@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
-import { 
-  ArrowLeft, 
-  Download, 
-  Printer, 
+import {
+  ArrowLeft,
+  Download,
+  Printer,
   Package2,
   Calendar,
   MapPin,
@@ -22,6 +22,7 @@ import {
   Receipt
 } from "lucide-react";
 import Link from "next/link";
+import type { Route } from "next";
 import { useRef, useState } from "react";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
@@ -37,15 +38,39 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
+interface StockMoveItem {
+  id: string;
+  quantity: number;
+  product: {
+    name: string;
+    costPrice: number;
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+}
+
+interface TransferData {
+  reference: string;
+  type: string;
+  status: string;
+  scheduledDate?: string | Date | null;
+  effectiveDate?: string | Date | null;
+  sourceLocation?: { name: string;[key: string]: unknown } | null;
+  destinationLocation?: { name: string;[key: string]: unknown } | null;
+  contact?: { name: string; email?: string | null; phone?: string | null;[key: string]: unknown } | null;
+  stockMoves: StockMoveItem[];
+  [key: string]: unknown;
+}
+
 interface ReceiptViewProps {
-  transfer: any;
+  transfer: TransferData;
 }
 
 export function ReceiptView({ transfer }: ReceiptViewProps) {
   const receiptRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const subtotal = transfer.stockMoves.reduce(
-    (acc: number, move: any) => acc + move.quantity * move.product.costPrice,
+    (acc: number, move: StockMoveItem) => acc + move.quantity * move.product.costPrice,
     0
   );
 
@@ -159,8 +184,8 @@ export function ReceiptView({ transfer }: ReceiptViewProps) {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between animate-in fade-in slide-in-from-top-2 duration-500">
         <div className="flex items-center gap-3">
           <Link href={getBackLink(transfer.type) as any}>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="icon"
               className="h-9 w-9 border-border/50 hover:bg-muted/80 transition-all duration-200 hover:scale-105"
             >
@@ -183,7 +208,7 @@ export function ReceiptView({ transfer }: ReceiptViewProps) {
             </Badge>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
@@ -307,7 +332,7 @@ export function ReceiptView({ transfer }: ReceiptViewProps) {
       </div>
 
       {/* Printable Receipt */}
-      <div 
+      <div
         ref={receiptRef}
         className={cn(
           "rounded-xl border border-border/50 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200",
@@ -333,7 +358,7 @@ export function ReceiptView({ transfer }: ReceiptViewProps) {
                 </p>
               </div>
             </div>
-            
+
             <div className="text-right">
               <h2 className="text-3xl font-bold text-primary">
                 {getTitle(transfer.type)}
@@ -468,7 +493,7 @@ export function ReceiptView({ transfer }: ReceiptViewProps) {
               </TableHeader>
               <TableBody>
                 {transfer.stockMoves.map((move: any, index: number) => (
-                  <TableRow 
+                  <TableRow
                     key={move.id}
                     className="animate-in fade-in slide-in-from-bottom-1"
                     style={{ animationDelay: `${index * 30}ms` }}

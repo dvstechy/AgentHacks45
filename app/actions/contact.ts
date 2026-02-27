@@ -18,7 +18,7 @@ export async function getContacts(type?: 'CUSTOMER' | 'VENDOR') {
     if (!session?.userId) return { success: false, error: "Unauthorized" };
 
     try {
-        const where: any = {
+        const where: Record<string, unknown> = {
             userId: session.userId as string,
         }
         if (type) {
@@ -30,7 +30,7 @@ export async function getContacts(type?: 'CUSTOMER' | 'VENDOR') {
             orderBy: { createdAt: 'desc' }
         })
         return { success: true, data: contacts }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Failed to fetch contacts' }
     }
 }
@@ -54,7 +54,7 @@ export async function createContact(data: z.infer<typeof contactSchema>) {
         revalidatePath('/dashboard/operations/deliveries')
         revalidatePath('/dashboard/operations/receipts')
         return { success: true }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Failed to create contact' }
     }
 }
@@ -72,7 +72,7 @@ export async function deleteContact(id: string) {
         })
         revalidatePath('/dashboard/contacts')
         return { success: true }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Failed to delete contact' }
     }
 }

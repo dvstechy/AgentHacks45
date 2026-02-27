@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
-import { runAgentSystem } from "@/lib/agents/orchestrator"
+import { runMultiAgentSystem } from "@/lib/agents/langgraph-agent";
+import { randomUUID } from "crypto";
 
 async function executeAgent() {
   const user = await prisma.user.findFirst({
@@ -8,18 +9,37 @@ async function executeAgent() {
 
   if (!user) {
     console.log("User not found")
-    return
+    return { error: "User not found" }
   }
 
-  await runAgentSystem(user.id)
+  const traceId = randomUUID();
+  try {
+    const result = await runMultiAgentSystem(user.id, traceId);
+    return {
+      message: "Agent executed",
+      traceId,
+      summary: {
+        alerts: result.lowStockAlerts.length,
+        actions: result.rebalancingActions.length,
+      }
+    };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Unknown error" };
+  }
 }
 
 export async function GET() {
-  await executeAgent()
-  return Response.json({ message: "Agent executed (GET)" })
+  const result = await executeAgent()
+  if ('error' in result) {
+    return Response.json(result, { status: 500 })
+  }
+  return Response.json({ ...result, message: result.message + " (GET)" })
 }
 
 export async function POST() {
-  await executeAgent()
-  return Response.json({ message: "Agent executed (POST)" })
+  const result = await executeAgent()
+  if ('error' in result) {
+    return Response.json(result, { status: 500 })
+  }
+  return Response.json({ ...result, message: result.message + " (POST)" })
 }

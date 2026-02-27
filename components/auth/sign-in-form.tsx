@@ -26,7 +26,7 @@ import { signIn } from "@/app/actions/auth";
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, Lock, ArrowRight, Sparkles, Eye, EyeOff, User } from "lucide-react";
+import { Lock, ArrowRight, Sparkles, Eye, EyeOff, User } from "lucide-react";
 import type { Route } from "next";
 
 const signInSchema = z.object({
@@ -58,7 +58,7 @@ export function SignInForm() {
 
       if (result?.errors) {
         Object.entries(result.errors).forEach(([key, errors]) => {
-          form.setError(key as any, { message: errors[0] });
+          form.setError(key as keyof SignInValues, { message: errors[0] });
         });
       } else if (result?.message) {
         toast.error(result.message);

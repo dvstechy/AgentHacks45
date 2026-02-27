@@ -37,12 +37,12 @@ import {
   getWarehouses,
   getLocations,
 } from "@/app/actions/warehouse";
-import { 
-  Plus, 
-  MapPin, 
-  Hash, 
-  Layers, 
-  Building2, 
+import {
+  Plus,
+  MapPin,
+  Hash,
+  Layers,
+  Building2,
   TreePine,
   Sparkles,
   AlertCircle,
@@ -163,7 +163,7 @@ export function LocationDialog({
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
+    mutationFn: ({ id, data }: { id: string; data: z.infer<typeof locationSchema> }) =>
       updateLocation(id, data),
     onSuccess: (result) => {
       if (result.success) {
@@ -199,7 +199,7 @@ export function LocationDialog({
       form.reset({
         name: locationToEdit.name,
         shortCode: locationToEdit.shortCode,
-        type: locationToEdit.type as any,
+        type: locationToEdit.type as z.infer<typeof locationSchema>["type"],
         warehouseId: locationToEdit.warehouseId || "none",
         parentId: locationToEdit.parentId || "none",
       });
@@ -255,13 +255,13 @@ export function LocationDialog({
           </Button>
         </DialogTrigger>
       )}
-      
+
       <DialogContent className="sm:max-w-[620px] p-0 border-border/50 bg-background/95 backdrop-blur-xl">
         {/* Header with Gradient */}
         <DialogHeader className={cn(
           "border-b bg-gradient-to-r p-6",
-          locationToEdit 
-            ? "from-emerald-500/10 to-primary/5 border-emerald-500/20" 
+          locationToEdit
+            ? "from-emerald-500/10 to-primary/5 border-emerald-500/20"
             : "from-primary/10 to-emerald-500/5 border-primary/20"
         )}>
           <div className="flex items-center gap-3">
@@ -298,9 +298,9 @@ export function LocationDialog({
                       Name <span className="text-red-500">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="e.g. Shelf A-1, Rack 12" 
-                        {...field} 
+                      <Input
+                        placeholder="e.g. Shelf A-1, Rack 12"
+                        {...field}
                         className="bg-background/50 backdrop-blur-sm border-border/50 focus-visible:ring-primary/20 focus-visible:border-primary transition-all duration-200"
                       />
                     </FormControl>
@@ -311,7 +311,7 @@ export function LocationDialog({
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="shortCode"
@@ -322,9 +322,9 @@ export function LocationDialog({
                       Short Code <span className="text-red-500">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="e.g. WH/STOCK/A1" 
-                        {...field} 
+                      <Input
+                        placeholder="e.g. WH/STOCK/A1"
+                        {...field}
                         className="font-mono bg-background/50 backdrop-blur-sm border-border/50 focus-visible:ring-primary/20 focus-visible:border-primary transition-all duration-200"
                       />
                     </FormControl>
@@ -514,8 +514,8 @@ export function LocationDialog({
                       <Badge variant="outline" className="font-mono text-xs">
                         {form.watch("shortCode") || "CODE"}
                       </Badge>
-                      <Badge 
-                        variant="outline" 
+                      <Badge
+                        variant="outline"
                         className={cn(
                           "text-xs",
                           getTypeColor(form.watch("type"))
@@ -545,16 +545,16 @@ export function LocationDialog({
 
             {/* Form Footer */}
             <DialogFooter className="border-t border-border/50 pt-6">
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => setOpen(false)}
                 className="border-border/50 hover:bg-muted/80 transition-all duration-200"
               >
                 Cancel
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 disabled:hover:scale-100"
                 disabled={isSubmitting}
               >

@@ -54,7 +54,7 @@ interface Warehouse {
   name: string;
   shortCode: string;
   address: string | null;
-  locations: any[];
+  locations: { id: string; name: string }[];
   status?: "ACTIVE" | "MAINTENANCE" | "INACTIVE";
 }
 

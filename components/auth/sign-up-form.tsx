@@ -51,7 +51,7 @@ type SignUpValues = z.infer<typeof signUpSchema>;
 export function SignUpForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const form = useForm<SignUpValues>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -70,7 +70,7 @@ export function SignUpForm() {
     onSuccess: (result) => {
       if (result?.errors) {
         Object.entries(result.errors).forEach(([key, errors]) => {
-          form.setError(key as any, { message: errors[0] });
+          form.setError(key as keyof SignUpValues, { message: errors[0] });
         });
       } else if (result?.message) {
         toast.error(result.message);
@@ -92,7 +92,7 @@ export function SignUpForm() {
     <Card className="w-full max-w-md mx-auto relative overflow-hidden border border-border/50 bg-background/80 backdrop-blur-xl shadow-2xl">
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none"></div>
-      
+
       {/* Shine Effect */}
       <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-linear-to-r from-transparent via-white/5 to-transparent pointer-events-none"></div>
 
@@ -204,7 +204,7 @@ export function SignUpForm() {
 
             {/* Benefits List */}
             <div className="bg-muted/30 rounded-lg p-4 space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground mb-2">What you'll get:</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">What you&apos;ll get:</p>
               <div className="space-y-1.5">
                 {[
                   "Real-time inventory tracking",
