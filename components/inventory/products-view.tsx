@@ -50,7 +50,7 @@ export function ProductsView({ initialProducts }: ProductsViewProps) {
   return (
     <div className="flex-1 space-y-6 pb-8">
       {/* Header Section with Gradient */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-purple-500/5 to-transparent p-6 md:p-8">
+      <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/10 via-purple-500/5 to-transparent p-4 sm:p-6 md:p-8">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-primary/20 animate-pulse" />
@@ -105,8 +105,8 @@ export function ProductsView({ initialProducts }: ProductsViewProps) {
           </div>
 
           {/* Quick Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
-            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-3 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 mt-4 sm:mt-6">
+            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-2.5 sm:p-3 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
                   <Package className="h-4 w-4 text-primary" />
@@ -120,7 +120,7 @@ export function ProductsView({ initialProducts }: ProductsViewProps) {
               </div>
             </div>
             
-            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-3 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
+            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-2.5 sm:p-3 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-lg bg-green-500/10 flex items-center justify-center">
                   <TrendingUp className="h-4 w-4 text-green-500" />
@@ -134,7 +134,7 @@ export function ProductsView({ initialProducts }: ProductsViewProps) {
               </div>
             </div>
             
-            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-3 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-300">
+            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-2.5 sm:p-3 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-300">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-lg bg-yellow-500/10 flex items-center justify-center">
                   <AlertCircle className="h-4 w-4 text-yellow-500" />
@@ -146,7 +146,7 @@ export function ProductsView({ initialProducts }: ProductsViewProps) {
               </div>
             </div>
             
-            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-3 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-400">
+            <div className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 p-2.5 sm:p-3 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-400">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
                   <Boxes className="h-4 w-4 text-purple-500" />
