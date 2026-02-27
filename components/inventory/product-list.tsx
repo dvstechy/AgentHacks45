@@ -16,8 +16,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { MoreVertical, Pencil, Search, Trash2 } from "lucide-react";
+import * as React from "react";
 import { ProductDialog } from "./product-dialog";
 import { deleteProduct, getProducts } from "@/app/actions/product";
 import toast from "react-hot-toast";
@@ -40,7 +40,6 @@ import {
 } from "@/components/ui/tooltip";
 import { formatINR } from "@/lib/currency";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
 
 interface Product {
   id: string;
@@ -60,9 +59,10 @@ interface ProductListProps {
 }
 
 export function ProductList({ products: initialProducts }: ProductListProps) {
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [editingProduct, setEditingProduct] =
+    React.useState<Product | null>(null);
+  const [deletingId, setDeletingId] = React.useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = React.useState("");
   const queryClient = useQueryClient();
 
   const { data: products = [] } = useQuery({
