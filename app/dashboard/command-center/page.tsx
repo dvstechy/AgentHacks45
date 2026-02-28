@@ -121,7 +121,7 @@ export default async function CommandCenterPage() {
           <div className="flex flex-wrap gap-3 mt-6">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/10 px-3 py-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 border border-blue-500/20 animate-in fade-in slide-in-from-left-2 duration-500">
               <Bot className="h-3.5 w-3.5" />
-              <span>3 Active Agents</span>
+              <span>5 Active Agents</span>
             </div>
             <div className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-3 py-1.5 text-xs font-medium text-green-600 dark:text-green-400 border border-green-500/20 animate-in fade-in slide-in-from-left-2 duration-500 delay-100">
               <Activity className="h-3.5 w-3.5" />
@@ -146,7 +146,7 @@ export default async function CommandCenterPage() {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Active Agents</p>
-                  <p className="text-xl sm:text-2xl font-bold">3</p>
+                  <p className="text-xl sm:text-2xl font-bold">5</p>
                 </div>
               </div>
             </div>
@@ -276,7 +276,7 @@ export default async function CommandCenterPage() {
             <div className="flex items-center gap-2">
               <Bot className="h-4 w-4 text-purple-500" />
               <span>
-                <span className="font-medium text-foreground">3</span> Active Agents
+                <span className="font-medium text-foreground">5</span> Active Agents
               </span>
             </div>
             <div className="flex items-center gap-2">

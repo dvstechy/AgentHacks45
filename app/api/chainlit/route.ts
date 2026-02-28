@@ -29,6 +29,8 @@ export async function POST(request: NextRequest) {
     }
 
     const traceId = randomUUID() as string;
+    const prompt = userMessage.content || "";
+    const isSupplierQuery = /supplier|contract|vendor/i.test(prompt);
 
     // Create a stream response
     const stream = new ReadableStream({
@@ -37,45 +39,39 @@ export async function POST(request: NextRequest) {
           // Send initial thinking message
           const thinkingMessage = JSON.stringify({
             type: "thinking",
-            content: "Analyzing inventory state and determining optimal rebalancing strategy...",
+            content: isSupplierQuery
+              ? "Auditing supplier networks and analyzing contract performance... [Context Aware]"
+              : "Analyzing inventory state and determining optimal rebalancing strategy... [Context Aware]",
+            traceId,
           });
           controller.enqueue(`data: ${thinkingMessage}\n\n`);
 
-          // Run the multi-agent system
-          const agentState = await runMultiAgentSystem(session.userId as string, traceId as string);
-
-          // Stream low stock alerts
-          if (agentState.lowStockAlerts.length > 0) {
-            const alertsMessage = JSON.stringify({
-              type: "alerts",
-              content: `Found ${agentState.lowStockAlerts.length} low-stock alerts:`,
-              data: agentState.lowStockAlerts,
-            } as Record<string, unknown>);
-            controller.enqueue(`data: ${alertsMessage}\n\n`);
-          }
-
-          // Stream each agent's audit log
-          for (const log of agentState.auditLogs) {
-            const auditMessage = JSON.stringify({
-              type: "audit",
-              nodeName: log.nodeName,
-              reasoningString: log.reasoningString,
-              decision: log.decision,
-              outputData: log.outputData,
-            });
-            controller.enqueue(`data: ${auditMessage}\n\n`);
-
-            // Small delay for better streaming effect
-            await new Promise((resolve) => setTimeout(resolve, 300));
-          }
+          // Run the multi-agent system with real-time log streaming
+          const agentState = await runMultiAgentSystem(
+            session.userId as string,
+            traceId as string,
+            prompt,
+            (log) => {
+              console.log(`[SSE] Streaming Audit Log: ${log.nodeName}`);
+              const auditMessage = JSON.stringify({
+                type: "audit",
+                nodeName: log.nodeName,
+                reasoningString: log.reasoningString,
+                decision: log.decision,
+                outputData: log.outputData,
+                traceId,
+              });
+              controller.enqueue(`data: ${auditMessage}\n\n`);
+            }
+          );
 
           // Stream final recommendations
           const recommendations = agentState.rebalancingActions
             .filter((a) => a.validationPassed)
             .map((a) => ({
               type: a.type,
-              sourceWarehouse: a.sourceWarehouseId,
-              destinationWarehouse: a.destinationWarehouseId,
+              sourceWarehouseId: a.sourceWarehouseId,
+              destinationWarehouseId: a.destinationWarehouseId,
               quantity: a.quantity,
               reason: a.reason,
             }));
@@ -85,6 +81,7 @@ export async function POST(request: NextRequest) {
               type: "recommendations",
               content: `Generated ${recommendations.length} rebalancing action(s):`,
               data: recommendations,
+              traceId,
             });
             controller.enqueue(`data: ${recMessage}\n\n`);
           }
@@ -92,7 +89,7 @@ export async function POST(request: NextRequest) {
           // Send completion message
           const completeMessage = JSON.stringify({
             type: "complete",
-            content: "Rebalancing analysis complete",
+            content: isSupplierQuery ? "Supplier audit complete" : "Rebalancing analysis complete",
             traceId,
           });
           controller.enqueue(`data: ${completeMessage}\n\n`);

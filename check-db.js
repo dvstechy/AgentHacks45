@@ -1,21 +1,22 @@
-
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-async function check() {
-    try {
-        const users = await prisma.user.findMany();
-        console.log('Users:', users.map(u => ({ id: u.id, email: u.email })));
-
-        for (const user of users) {
-            const count = await prisma.warehouse.count({ where: { userId: user.id } });
-            console.log(`Warehouse count for ${user.email} (${user.id}): ${count}`);
+async function checkStock() {
+    const stock = await prisma.stockLevel.findMany({
+        include: {
+            product: true,
+            location: {
+                include: {
+                    warehouse: true
+                }
+            }
         }
-    } catch (e) {
-        console.error(e);
-    } finally {
-        await prisma.$disconnect();
-    }
+    });
+
+    console.log("Total Stock Levels:", stock.length);
+    stock.forEach(s => {
+        console.log(`${s.product.name} @ ${s.location.warehouse?.name}: ${s.quantity} (Min: ${s.product.minStock})`);
+    });
 }
 
-check();
+checkStock().catch(console.error).finally(() => prisma.$disconnect());

@@ -12,11 +12,10 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  useChatStream,
-  useAuditLogs,
   type ChatMessage,
   type StockAlert,
   type RebalancingRecommendation,
+  useAuditLogs,
 } from "@/lib/chainlit/hooks";
 import {
   Send,
@@ -52,6 +51,8 @@ const NODE_ICONS: Record<string, React.ReactNode> = {
   Rebalancing: <ArrowRightLeft className="w-3.5 h-3.5" />,
   PageIndex: <FileSearch className="w-3.5 h-3.5" />,
   Arbiter: <Shield className="w-3.5 h-3.5" />,
+  "Bulk Optimizer": <Zap className="w-3.5 h-3.5" />,
+  "AI Process Summary": <Sparkles className="w-3.5 h-3.5" />,
 };
 
 const NODE_COLORS: Record<string, string> = {
@@ -65,6 +66,10 @@ const NODE_COLORS: Record<string, string> = {
     "bg-amber-50 dark:bg-amber-950/50 border-amber-200 dark:border-amber-800",
   Arbiter:
     "bg-rose-50 dark:bg-rose-950/50 border-rose-200 dark:border-rose-800",
+  "Bulk Optimizer":
+    "bg-orange-50 dark:bg-orange-950/50 border-orange-200 dark:border-orange-800",
+  "AI Process Summary":
+    "bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-800",
 };
 
 const NODE_BADGE_COLORS: Record<string, string> = {
@@ -73,6 +78,8 @@ const NODE_BADGE_COLORS: Record<string, string> = {
   Rebalancing: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
   PageIndex: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200",
   Arbiter: "bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200",
+  "Bulk Optimizer": "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
+  "AI Process Summary": "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
 };
 
 // ─────────────────────────────────────────────────────────────────
@@ -110,7 +117,19 @@ const STARTERS = [
 // Main Chatbot Component
 // ─────────────────────────────────────────────────────────────────
 
-export function ChainlitChatbot() {
+interface ChatbotProps {
+  streamState: {
+    messages: ChatMessage[];
+    isLoading: boolean;
+    isConnected: boolean;
+    currentTraceId: string | null;
+    sendMessage: (content: string) => Promise<void>;
+    stopTask: () => void;
+    clearMessages: () => void;
+  };
+}
+
+export function ChainlitChatbot({ streamState }: ChatbotProps) {
   const {
     messages,
     isLoading,
@@ -119,7 +138,7 @@ export function ChainlitChatbot() {
     sendMessage,
     stopTask,
     clearMessages,
-  } = useChatStream();
+  } = streamState;
 
   const { logs: auditLogs, fetchLogs } = useAuditLogs(currentTraceId);
   const [input, setInput] = useState("");
