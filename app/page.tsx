@@ -1,7 +1,7 @@
 import { getSession } from "@/lib/session";
 import { SiteHeader } from "@/components/landing/site-header";
 import { HeroSection } from "@/components/landing/hero-section";
-import { StatsSection } from "@/components/landing/stats-section";
+
 import { FeaturesSection } from "@/components/landing/features-section";
 import { SolutionsSection } from "@/components/landing/solutions-section";
 import { CTASection } from "@/components/landing/cta-section";
@@ -14,7 +14,7 @@ export default async function Home() {
       <SiteHeader session={session} />
       <main className="flex-1">
         <HeroSection session={session} />
-        <StatsSection />
+
         <FeaturesSection />
         <SolutionsSection />
         <CTASection />
