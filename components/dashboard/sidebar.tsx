@@ -36,7 +36,7 @@ const sidebarGroups = [
     title: "AI Intelligence",
     items: [
       {
-        title: "Command Center",
+        title: "SprintStock-AI Agent",
         href: "/dashboard/command-center",
         icon: Sparkles,
       },
