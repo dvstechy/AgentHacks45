@@ -6,7 +6,6 @@ import {
   Truck,
   Warehouse,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const features = [
   {
@@ -49,9 +48,13 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="container mx-auto max-w-6xl px-4 py-16 md:px-6 md:py-20">
-      <div className="mx-auto max-w-3xl text-center">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-primary">Features</p>
+    <section id="features" className="container mx-auto max-w-6xl px-4 py-14 md:px-6 md:py-20">
+      {/* Section header */}
+      <div className="mx-auto max-w-2xl text-center">
+        <p className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/8 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
+          Features
+        </p>
         <h2 className="text-balance text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
           Tools designed for modern inventory teams
         </h2>
@@ -60,19 +63,24 @@ export function FeaturesSection() {
         </p>
       </div>
 
-      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-6">
-        {features.map(({ icon: Icon, title, description }) => (
-          <Card key={title} className="bg-card shadow-sm border-border/40 transition-colors hover:border-primary/30 hover:bg-muted/10">
-            <CardHeader>
-              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Icon className="h-5 w-5" />
-              </div>
-              <CardTitle className="text-lg">{title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm leading-relaxed text-muted-foreground md:text-base">{description}</p>
-            </CardContent>
-          </Card>
+      {/* Feature cards */}
+      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-5">
+        {features.map(({ icon: Icon, title, description }, i) => (
+          <div
+            key={title}
+            className="group flex flex-col gap-4 rounded-2xl border border-border/50 bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
+            style={{ animationDelay: `${i * 60}ms` }}
+          >
+            {/* Icon */}
+            <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors duration-200 group-hover:bg-primary/20">
+              <Icon className="h-5 w-5" />
+            </div>
+
+            <div>
+              <h3 className="mb-1.5 font-semibold text-foreground">{title}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>
+            </div>
+          </div>
         ))}
       </div>
     </section>
