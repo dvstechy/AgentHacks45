@@ -72,6 +72,7 @@ export function AuditFeed({
 
   const nodeColors: Record<string, string> = {
     Perception: "bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800",
+    Forecast: "bg-teal-50 dark:bg-teal-950 border-teal-200 dark:border-teal-800",
     Geocoding: "bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800",
     Rebalancing: "bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800",
     PageIndex: "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800",
@@ -80,6 +81,7 @@ export function AuditFeed({
 
   const nodeBadgeVariants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
     Perception: "default",
+    Forecast: "secondary",
     Geocoding: "secondary",
     Rebalancing: "outline",
     PageIndex: "outline",

@@ -240,7 +240,9 @@ export async function forecastNode(
   try {
     const forecast = await forecastDemand(currentAlert.productId);
 
-    const predictedDemand = forecast?.mean ?? 0;
+    const predictedDemand = forecast.mlForecast
+      ? forecast.mlForecast.predictedDemand
+      : (forecast?.mean ?? 0);
     const demandGrowthRate = forecast?.trendFactor ?? 1;
 
     // ─────────────────────────────
@@ -248,9 +250,14 @@ export async function forecastNode(
     // ─────────────────────────────
     const currentStock = currentAlert.currentQuantity || 1;
 
-    const rawRisk =
+    let rawRisk =
       (predictedDemand / currentStock) *
       Math.max(demandGrowthRate, 1);
+
+    // Boost risk if anomaly detected
+    if (forecast.anomaly?.isAnomaly) {
+      rawRisk *= (1 + forecast.anomaly.anomalyScore);
+    }
 
     let riskLevel: "LOW" | "MEDIUM" | "HIGH" = "LOW";
 
@@ -259,12 +266,45 @@ export async function forecastNode(
 
     const riskScore = Number(rawRisk.toFixed(2));
 
+    // ─────────────────────────────
+    // ML Insight Summary for Audit
+    // ─────────────────────────────
+    const mlInfo = forecast.mlForecast
+      ? `ML Model: Polynomial Regression (degree ${forecast.mlForecast.modelDegree}, R²=${forecast.mlForecast.r2Score}, confidence=${forecast.mlForecast.confidence}). Trend: ${forecast.mlForecast.trend}. 7-day forecast: [${forecast.mlForecast.nextPeriodEstimates.join(", ")}].`
+      : "ML model: insufficient data, using simple average.";
+
+    const anomalyInfo = forecast.anomaly
+      ? ` Anomaly Detection: ${forecast.anomaly.isAnomaly ? "⚠️ ANOMALY DETECTED" : "Normal"} (score=${forecast.anomaly.anomalyScore}). ${forecast.anomaly.explanation}`
+      : "";
+
     const auditLog = {
       nodeName: "Forecast",
-      inputData: { productId: currentAlert.productId },
-      outputData: { predictedDemand, demandGrowthRate, riskScore, riskLevel },
-      reasoningString: `Predicted 30-day demand: ${predictedDemand}, Growth rate: ${demandGrowthRate}%, Risk: ${riskLevel} (${riskScore})`,
-      decision: "Forecast complete",
+      inputData: {
+        productId: currentAlert.productId,
+        modelUsed: forecast.modelUsed,
+      },
+      outputData: {
+        predictedDemand,
+        demandGrowthRate,
+        riskScore,
+        riskLevel,
+        mlForecast: forecast.mlForecast ? {
+          trend: forecast.mlForecast.trend,
+          confidence: forecast.mlForecast.confidence,
+          modelDegree: forecast.mlForecast.modelDegree,
+          r2Score: forecast.mlForecast.r2Score,
+          nextPeriodEstimates: forecast.mlForecast.nextPeriodEstimates,
+        } : null,
+        anomaly: forecast.anomaly ? {
+          isAnomaly: forecast.anomaly.isAnomaly,
+          anomalyScore: forecast.anomaly.anomalyScore,
+          explanation: forecast.anomaly.explanation,
+        } : null,
+      },
+      reasoningString: `${mlInfo}${anomalyInfo} | Predicted demand: ${predictedDemand}, Growth rate: ${demandGrowthRate}, Risk: ${riskLevel} (${riskScore})`,
+      decision: forecast.anomaly?.isAnomaly
+        ? "Forecast complete — anomaly detected, risk boosted"
+        : "Forecast complete",
     };
 
     return {

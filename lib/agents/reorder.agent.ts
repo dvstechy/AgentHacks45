@@ -1,4 +1,20 @@
+/**
+ * Reorder Agent — ML.js Decision Tree optimizer for reorder quantity
+ *
+ * Uses ml-cart Decision Tree regression when training data is available,
+ * falls back to classical safety-stock formula otherwise.
+ */
+
 import { prisma } from "@/lib/prisma"
+import { optimizeReorder, type ReorderOptimizationResult } from "@/lib/ml/ml-engine"
+
+export interface ReorderOutput {
+  productId: string
+  quantity: number
+  reorderPoint: number
+  safetyStock: number
+  mlResult: ReorderOptimizationResult
+}
 
 export async function calculateReorder(
   productId: string,
@@ -7,7 +23,7 @@ export async function calculateReorder(
     stdDev: number
     trendFactor: number
   }
-){
+): Promise<ReorderOutput | null> {
   const stock = await prisma.stockLevel.findFirst({
     where: { productId },
     include: { product: true }
@@ -17,33 +33,32 @@ export async function calculateReorder(
 
   const { mean, stdDev, trendFactor } = forecast
 
-// 🔥 Apply seasonal trend adjustment
-const adjustedMean = mean * trendFactor
-
   if (mean === 0) return null
 
   // Dynamic lead time (use default)
   const leadTime = 5
 
-  // Service level can be dynamic later
-  const serviceLevel = 0.95
+  // ─────────────────────────────
+  // ML.js Decision Tree Optimization
+  // ─────────────────────────────
+  const mlResult = optimizeReorder(
+    stock.quantity,
+    mean,
+    stdDev,
+    leadTime,
+    trendFactor,
+    productId
+    // trainingData would come from historical reorder records
+    // when available — for now uses the built-in fallback formula
+  )
 
-  // Convert service level to Z value
-  const Z = serviceLevel === 0.95 ? 1.65 :
-            serviceLevel === 0.99 ? 2.33 :
-            1.28 // default 90%
-
-  // ✅ Proper Safety Stock Formula
-  const safetyStock = Z * stdDev * Math.sqrt(leadTime)
-
-  const reorderPoint = adjustedMean * leadTime + safetyStock
-
-  if (stock.quantity < reorderPoint) {
+  if (stock.quantity < mlResult.reorderPoint) {
     return {
       productId,
-      quantity: Math.ceil(reorderPoint - stock.quantity),
-      reorderPoint: Math.ceil(reorderPoint),
-      safetyStock: Math.ceil(safetyStock),
+      quantity: mlResult.optimalQuantity,
+      reorderPoint: mlResult.reorderPoint,
+      safetyStock: mlResult.safetyStock,
+      mlResult,
     }
   }
 

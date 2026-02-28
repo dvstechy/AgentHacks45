@@ -88,6 +88,7 @@ AgentHacks IMS is a high-performance, modern Inventory Management System (IMS) d
 - **LLM Provider**: [Groq AI SDK](https://console.groq.com/) (Llama 3.3 70B)
 - **AI Core**: [Vercel AI SDK](https://sdk.vercel.ai/)
 - **Orchestration**: [LangGraph](https://langchain-ai.github.io/langgraph/)
+- **Machine Learning**: [ML.js](https://github.com/mljs/ml) (Regression, Random Forest, Decision Trees, K-Means, PCA)
 - **Types**: [LangChain Core](https://python.langchain.com/docs/langchain_core)
 - **Chat UI**: [Chainlit React Client](https://docs.chainlit.io/)
 
@@ -203,12 +204,14 @@ START
 
 ### Agent Node Descriptions
 
-**1. Perception Node** 🧠
+**1. Perception Node (with ML Forecasting)** 🧠
 - Monitors all `StockLevel` records across warehouses
+- **ML Demand Forecasting**: Uses **Polynomial Regression** (auto-selects degree 1-3) to predict next 7-day demand
+- **Anomaly Detection**: Uses **K-Means Clustering + PCA** to detect unusual demand spikes/drops
 - Fetches real-time weather data from Open-Meteo API
-- Calculates shortfall: `minStock - currentQuantity`
-- Flags products below minimum thresholds
-- **Output**: Array of low-stock alerts with weather context
+- Calculates shortfall: `minStock - (currentQuantity + predictedDemand)`
+- Flags products below minimum thresholds or showing anomalous patterns
+- **Output**: Array of low-stock alerts with ML insights (R² score, confidence, anomaly score) and weather context
 
 **2. Geocoding Node** 🌍
 - Converts warehouse addresses to latitude/longitude coordinates
@@ -225,10 +228,11 @@ START
 
 **4. PageIndex Node** 📦
 - Queries `SupplierProfile` database for vendor information
+- **ML Supplier Scoring**: Ranks vendors using a **Random Forest** classifier based on reliability, lead time, and price
 - Retrieves supplier reliability scores and lead times
 - Analyzes historical performance metrics
 - Only executes for VENDOR_ORDER type transfers
-- **Output**: Vendor rankings with lead-time commitments
+- **Output**: Vendor rankings with ML confidence scores and lead-time commitments
 
 **5. Arbiter Node** ✅
 - Validates all proposed transfers against business constraints:

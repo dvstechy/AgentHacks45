@@ -36,7 +36,7 @@ async function main() {
   let electronics = await prisma.category.findFirst({
     where: { userId: user.id, name: 'Electronics' },
   });
-  
+
   if (!electronics) {
     electronics = await prisma.category.create({
       data: {
@@ -636,44 +636,44 @@ async function main() {
     where: { userId: user.id },
   });
   // ===============================
-// DEMAND HISTORY GENERATION (60 DAYS)
-// ===============================
+  // DEMAND HISTORY GENERATION (60 DAYS)
+  // ===============================
 
-console.log("📊 Generating demand history...")
+  console.log("📊 Generating demand history...")
 
-const today = new Date()
+  const today = new Date()
 
-for (const product of allProducts) {
-  for (let i = 60; i >= 1; i--) {
-    const date = new Date()
-    date.setDate(today.getDate() - i)
+  for (const product of allProducts) {
+    for (let i = 60; i >= 1; i--) {
+      const date = new Date()
+      date.setDate(today.getDate() - i)
 
-    let baseDemand = 5
+      let baseDemand = 5
 
-    if (product.sku.includes("ACC")) baseDemand = 15
-    else if (product.sku.includes("COMP")) baseDemand = 12
-    else if (product.sku.includes("PHONE")) baseDemand = 10
-    else if (product.sku.includes("AUD")) baseDemand = 8
-    else if (product.sku.includes("LAP")) baseDemand = 4
-    else if (product.sku.includes("CAM")) baseDemand = 3
+      if (product.sku.includes("ACC")) baseDemand = 15
+      else if (product.sku.includes("COMP")) baseDemand = 12
+      else if (product.sku.includes("PHONE")) baseDemand = 10
+      else if (product.sku.includes("AUD")) baseDemand = 8
+      else if (product.sku.includes("LAP")) baseDemand = 4
+      else if (product.sku.includes("CAM")) baseDemand = 3
 
-    const variation = baseDemand * (0.7 + Math.random() * 0.6)
-    const trendFactor = 1 + (60 - i) * 0.002
+      const variation = baseDemand * (0.7 + Math.random() * 0.6)
+      const trendFactor = 1 + (60 - i) * 0.002
 
-    const finalDemand = Math.floor(variation * trendFactor)
+      const finalDemand = Math.floor(variation * trendFactor)
 
-    await prisma.demandHistory.create({
-      data: {
-        productId: product.id,
-        userId: user.id,
-        quantity: finalDemand,
-        date,
-      },
-    })
+      await prisma.demandHistory.create({
+        data: {
+          productId: product.id,
+          userId: user.id,
+          quantity: finalDemand,
+          date,
+        },
+      })
+    }
   }
-}
 
-console.log("✅ Demand history generated.")
+  console.log("✅ Demand history generated.")
 
   // Create Initial Stock Levels
   console.log('📊 Creating initial stock levels...');
@@ -983,7 +983,7 @@ console.log("✅ Demand history generated.")
   for (const item of lowStockUpdates) {
     const product = allProducts.find(p => p.sku === item.sku);
     const location = item.sku.includes('LAP') ? mumShelf2 : item.sku.includes('CAM') ? mumShelf3 : item.sku.includes('WEAR') ? mumStock : mumShelf1;
-    
+
     if (product) {
       await prisma.stockLevel.updateMany({
         where: {
@@ -1302,16 +1302,200 @@ console.log("✅ Demand history generated.")
 
   console.log('✅ Created all delivery orders and receipts');
 
+  // ===============================
+  // ML TRAINING DATASETS
+  // ===============================
+
+  console.log('🧠 Creating ML training datasets...');
+
+  // ─────────────────────────────
+  // 1. SUPPLIER PROFILES (for Random Forest supplier scoring)
+  // ─────────────────────────────
+
+  const vendorContacts = allContacts.filter(c => c.type === 'VENDOR');
+
+  const supplierProfiles = [
+    { contactName: 'Apple India Pvt Ltd', leadTimeDays: 5, reliabilityScore: 0.95, priceModifier: 1.15 },
+    { contactName: 'Samsung Electronics India', leadTimeDays: 3, reliabilityScore: 0.92, priceModifier: 1.08 },
+    { contactName: 'Tech Components Distributor', leadTimeDays: 2, reliabilityScore: 0.85, priceModifier: 0.95 },
+    { contactName: 'Global Electronics Wholesale', leadTimeDays: 7, reliabilityScore: 0.78, priceModifier: 0.88 },
+  ];
+
+  for (const sp of supplierProfiles) {
+    const contact = vendorContacts.find(c => c.name === sp.contactName);
+    if (!contact) continue;
+
+    const existing = await prisma.supplierProfile.findUnique({
+      where: { contactId: contact.id },
+    });
+
+    if (!existing) {
+      await prisma.supplierProfile.create({
+        data: {
+          contactId: contact.id,
+          leadTimeDays: sp.leadTimeDays,
+          reliabilityScore: sp.reliabilityScore,
+          priceModifier: sp.priceModifier,
+          userId: user.id,
+        },
+      });
+    }
+  }
+
+  console.log(`✅ Created ${supplierProfiles.length} supplier profiles`);
+
+  // ─────────────────────────────
+  // 2. PRODUCT ATTRIBUTES (for Arbiter cold-chain + ML feature vectors)
+  // ─────────────────────────────
+
+  const productAttributes: Record<string, Record<string, unknown>> = {
+    'ELEC-PHONE-IP15P-001': { fridge_required: false, fragile: true, vol_per_unit: 0.002, weight_kg: 0.22, category_code: 'PHONE' },
+    'ELEC-PHONE-SGS24U-002': { fridge_required: false, fragile: true, vol_per_unit: 0.002, weight_kg: 0.23, category_code: 'PHONE' },
+    'ELEC-PHONE-GP8P-003': { fridge_required: false, fragile: true, vol_per_unit: 0.002, weight_kg: 0.21, category_code: 'PHONE' },
+    'ELEC-LAP-MBP14M3-004': { fridge_required: false, fragile: true, vol_per_unit: 0.008, weight_kg: 1.55, category_code: 'LAPTOP' },
+    'ELEC-LAP-DXPS15-005': { fridge_required: false, fragile: true, vol_per_unit: 0.009, weight_kg: 1.86, category_code: 'LAPTOP' },
+    'ELEC-LAP-LTX1C-006': { fridge_required: false, fragile: true, vol_per_unit: 0.007, weight_kg: 1.12, category_code: 'LAPTOP' },
+    'ELEC-AUD-SWXM5-007': { fridge_required: false, fragile: false, vol_per_unit: 0.003, weight_kg: 0.25, category_code: 'AUDIO' },
+    'ELEC-AUD-APP2-008': { fridge_required: false, fragile: false, vol_per_unit: 0.001, weight_kg: 0.06, category_code: 'AUDIO' },
+    'ELEC-AUD-JBLF6-009': { fridge_required: false, fragile: false, vol_per_unit: 0.004, weight_kg: 0.55, category_code: 'AUDIO' },
+    'ELEC-CAM-CR6M2-010': { fridge_required: false, fragile: true, vol_per_unit: 0.012, weight_kg: 0.67, category_code: 'CAMERA' },
+    'ELEC-COMP-ARD-011': { fridge_required: false, fragile: false, vol_per_unit: 0.0003, weight_kg: 0.03, category_code: 'COMP' },
+    'ELEC-COMP-RPI5-012': { fridge_required: false, fragile: false, vol_per_unit: 0.0004, weight_kg: 0.05, category_code: 'COMP' },
+    'ELEC-COMP-ESP32-013': { fridge_required: false, fragile: false, vol_per_unit: 0.0002, weight_kg: 0.02, category_code: 'COMP' },
+    'ELEC-COMP-RESK-014': { fridge_required: false, fragile: false, vol_per_unit: 0.001, weight_kg: 0.15, category_code: 'COMP' },
+    'ELEC-WEAR-AWS9-015': { fridge_required: false, fragile: true, vol_per_unit: 0.001, weight_kg: 0.04, category_code: 'WEARABLE' },
+    'ELEC-WEAR-SGW6-016': { fridge_required: false, fragile: true, vol_per_unit: 0.001, weight_kg: 0.03, category_code: 'WEARABLE' },
+    'ELEC-WEAR-FBC6-017': { fridge_required: false, fragile: false, vol_per_unit: 0.0005, weight_kg: 0.03, category_code: 'WEARABLE' },
+    'ELEC-ACC-USBC-018': { fridge_required: false, fragile: false, vol_per_unit: 0.0002, weight_kg: 0.02, category_code: 'ACC' },
+    'ELEC-ACC-APB20-019': { fridge_required: false, fragile: false, vol_per_unit: 0.001, weight_kg: 0.35, category_code: 'ACC' },
+    'ELEC-ACC-SPC-020': { fridge_required: false, fragile: false, vol_per_unit: 0.0003, weight_kg: 0.04, category_code: 'ACC' },
+    'ELEC-ACC-SPG-021': { fridge_required: false, fragile: true, vol_per_unit: 0.0001, weight_kg: 0.01, category_code: 'ACC' },
+  };
+
+  for (const product of allProducts) {
+    const attrs = productAttributes[product.sku];
+    if (attrs) {
+      await prisma.product.update({
+        where: { id: product.id },
+        data: { attributes: attrs as any },
+      });
+    }
+  }
+
+  console.log(`✅ Updated ${Object.keys(productAttributes).length} products with ML attributes`);
+
+  // ─────────────────────────────
+  // 3. WAREHOUSE COORDINATES & CAPACITY (for geospatial + Arbiter)
+  // ─────────────────────────────
+
+  await prisma.warehouse.update({
+    where: { id: mainWarehouse.id },
+    data: {
+      latitude: 19.1136,
+      longitude: 72.8697,
+      capacityStats: {
+        totalCapacity: 5000,
+        usedCapacity: 3200,
+        availableCapacity: 1800,
+        utilizationPercent: 64,
+      },
+    },
+  });
+
+  await prisma.warehouse.update({
+    where: { id: delhiWarehouse.id },
+    data: {
+      latitude: 28.6315,
+      longitude: 77.2167,
+      capacityStats: {
+        totalCapacity: 3000,
+        usedCapacity: 1500,
+        availableCapacity: 1500,
+        utilizationPercent: 50,
+      },
+    },
+  });
+
+  console.log('✅ Updated warehouse coordinates & capacity stats');
+
+  // ─────────────────────────────
+  // 4. EXTENDED DEMAND HISTORY (90 days) + ANOMALY SPIKES
+  // ─────────────────────────────
+  // The base seed creates 60 days. Add 30 more days (days 61–90)
+  // plus inject anomaly spikes at specific points for ML testing.
+
+  console.log('📊 Extending demand history to 90 days + anomaly spikes...');
+
+  for (const product of allProducts) {
+    let baseDemand = 5;
+    if (product.sku.includes('ACC')) baseDemand = 15;
+    else if (product.sku.includes('COMP')) baseDemand = 12;
+    else if (product.sku.includes('PHONE')) baseDemand = 10;
+    else if (product.sku.includes('AUD')) baseDemand = 8;
+    else if (product.sku.includes('LAP')) baseDemand = 4;
+    else if (product.sku.includes('CAM')) baseDemand = 3;
+
+    // Add days 61–90 (extending existing 60-day dataset)
+    for (let i = 90; i >= 61; i--) {
+      const date = new Date();
+      date.setDate(today.getDate() - i);
+
+      const variation = baseDemand * (0.7 + Math.random() * 0.6);
+      const trendFactor = 1 + (90 - i) * 0.002;
+      const finalDemand = Math.floor(variation * trendFactor);
+
+      await prisma.demandHistory.create({
+        data: {
+          productId: product.id,
+          userId: user.id,
+          quantity: finalDemand,
+          date,
+        },
+      });
+    }
+
+    // Inject anomaly spikes for ML anomaly detection testing
+    // Spike 1: Day 45 ago — sudden 4x demand (e.g. flash sale)
+    const spike1Date = new Date();
+    spike1Date.setDate(today.getDate() - 45);
+    await prisma.demandHistory.create({
+      data: {
+        productId: product.id,
+        userId: user.id,
+        quantity: baseDemand * 4 + Math.floor(Math.random() * baseDemand),
+        date: spike1Date,
+      },
+    });
+
+    // Spike 2: Day 20 ago — demand drops to near zero (supply disruption)
+    const spike2Date = new Date();
+    spike2Date.setDate(today.getDate() - 20);
+    await prisma.demandHistory.create({
+      data: {
+        productId: product.id,
+        userId: user.id,
+        quantity: Math.max(0, Math.floor(baseDemand * 0.1)),
+        date: spike2Date,
+      },
+    });
+  }
+
+  console.log('✅ Extended demand history to 90 days with anomaly spikes');
+
+  console.log('🧠 ML training datasets complete!');
+
   console.log('🎉 Seed completed successfully!');
   console.log('\n📋 Summary:');
   console.log(`   User: ${user.email}`);
   console.log(`   Password: Vivek@123`);
   console.log(`   Role: ${user.role}`);
   console.log(`   Categories: 7 (Electronics with subcategories)`);
-  console.log(`   Products: ${allProducts.length}`);
-  console.log(`   Warehouses: 2`);
+  console.log(`   Products: ${allProducts.length} (with ML attributes)`);
+  console.log(`   Warehouses: 2 (with coordinates & capacity)`);
   console.log(`   Locations: 9`);
   console.log(`   Contacts: ${allContacts.length}`);
+  console.log(`   Supplier Profiles: ${supplierProfiles.length}`);
+  console.log(`   Demand History: 90 days × ${allProducts.length} products + anomaly spikes`);
   console.log(`   Stock Levels: ${stockData.length}`);
   console.log(`   Stock Transfers: 12 (6 Incoming, 5 Outgoing, 2 Internal)`);
 }
