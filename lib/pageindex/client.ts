@@ -9,12 +9,28 @@
 
 const PAGEINDEX_API_URL = "https://api.pageindex.ai";
 
+let useBackupKey = false;
+
 function getApiKey(): string {
+    if (useBackupKey) {
+        const backup = process.env.PAGEINDEX_API_KEY_BACKUP;
+        if (backup) return backup;
+    }
     const key = process.env.PAGEINDEX_API_KEY;
     if (!key) {
         throw new Error("PAGEINDEX_API_KEY environment variable is not set");
     }
     return key;
+}
+
+/** Switch to backup key on rate limit / auth failure */
+function switchToBackupIfNeeded(status: number): boolean {
+    if ((status === 429 || status === 401 || status === 403) && !useBackupKey && process.env.PAGEINDEX_API_KEY_BACKUP) {
+        console.warn(`[PageIndex] Primary key hit limit (${status}), switching to backup key`);
+        useBackupKey = true;
+        return true; // caller should retry
+    }
+    return false;
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -81,6 +97,9 @@ export async function listDocuments(
     );
 
     if (!response.ok) {
+        if (switchToBackupIfNeeded(response.status)) {
+            return listDocuments(limit, offset); // retry with backup
+        }
         throw new Error(`PageIndex list docs failed: ${response.status} ${response.statusText}`);
     }
 
@@ -162,6 +181,9 @@ export async function chatWithDocuments(
     });
 
     if (!response.ok) {
+        if (switchToBackupIfNeeded(response.status)) {
+            return chatWithDocuments(query, docId); // retry with backup
+        }
         const errorText = await response.text().catch(() => "");
         throw new Error(
             `PageIndex chat failed: ${response.status} ${response.statusText} - ${errorText}`

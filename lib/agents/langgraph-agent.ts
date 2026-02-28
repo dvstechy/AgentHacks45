@@ -302,10 +302,28 @@ export async function geocodingNode(state: AgentState): Promise<Partial<AgentSta
 
   for (const alert of lowStockAlerts) {
     if (alert.warehouseId) {
-      geocoded[alert.warehouseId] = {
-        lat: 18.5204 + Math.random() * 0.1,
-        lon: 73.8567 + Math.random() * 0.1,
-      };
+      // Check if already geocoded in database
+      const wh = await prisma.warehouse.findUnique({
+        where: { id: alert.warehouseId }
+      });
+
+      if (wh?.latitude && wh?.longitude) {
+        geocoded[alert.warehouseId] = {
+          lat: wh.latitude,
+          lon: wh.longitude,
+        };
+      } else {
+        // Fallback: Pune region + Randomness
+        const lat = 18.5204 + Math.random() * 0.1;
+        const lon = 73.8567 + Math.random() * 0.1;
+        geocoded[alert.warehouseId] = { lat, lon };
+
+        // Save to DB so it persists for the map
+        await prisma.warehouse.update({
+          where: { id: alert.warehouseId },
+          data: { latitude: lat, longitude: lon }
+        });
+      }
     }
   }
 

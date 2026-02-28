@@ -23,12 +23,14 @@ export interface ChatMessage {
     | "recommendations"
     | "complete"
     | "error"
-    | "system";
+    | "system"
+    | "sql_result"
+    | "mutation_result";
     content: string;
     nodeName?: string;
     reasoningString?: string;
     decision?: string;
-    outputData?: Record<string, unknown>;
+    outputData?: Record<string, any>;
     data?: unknown;
     traceId?: string;
     timestamp: Date;
@@ -61,7 +63,7 @@ export interface AuditLogEntry {
     traceId: string;
     nodeName: string;
     inputData: Record<string, unknown>;
-    outputData: Record<string, unknown>;
+    outputData: Record<string, any>;
     reasoningString: string;
     decision: string;
     createdAt: string;
@@ -76,10 +78,50 @@ export function useChatStream() {
     const [isLoading, setIsLoading] = useState(false);
     const [isConnected, setIsConnected] = useState(true);
     const [currentTraceId, setCurrentTraceId] = useState<string | null>(null);
+    const [threadId, setThreadId] = useState<string | null>(null);
+    const [threads, setThreads] = useState<{ id: string; title: string; messageCount: number; updatedAt: string }[]>([]);
     const abortControllerRef = useRef<AbortController | null>(null);
 
     const addMessage = useCallback((msg: ChatMessage) => {
         setMessages((prev) => [...prev, msg]);
+    }, []);
+
+    const fetchThreads = useCallback(async () => {
+        try {
+            const res = await fetch("/api/chat-history");
+            if (res.ok) {
+                const data = await res.json();
+                setThreads(data.threads || []);
+            }
+        } catch (e) {
+            console.error("Failed to fetch threads:", e);
+        }
+    }, []);
+
+    const loadThread = useCallback(async (id: string) => {
+        try {
+            const res = await fetch(`/api/chat-history/${id}`);
+            if (res.ok) {
+                const data = await res.json();
+                const restored: ChatMessage[] = (data.thread?.messages || []).map((m: any) => ({
+                    id: m.id,
+                    type: m.type,
+                    content: m.content,
+                    nodeName: m.metadata?.nodeName,
+                    reasoningString: m.content,
+                    decision: m.metadata?.decision,
+                    outputData: m.metadata?.outputData,
+                    data: m.metadata?.recommendations,
+                    traceId: m.traceId,
+                    timestamp: new Date(m.createdAt),
+                }));
+                setMessages(restored);
+                setThreadId(id);
+                setCurrentTraceId(restored.find(m => m.traceId)?.traceId || null);
+            }
+        } catch (e) {
+            console.error("Failed to load thread:", e);
+        }
     }, []);
 
     const sendMessage = useCallback(
@@ -105,6 +147,7 @@ export function useChatStream() {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
+                        threadId,
                         messages: [
                             ...messages
                                 .filter((m) => m.type === "user" || m.type === "assistant")
@@ -148,6 +191,11 @@ export function useChatStream() {
                                     setCurrentTraceId(data.traceId);
                                 }
 
+                                // Track thread ID from server
+                                if (data.threadId) {
+                                    setThreadId(data.threadId);
+                                }
+
                                 const newMessage: ChatMessage = {
                                     id: messageId,
                                     timestamp: new Date(),
@@ -169,6 +217,9 @@ export function useChatStream() {
                         }
                     }
                 }
+
+                // Refresh threads list after completion
+                fetchThreads();
             } catch (error) {
                 if ((error as Error).name === "AbortError") {
                     addMessage({
@@ -195,7 +246,7 @@ export function useChatStream() {
                 abortControllerRef.current = null;
             }
         },
-        [messages, isLoading, addMessage]
+        [messages, isLoading, addMessage, threadId, fetchThreads]
     );
 
     const stopTask = useCallback(() => {
@@ -207,6 +258,7 @@ export function useChatStream() {
     const clearMessages = useCallback(() => {
         setMessages([]);
         setCurrentTraceId(null);
+        setThreadId(null);
     }, []);
 
     return {
@@ -214,10 +266,14 @@ export function useChatStream() {
         isLoading,
         isConnected,
         currentTraceId,
+        threadId,
+        threads,
         sendMessage,
         stopTask,
         clearMessages,
         addMessage,
+        fetchThreads,
+        loadThread,
     };
 }
 

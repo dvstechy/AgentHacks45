@@ -29,6 +29,28 @@ model User {
   transfers        StockTransfer[]
   supplierProfiles SupplierProfile[]
   warehouses       Warehouse[]
+  chatThreads      ChatThread[]
+}
+
+model ChatThread {
+  id        String        @id @default(cuid())
+  title     String        @default("New Conversation")
+  userId    String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  user      User          @relation(fields: [userId], references: [id])
+  messages  ChatMessage[]
+}
+
+model ChatMessage {
+  id        String     @id @default(cuid())
+  threadId  String
+  type      String
+  content   String     @db.Text
+  metadata  Json?
+  traceId   String?
+  createdAt DateTime   @default(now())
+  thread    ChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
 }
 
 model Category {

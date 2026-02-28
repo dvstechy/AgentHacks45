@@ -56,10 +56,8 @@ const solutions = [
 ];
 
 export function SiteFooter() {
-  const currentYear = new Date().getFullYear();
-
   return (
-    <footer className="relative border-t border-border/50 bg-background overflow-hidden">
+    <footer className="relative border-t border-border/50 bg-background overflow-hidden" suppressHydrationWarning>
       {/* Background Decoration */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent" />
@@ -185,7 +183,7 @@ export function SiteFooter() {
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             {/* Copyright */}
             <p className="text-xs text-muted-foreground">
-              © {currentYear} AgentHacks IMS. All rights reserved.
+              © 2026 AgentHacks IMS. All rights reserved.
             </p>
 
             {/* Stats */}

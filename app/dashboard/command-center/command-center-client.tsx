@@ -31,7 +31,8 @@ import { useChatStream } from "@/lib/chainlit/hooks";
 import { useMemo, useState, useEffect } from "react";
 import { DemandForecastCard } from "@/components/dashboard/demand-forecast-card";
 import { AIInsightsCard } from "@/components/dashboard/ai-insights-card";
-import { InventoryMap } from "@/components/inventory/inventory-map";
+import dynamic from "next/dynamic";
+const InventoryMap = dynamic(() => import("@/components/inventory/inventory-map").then(m => m.InventoryMap), { ssr: false });
 import { getWarehouses } from "@/lib/actions/warehouse";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
@@ -41,16 +42,22 @@ export function CommandCenterClient() {
         isLoading,
         isConnected,
         currentTraceId,
+        threads,
         sendMessage,
         stopTask,
         clearMessages,
+        fetchThreads,
+        loadThread,
     } = useChatStream();
 
     const [dbWarehouses, setDbWarehouses] = useState<any[]>([]);
 
+    // Re-fetch warehouses whenever AI analysis completes (coordinates may have been seeded during the run)
+    const hasCompleted = messages.some((m: any) => m.type === "complete");
+
     useEffect(() => {
         getWarehouses().then(setDbWarehouses).catch(console.error);
-    }, []);
+    }, [hasCompleted]);
 
     const agentsData = [
         { id: "perception", name: "Perception", icon: Brain, color: "violet", description: "Queries stock levels and weather data" },
@@ -100,11 +107,16 @@ export function CommandCenterClient() {
         // Look for recommendations or audit logs with transfer data
         messages.forEach((m: any) => {
             if (m.type === "recommendations" && Array.isArray(m.data)) {
+                console.log("[MAP DEBUG] Recommendations found:", m.data);
+                console.log("[MAP DEBUG] dbWarehouses:", dbWarehouses.map(w => ({ id: w.id, name: w.name, lat: w.latitude, lon: w.longitude })));
+
                 m.data.forEach((rec: any) => {
                     const fromWh = dbWarehouses.find(w => w.id === rec.sourceWarehouseId);
                     const toWh = dbWarehouses.find(w => w.id === rec.destinationWarehouseId);
 
-                    if (fromWh?.latitude && toWh?.latitude) {
+                    console.log(`[MAP DEBUG] Transfer: ${rec.type} | From: ${fromWh?.name} (${fromWh?.latitude},${fromWh?.longitude}) | To: ${toWh?.name} (${toWh?.latitude},${toWh?.longitude})`);
+
+                    if (fromWh?.latitude && fromWh?.longitude && toWh?.latitude && toWh?.longitude) {
                         transfers.push({
                             from: [fromWh.latitude, fromWh.longitude],
                             to: [toWh.latitude, toWh.longitude],
@@ -112,6 +124,8 @@ export function CommandCenterClient() {
                             quantity: rec.quantity,
                             productName: "Inventory Output" // Simplified
                         });
+                    } else {
+                        console.warn("[MAP DEBUG] Missing coordinates, line NOT drawn.", { fromWh, toWh });
                     }
                 });
             }
@@ -145,9 +159,12 @@ export function CommandCenterClient() {
                                 isLoading,
                                 isConnected,
                                 currentTraceId,
+                                threads,
                                 sendMessage,
                                 stopTask,
                                 clearMessages,
+                                fetchThreads,
+                                loadThread,
                             }}
                         />
                     </Card>
