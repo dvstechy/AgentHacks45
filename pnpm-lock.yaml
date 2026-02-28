@@ -98,6 +98,30 @@ importers:
       lucide-react:
         specifier: ^0.554.0
         version: 0.554.0(react@19.2.4)
+      ml-array-mean:
+        specifier: ^1.1.6
+        version: 1.1.6
+      ml-array-standard-deviation:
+        specifier: ^1.1.8
+        version: 1.1.8
+      ml-cart:
+        specifier: ^2.1.1
+        version: 2.1.1
+      ml-kmeans:
+        specifier: ^7.0.0
+        version: 7.0.0
+      ml-matrix:
+        specifier: ^6.12.1
+        version: 6.12.1
+      ml-pca:
+        specifier: ^4.1.1
+        version: 4.1.1
+      ml-random-forest:
+        specifier: ^2.1.0
+        version: 2.1.0
+      ml-regression:
+        specifier: ^6.3.0
+        version: 6.3.0
       next:
         specifier: 16.1.6
         version: 16.1.6(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -2481,6 +2505,9 @@ packages:
     resolution: {integrity: sha512-GIjfiT9dbmHRiYi6Nl2yFCq7kkwdkp1W/lp2J99rX0yo9tgJGn3lKQATztIjb5tVtevcBtIdICNWqlq5+E8/Pw==}
     engines: {pnpm: '>=8'}
 
+  cheminfo-types@1.10.0:
+    resolution: {integrity: sha512-lDoOWfctAQPQrrhydtdb2vV3S8RDuRNp62lzs/gIjNqMNubhsvqr+hI8XQJSy8X1ZXpGvzIQNGBYy4SVrKQNaQ==}
+
   class-variance-authority@0.7.1:
     resolution: {integrity: sha512-Ka+9Trutv7G8M6WT6SeiRWz792K5qEqIGEGzXKhAE6xOWAY6pPH8U+9IY3oCMv6kqTmLsv7Xh/2w2RigkePMsg==}
 
@@ -3084,6 +3111,9 @@ packages:
   iobuffer@5.4.0:
     resolution: {integrity: sha512-DRebOWuqDvxunfkNJAlc3IzWIPD5xVxwUNbHr7xKB8E6aLJxIPfNX3CoMJghcFjpv6RWQsrcJbghtEwSPoJqMA==}
 
+  is-any-array@2.0.1:
+    resolution: {integrity: sha512-UtilS7hLRu++wb/WBAw9bNuP1Eg04Ivn1vERJck8zJthEvXCBEBpGR/33u/xLKWEQf95803oalHrVDptcAvFdQ==}
+
   is-array-buffer@3.0.5:
     resolution: {integrity: sha512-DDfANUiiG2wC1qawP66qlTugJeL5HyzMpfr8lLK+jMQirGzNod0B12cFB/9q838Ru27sBwfw78/rdoU7RERz6A==}
     engines: {node: '>= 0.4'}
@@ -3428,6 +3458,9 @@ packages:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
 
+  median-quickselect@1.0.1:
+    resolution: {integrity: sha512-/QL9ptNuLsdA68qO+2o10TKCyu621zwwTFdLvtu8rzRNKsn8zvuGoq/vDxECPyELFG8wu+BpyoMR9BnsJqfVZQ==}
+
   merge2@1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
@@ -3453,6 +3486,102 @@ packages:
 
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
+
+  ml-array-max@1.2.4:
+    resolution: {integrity: sha512-BlEeg80jI0tW6WaPyGxf5Sa4sqvcyY6lbSn5Vcv44lp1I2GR6AWojfUvLnGTNsIXrZ8uqWmo8VcG1WpkI2ONMQ==}
+
+  ml-array-mean@1.1.6:
+    resolution: {integrity: sha512-MIdf7Zc8HznwIisyiJGRH9tRigg3Yf4FldW8DxKxpCCv/g5CafTw0RRu51nojVEOXuCQC7DRVVu5c7XXO/5joQ==}
+
+  ml-array-median@1.1.6:
+    resolution: {integrity: sha512-V6bV6bTPFRX8v5CaAx/7fuRXC39LLTHfPSVZZafdNaqNz2PFL5zEA7gesjv8dMXh+gwPeUMtB5QPovlTBaa4sw==}
+
+  ml-array-min@1.2.3:
+    resolution: {integrity: sha512-VcZ5f3VZ1iihtrGvgfh/q0XlMobG6GQ8FsNyQXD3T+IlstDv85g8kfV0xUG1QPRO/t21aukaJowDzMTc7j5V6Q==}
+
+  ml-array-mode@1.1.5:
+    resolution: {integrity: sha512-30dWTShQq05UzL+ZoG5OuuDvRl3APdz/bHwgZTgqRAJKOZApaWNQxg/ZnN5i/Uls3AjqabRZ70/QhX+/0bfZEA==}
+
+  ml-array-rescale@1.3.7:
+    resolution: {integrity: sha512-48NGChTouvEo9KBctDfHC3udWnQKNKEWN0ziELvY3KG25GR5cA8K8wNVzracsqSW1QEkAXjTNx+ycgAv06/1mQ==}
+
+  ml-array-standard-deviation@1.1.8:
+    resolution: {integrity: sha512-KshBSaMp0/JpHa709bMVry1aneI6uQhw2dh1oec2KXLxfzb0jBI6RR0wNPRAH1IYyArFm3bfVf/wKUbadGiyAg==}
+
+  ml-array-sum@1.1.6:
+    resolution: {integrity: sha512-29mAh2GwH7ZmiRnup4UyibQZB9+ZLyMShvt4cH4eTK+cL2oEMIZFnSyB3SS8MlsTh6q/w/yh48KmqLxmovN4Dw==}
+
+  ml-array-variance@1.1.8:
+    resolution: {integrity: sha512-Pr9VNlJQb5FhiVw1VeL8rcKZsCgq7kDX3gvfx8ef0ihHqGfKtFU6K085VqYp3ho0gS7slY9b2zZzbkqfdIRekQ==}
+
+  ml-cart@2.1.1:
+    resolution: {integrity: sha512-f6rIj4EzbjqKLJa2Qmm5AjZ0WVgk+Y7J1N/+pQVaFr0d4oM1uZPLOh5h665LyH+bLBHTFEbvSR4OLKmJRQ8KfA==}
+
+  ml-distance-euclidean@2.0.0:
+    resolution: {integrity: sha512-yC9/2o8QF0A3m/0IXqCTXCzz2pNEzvmcE/9HFKOZGnTjatvBbsn4lWYJkxENkA4Ug2fnYl7PXQxnPi21sgMy/Q==}
+
+  ml-distance-euclidean@3.0.1:
+    resolution: {integrity: sha512-jEEu/1a73ArPmIiwOzrcah6TfhtV19dCKnnM7JvdR2xTzyVJFGgIIR78Vg8Pl9z2NVeSRoFOpzc0910sPMINsA==}
+
+  ml-kernel-gaussian@2.0.2:
+    resolution: {integrity: sha512-5MBrH2g9MBO53I6mcyXvMhyOLsmO2w21+26A1ZV/vYoxqpsov2PWkT8bhdFCEe0kgDupmAb6u81iOID/rhnarA==}
+
+  ml-kernel-polynomial@2.0.1:
+    resolution: {integrity: sha512-aGDNRPHDiKeJmBxB0L9wTxKNLfp5JytbdRIo5K+FTcmFjkWDe3YZPo6R6wBB5mxaJ5eqTRawzeV4RoIWHbakyQ==}
+
+  ml-kernel-sigmoid@1.0.1:
+    resolution: {integrity: sha512-mSbYOSbNQ7GsUAGrHuUHNsLgM3bZGpXkotw/FBdKZD9YMXfVOgQb1LvvvVeSlOR/ZdmX23qqaV0RnKSYWBF8og==}
+
+  ml-kernel@3.0.0:
+    resolution: {integrity: sha512-R+ZR0Kl5xJ7vnxtlDqjZ26xVk7mAw7ctK4NlzRHviBFXxp7keC9+hWirMOdzi2DOQA0t6CaRwjElZ6SdirOmow==}
+
+  ml-kmeans@7.0.0:
+    resolution: {integrity: sha512-Ud8x4YMURVgupAcuSxD9iwc/us4mqyryFnx08gjEGfAyP1iWlJSdBADD96PlpkpHUvRVDNEmk28euGQJZeuU7A==}
+
+  ml-matrix@6.12.1:
+    resolution: {integrity: sha512-TJ+8eOFdp+INvzR4zAuwBQJznDUfktMtOB6g/hUcGh3rcyjxbz4Te57Pgri8Q9bhSQ7Zys4IYOGhFdnlgeB6Lw==}
+
+  ml-nearest-vector@3.0.1:
+    resolution: {integrity: sha512-7UQ60sPS1Dpe6N6zuEsaL3nrUGHkaiSmjWcQHfMYFfV1dgp6TiPtv3ZtdLHwpf1jS0KQDSkw9pycJO1gYBiEoA==}
+
+  ml-pca@4.1.1:
+    resolution: {integrity: sha512-HQwswMK1dObj+ppk3EPcQMR2djWK0Cri8mAFd2nITtXHkLfO4DBBsEtiCT5KiR+2e3hQjp+lI0UyqZpdf04AlQ==}
+
+  ml-random-forest@2.1.0:
+    resolution: {integrity: sha512-5PpfMFWdCxchjte7N6W38XNqycbheOadrfKySV0mojAfKorXy1HnPLthz3NFDnSO4nnIOaxRtr26bc4ZQaautA==}
+
+  ml-random@2.0.0:
+    resolution: {integrity: sha512-/ziHm0qyvsvwRy0y+EhmhTKbvq+9ghqf9UYSexKeyx8pp+9avDBLctYaopdTaJ1HU4qnJPEy7XH0CVeh9tHIgQ==}
+
+  ml-regression-base@4.0.0:
+    resolution: {integrity: sha512-V2VjB+K/BcgXaX450xvYw36TLOB+piD9G1pHU3VE+ggQUApsVGkYco6UMQykFOwBydHnDTbOiybH/lwrkqFT4g==}
+
+  ml-regression-exponential@3.0.2:
+    resolution: {integrity: sha512-drV4ZSGKMMVNETVa7+/z15Uq9C0F69wNsJbhPvVbERgYRSmoGg+e0X7BYK75TzUvFY8IlYZmvVQOZK334slpbQ==}
+
+  ml-regression-multivariate-linear@2.0.4:
+    resolution: {integrity: sha512-/vShPAlP+mB7P2mC5TuXwObSJNl/UBI71/bszt9ilTg6yLKy6btDLpAYyJNa6t+JnL5a7q+Yy4dCltfpvqXRIw==}
+
+  ml-regression-polynomial@3.0.2:
+    resolution: {integrity: sha512-RkHQeviEi7q6d2npCeH9MiRTPsBBqqSeqiWV3yctTFXvYgavy5MkpnCqGElHDb62Y3cTXlNQpmD4T7LA7yfGvw==}
+
+  ml-regression-power@3.0.0:
+    resolution: {integrity: sha512-RLCKGVHQy7EdvqjjQfDxQmsk9ZSfAtYBI9cNp62J3gl1a1ZuaCKARSQLd/vgh11ZQCjmUbkjvDwmrhJoi1r5uA==}
+
+  ml-regression-robust-polynomial@3.0.2:
+    resolution: {integrity: sha512-GVaF1Qa5h6n8URUVpBl70oG/CNhUrdcgEy9Apu665KTU7r+FuuC9MMNKjkpCIUgQ3TG0tRRgfHJ427hkEQ99bA==}
+
+  ml-regression-simple-linear@3.0.1:
+    resolution: {integrity: sha512-SF2oxA+034Co9GVQSFuS3vtACaRAFrEwHi9oX6VTaSY/KtXxseL3d4GApj4jWXMoAgrP7VMoIO1PH0RoZaMR1g==}
+
+  ml-regression-theil-sen@3.0.0:
+    resolution: {integrity: sha512-oRI4m/BU71Bp5nyG1REovS0/OCEDoBc+a/9yJR//toiCpu29mFe51sKT5HOyEXdrx8jGPDC4Xnf24TMvfvsxRw==}
+
+  ml-regression@6.3.0:
+    resolution: {integrity: sha512-+El9r2R80+KMsRabc9gdT/vNO9mt5jWeNEpZ+iEOtdkKWIsnC1fBgRHlDwxUEpfpb3rpsBG6WLs6lMOiihffiw==}
+
+  ml-xsadd@3.0.1:
+    resolution: {integrity: sha512-Fz2q6dwgzGM8wYKGArTUTZDGa4lQFA2Vi6orjGeTVRy22ZnQFKlJuwS9n8NRviqz1KHAHAzdKJwbnYhdo38uYg==}
 
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
@@ -3714,6 +3843,9 @@ packages:
 
   raf@3.4.1:
     resolution: {integrity: sha512-Sq4CW4QhwOHE8ucn6J34MqtZCeWFP2aQSmrlroYgqAV1PjStIhJXxYuTgUIfkEk7zTLjmIjLmU5q+fbD1NnOJA==}
+
+  random-js@2.1.0:
+    resolution: {integrity: sha512-CRUyWmnzmZBA7RZSVGq0xMqmgCyPPxbiKNLFA5ud7KenojVX2s7Gv+V7eB52beKTPGxWRnVZ7D/tCIgYJJ8vNQ==}
 
   react-chartjs-2@5.3.1:
     resolution: {integrity: sha512-h5IPXKg9EXpjoBzUfyWJvllMjG2mQ4EiuHQFhms/AjUm0XSZHhyRy2xVmLXHKrtcdrPO4mnGqRtYoD0vp95A0A==}
@@ -6561,6 +6693,8 @@ snapshots:
     dependencies:
       '@kurkle/color': 0.3.4
 
+  cheminfo-types@1.10.0: {}
+
   class-variance-authority@0.7.1:
     dependencies:
       clsx: 2.1.1
@@ -7302,7 +7436,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.3
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.13.6(debug@4.4.3))
+      retry-axios: 2.6.0(axios@1.13.6)
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -7336,6 +7470,8 @@ snapshots:
       side-channel: 1.1.0
 
   iobuffer@5.4.0: {}
+
+  is-any-array@2.0.1: {}
 
   is-array-buffer@3.0.5:
     dependencies:
@@ -7662,6 +7798,8 @@ snapshots:
 
   math-intrinsics@1.1.0: {}
 
+  median-quickselect@1.0.1: {}
+
   merge2@1.4.1: {}
 
   micromatch@4.0.8:
@@ -7684,6 +7822,159 @@ snapshots:
       brace-expansion: 2.0.2
 
   minimist@1.2.8: {}
+
+  ml-array-max@1.2.4:
+    dependencies:
+      is-any-array: 2.0.1
+
+  ml-array-mean@1.1.6:
+    dependencies:
+      ml-array-sum: 1.1.6
+
+  ml-array-median@1.1.6:
+    dependencies:
+      is-any-array: 2.0.1
+      median-quickselect: 1.0.1
+
+  ml-array-min@1.2.3:
+    dependencies:
+      is-any-array: 2.0.1
+
+  ml-array-mode@1.1.5:
+    dependencies:
+      is-any-array: 2.0.1
+
+  ml-array-rescale@1.3.7:
+    dependencies:
+      is-any-array: 2.0.1
+      ml-array-max: 1.2.4
+      ml-array-min: 1.2.3
+
+  ml-array-standard-deviation@1.1.8:
+    dependencies:
+      ml-array-variance: 1.1.8
+
+  ml-array-sum@1.1.6:
+    dependencies:
+      is-any-array: 2.0.1
+
+  ml-array-variance@1.1.8:
+    dependencies:
+      is-any-array: 2.0.1
+      ml-array-mean: 1.1.6
+
+  ml-cart@2.1.1:
+    dependencies:
+      ml-array-mean: 1.1.6
+      ml-matrix: 6.12.1
+
+  ml-distance-euclidean@2.0.0: {}
+
+  ml-distance-euclidean@3.0.1: {}
+
+  ml-kernel-gaussian@2.0.2:
+    dependencies:
+      ml-distance-euclidean: 2.0.0
+
+  ml-kernel-polynomial@2.0.1: {}
+
+  ml-kernel-sigmoid@1.0.1: {}
+
+  ml-kernel@3.0.0:
+    dependencies:
+      ml-distance-euclidean: 2.0.0
+      ml-kernel-gaussian: 2.0.2
+      ml-kernel-polynomial: 2.0.1
+      ml-kernel-sigmoid: 1.0.1
+      ml-matrix: 6.12.1
+
+  ml-kmeans@7.0.0:
+    dependencies:
+      ml-distance-euclidean: 3.0.1
+      ml-matrix: 6.12.1
+      ml-nearest-vector: 3.0.1
+      ml-random: 2.0.0
+
+  ml-matrix@6.12.1:
+    dependencies:
+      is-any-array: 2.0.1
+      ml-array-rescale: 1.3.7
+
+  ml-nearest-vector@3.0.1:
+    dependencies:
+      ml-distance-euclidean: 3.0.1
+
+  ml-pca@4.1.1:
+    dependencies:
+      ml-matrix: 6.12.1
+
+  ml-random-forest@2.1.0:
+    dependencies:
+      ml-array-mean: 1.1.6
+      ml-array-median: 1.1.6
+      ml-array-mode: 1.1.5
+      ml-cart: 2.1.1
+      ml-matrix: 6.12.1
+      random-js: 2.1.0
+
+  ml-random@2.0.0:
+    dependencies:
+      ml-xsadd: 3.0.1
+
+  ml-regression-base@4.0.0:
+    dependencies:
+      cheminfo-types: 1.10.0
+      is-any-array: 2.0.1
+
+  ml-regression-exponential@3.0.2:
+    dependencies:
+      ml-regression-base: 4.0.0
+      ml-regression-simple-linear: 3.0.1
+
+  ml-regression-multivariate-linear@2.0.4:
+    dependencies:
+      ml-matrix: 6.12.1
+
+  ml-regression-polynomial@3.0.2:
+    dependencies:
+      ml-matrix: 6.12.1
+      ml-regression-base: 4.0.0
+
+  ml-regression-power@3.0.0:
+    dependencies:
+      ml-regression-base: 4.0.0
+      ml-regression-simple-linear: 3.0.1
+
+  ml-regression-robust-polynomial@3.0.2:
+    dependencies:
+      is-any-array: 2.0.1
+      ml-matrix: 6.12.1
+      ml-regression-base: 4.0.0
+
+  ml-regression-simple-linear@3.0.1:
+    dependencies:
+      cheminfo-types: 1.10.0
+      ml-regression-base: 4.0.0
+
+  ml-regression-theil-sen@3.0.0:
+    dependencies:
+      ml-array-median: 1.1.6
+      ml-regression-base: 4.0.0
+
+  ml-regression@6.3.0:
+    dependencies:
+      ml-kernel: 3.0.0
+      ml-matrix: 6.12.1
+      ml-regression-base: 4.0.0
+      ml-regression-exponential: 3.0.2
+      ml-regression-multivariate-linear: 2.0.4
+      ml-regression-polynomial: 3.0.2
+      ml-regression-power: 3.0.0
+      ml-regression-robust-polynomial: 3.0.2
+      ml-regression-simple-linear: 3.0.1
+      ml-regression-theil-sen: 3.0.0
+
+  ml-xsadd@3.0.1: {}
 
   ms@2.1.3: {}
 
@@ -7916,6 +8207,8 @@ snapshots:
       performance-now: 2.1.0
     optional: true
 
+  random-js@2.1.0: {}
+
   react-chartjs-2@5.3.1(chart.js@4.5.1)(react@19.2.4):
     dependencies:
       chart.js: 4.5.1
@@ -8035,7 +8328,7 @@ snapshots:
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
-  retry-axios@2.6.0(axios@1.13.6(debug@4.4.3)):
+  retry-axios@2.6.0(axios@1.13.6):
     dependencies:
       axios: 1.13.6(debug@4.4.3)
 
