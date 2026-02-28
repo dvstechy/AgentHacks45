@@ -317,7 +317,7 @@ export function ChainlitChatbot({ streamState }: ChatbotProps) {
       )}
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto px-5 py-4">
+      <div className="flex-1 overflow-y-auto px-5 py-4 [&::-webkit-scrollbar]:w-1.5! [&::-webkit-scrollbar-thumb]:bg-slate-300! dark:[&::-webkit-scrollbar-thumb]:bg-slate-600! [&::-webkit-scrollbar-thumb]:rounded-full! [&::-webkit-scrollbar-track]:bg-transparent!">
         <div className="max-w-2xl mx-auto space-y-3">
           {messages.length === 0 ? (
             <EmptyState onStarterClick={handleStarterClick} />
@@ -420,20 +420,10 @@ function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-center justify-center text-center py-12">
-      {/* Logo */}
-      <div className="relative mb-6">
-        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 flex items-center justify-center shadow-2xl shadow-orange-500/30">
-          <Sparkles className="w-9 h-9 text-white" />
-        </div>
-        <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-emerald-400 flex items-center justify-center animate-pulse">
-          <div className="w-2 h-2 rounded-full bg-white" />
-        </div>
-      </div>
-
-      <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
+      <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
         SprintStock AI Agent
       </h3>
-      <p className="text-sm text-slate-500 dark:text-slate-400 mb-8 max-w-sm">
+      <p className="text-xs text-slate-500 dark:text-slate-400 mb-6 max-w-sm">
         Multi-agent inventory intelligence powered by LangGraph. Ask me to
         analyze stock levels, suggest rebalancing, or check suppliers.
       </p>
