@@ -25,7 +25,7 @@ import toast from "react-hot-toast";
 import { signIn } from "@/app/actions/auth";
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Lock, User, Eye, EyeOff } from "lucide-react";
+import { Lock, User, Eye, EyeOff, Info } from "lucide-react";
 import type { Route } from "next";
 
 const signInSchema = z.object({
@@ -42,8 +42,8 @@ export function SignInForm() {
   const form = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      identifier: "",
-      password: "",
+      identifier: "bhosvivek123@gmail.com",
+      password: "Vivek@123",
     },
   });
 
@@ -75,6 +75,15 @@ export function SignInForm() {
       </CardHeader>
 
       <CardContent>
+        <div className="mb-4 flex items-start gap-3 rounded-lg border border-primary/20 bg-primary/5 p-3">
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+          <div className="text-xs text-muted-foreground space-y-1">
+            <p className="font-medium text-foreground">Demo Credentials</p>
+            <p>Email: <span className="font-mono text-primary">bhosvivek123@gmail.com</span></p>
+            <p>Password: <span className="font-mono text-primary">Vivek@123</span></p>
+          </div>
+        </div>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
