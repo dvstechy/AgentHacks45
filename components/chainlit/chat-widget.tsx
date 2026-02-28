@@ -9,7 +9,14 @@
 import { useState, useRef, useEffect } from "react";
 import { ChainlitChatbot } from "@/components/chainlit/chatbot";
 import { ChainlitProvider } from "@/components/chainlit/provider";
+import { useChatStream } from "@/lib/chainlit/hooks";
 import { MessageSquare, X, Minus } from "lucide-react";
+
+// Inner wrapper that uses the hook and passes streamState
+function ChatbotWithStream() {
+    const streamState = useChatStream();
+    return <ChainlitChatbot streamState={streamState} />;
+}
 
 export function ChatWidget() {
     const [isOpen, setIsOpen] = useState(false);
@@ -103,7 +110,7 @@ export function ChatWidget() {
                                 {/* Chatbot Content */}
                                 <div className="flex-1 min-h-0">
                                     <ChainlitProvider>
-                                        <ChainlitChatbot />
+                                        <ChatbotWithStream />
                                     </ChainlitProvider>
                                 </div>
                             </div>

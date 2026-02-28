@@ -1013,6 +1013,133 @@ function MessageBubble({
       </div>
     );
   }
+  // Dynamic Pricing Result
+  if (message.type === "pricing_result") {
+    const p = (message.data as any) || {};
+    const trendColors = {
+      rising: "text-green-500 bg-green-500/10",
+      stable: "text-blue-500 bg-blue-500/10",
+      declining: "text-red-500 bg-red-500/10",
+    };
+    const trendEmoji = { rising: "📈", stable: "➡️", declining: "📉" };
+    const hasValidPricing = !p.error && (p.currentSalesPrice > 0 || p.recommendedSalesPrice > 0);
+
+    return (
+      <div key={message.id} className="flex justify-start">
+        <Card className={`max-w-[90%] p-0 border overflow-hidden ${p.error
+          ? "border-amber-500/30 bg-gradient-to-br from-amber-50/80 to-orange-50/80 dark:from-amber-900/20 dark:to-orange-900/20"
+          : "border-indigo-500/30 bg-gradient-to-br from-indigo-50/80 to-purple-50/80 dark:from-indigo-900/20 dark:to-purple-900/20"
+          }`}>
+          {/* Header */}
+          <div className={`px-4 py-3 border-b ${p.error
+            ? "bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/20"
+            : "bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-indigo-500/20"
+            }`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">{p.error ? "⚠️" : "💰"}</span>
+                <span className="font-bold text-sm">Dynamic Pricing</span>
+              </div>
+              <Badge variant="outline" className={`text-[9px] ${trendColors[p.demandTrend as keyof typeof trendColors] || trendColors.stable}`}>
+                {trendEmoji[p.demandTrend as keyof typeof trendEmoji] || "➡️"} {p.demandTrend?.toUpperCase()} DEMAND
+              </Badge>
+            </div>
+            <p className="text-xs text-slate-500 mt-1">{p.productName}</p>
+          </div>
+
+          <div className="p-4 space-y-3">
+            {/* Error State: Product Not Found */}
+            {p.error && (
+              <div className="rounded-lg bg-amber-100/60 dark:bg-amber-900/30 border border-amber-300/50 dark:border-amber-700/50 p-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+                  <span className="text-xs font-semibold text-amber-800 dark:text-amber-200">
+                    {p.error === "Product not found" ? "Product Not Found in Inventory" : p.error}
+                  </span>
+                </div>
+                <p className="text-[11px] text-amber-700 dark:text-amber-300 leading-relaxed">
+                  {message.content}
+                </p>
+              </div>
+            )}
+
+            {/* Price Comparison - Only show when there's real pricing data */}
+            {hasValidPricing && (
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-lg bg-white/60 dark:bg-slate-800/60 p-2.5 border border-slate-200/50 dark:border-slate-700/50">
+                  <p className="text-[9px] uppercase font-semibold text-slate-400 tracking-wider">Current Price</p>
+                  <p className="text-sm font-bold mt-0.5">₹{Number(p.currentSalesPrice || 0).toLocaleString("en-IN")}</p>
+                  <p className="text-[9px] text-slate-400">Cost: ₹{Number(p.currentCostPrice || 0).toLocaleString("en-IN")}</p>
+                </div>
+                <div className="rounded-lg bg-gradient-to-br from-indigo-500/10 to-purple-500/10 p-2.5 border border-indigo-500/30">
+                  <p className="text-[9px] uppercase font-semibold text-indigo-500 tracking-wider">Recommended</p>
+                  <p className="text-sm font-bold text-indigo-600 dark:text-indigo-400 mt-0.5">₹{Number(p.recommendedSalesPrice || 0).toLocaleString("en-IN")}</p>
+                  <p className="text-[9px] text-indigo-400">
+                    {p.priceChangePercent > 0 ? "+" : ""}{p.priceChangePercent?.toFixed(1)}% change
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Demand Score */}
+            <div className="rounded-lg bg-white/60 dark:bg-slate-800/60 p-2.5">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-[9px] uppercase font-semibold text-slate-400">Demand Score</span>
+                <span className="text-xs font-bold">{p.demandScore || 50}/100</span>
+              </div>
+              <div className="h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${p.error
+                    ? "bg-gradient-to-r from-amber-400 to-orange-500"
+                    : "bg-gradient-to-r from-indigo-500 to-purple-500"
+                    }`}
+                  style={{ width: `${p.demandScore || 50}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Reasoning - only show for successful pricing (error reasoning shown above) */}
+            {!p.error && <p className="text-xs leading-relaxed">{message.content}</p>}
+
+            {/* Factors */}
+            {p.factors && p.factors.length > 0 && (
+              <div className="space-y-1">
+                <p className="text-[9px] uppercase font-semibold text-slate-400 tracking-wider">Pricing Factors</p>
+                {p.factors.map((f: any, i: number) => (
+                  <div key={i} className="flex items-center justify-between text-[10px] bg-white/40 dark:bg-slate-800/40 rounded px-2 py-1">
+                    <span className="font-medium">{f.label}</span>
+                    <Badge variant="outline" className={`text-[8px] ${f.impact === "positive" ? "border-green-500 text-green-500" :
+                      f.impact === "negative" ? "border-red-500 text-red-500" :
+                        "border-slate-400 text-slate-400"
+                      }`}>
+                      {f.impact === "positive" ? "↑" : f.impact === "negative" ? "↓" : "→"} {f.detail}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Market Insights - show expanded by default when it's the only useful data (error state) */}
+            {p.marketInsights && p.marketInsights.length > 0 && (
+              <details className="group" open={!!p.error}>
+                <summary className="cursor-pointer text-[9px] text-slate-400 hover:text-indigo-600 font-semibold uppercase tracking-wider flex items-center gap-1">
+                  <ChevronRight className="w-3 h-3 group-open:rotate-90 transition-transform" />
+                  Market Intelligence ({p.marketInsights.length} sources)
+                </summary>
+                <div className="mt-1.5 space-y-1">
+                  {p.marketInsights.map((insight: string, i: number) => (
+                    <p key={i} className="text-[10px] text-slate-500 leading-relaxed bg-white/30 dark:bg-slate-800/30 rounded px-2 py-1">
+                      🔍 {insight}
+                    </p>
+                  ))}
+                </div>
+              </details>
+            )}
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   // Stock Alerts
   if (message.type === "alerts") {

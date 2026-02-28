@@ -5,7 +5,7 @@ import { Heading } from "@/components/ui/heading";
 import { Loader } from "@/components/ui/loader";
 import {
   AlertTriangle,
-  DollarSign,
+  IndianRupee,
   Package,
   Plus,
   Truck,
@@ -246,7 +246,7 @@ export default async function DashboardPage() {
                 Total Inventory Value
               </CardTitle>
               <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-all duration-300">
-                <DollarSign className="h-4 w-4 text-primary" />
+                <IndianRupee className="h-4 w-4 text-primary" />
               </div>
             </CardHeader>
             <CardContent>

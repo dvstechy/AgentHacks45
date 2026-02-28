@@ -4,6 +4,7 @@ import { getSession } from "@/lib/session";
 import { runMultiAgentSystem } from "@/lib/agents/langgraph-agent";
 import { runTextToSQLAgent } from "@/lib/agents/text-to-sql";
 import { runDataMutation } from "@/lib/agents/data-mutation";
+import { runPricingAgent } from "@/lib/agents/pricing-agent";
 import { classifyIntent, generateDirectResponse } from "@/lib/agents/intent-router";
 import { prisma } from "@/lib/prisma";
 
@@ -115,6 +116,44 @@ export async function POST(request: NextRequest) {
 
             const completeMsg2 = JSON.stringify({ type: "complete", content: "Operation complete", traceId });
             controller.enqueue(`data: ${completeMsg2}\n\n`);
+            controller.close();
+            return;
+          }
+
+          // ═══════════════════════════════════════════
+          // ROUTE: pricing → Dynamic Pricing Agent
+          // ═══════════════════════════════════════════
+          if (intentResult.intent === "pricing") {
+            const thinkingMsg = JSON.stringify({
+              type: "thinking",
+              content: "💰 Analyzing market trends and demand data for pricing...",
+              traceId,
+              threadId,
+            });
+            controller.enqueue(`data: ${thinkingMsg}\n\n`);
+
+            const pricingResult = await runPricingAgent(prompt, session.userId as string);
+
+            const resultMsg = JSON.stringify({
+              type: "pricing_result",
+              content: pricingResult.reasoning,
+              data: pricingResult,
+              traceId,
+            });
+            controller.enqueue(`data: ${resultMsg}\n\n`);
+
+            await db.chatMessage.create({
+              data: {
+                threadId,
+                type: "pricing_result",
+                content: pricingResult.reasoning,
+                traceId,
+                metadata: pricingResult,
+              },
+            }).catch(() => { });
+
+            const completeMsg3 = JSON.stringify({ type: "complete", content: "Pricing analysis complete", traceId });
+            controller.enqueue(`data: ${completeMsg3}\n\n`);
             controller.close();
             return;
           }

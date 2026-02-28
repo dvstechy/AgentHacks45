@@ -13,7 +13,7 @@
 import { groq } from "@ai-sdk/groq";
 import { generateText } from "ai";
 
-export type IntentType = "data_query" | "data_mutation" | "rebalancing" | "supplier_audit" | "general_chat";
+export type IntentType = "data_query" | "data_mutation" | "rebalancing" | "supplier_audit" | "pricing" | "general_chat";
 
 export interface IntentResult {
     intent: IntentType;
@@ -44,10 +44,14 @@ Classify the user's message into EXACTLY ONE of these intents:
 4. "supplier_audit" - User wants to AUDIT, REVIEW, or ANALYZE suppliers/vendors/contracts.
    Examples: "Audit supplier performance", "Check vendor contracts", "Supplier analysis"
 
-5. "general_chat" - General questions, greetings, help, or anything else.
+5. "pricing" - User wants to SET PRICE, GET PRICING RECOMMENDATION, DEMAND FORECAST, or MARKET ANALYSIS for products.
+   Examples: "Set price for iPhone", "What should be the selling price?", "Pricing recommendation", "Demand forecast for Laptop", "Dynamic pricing", "Market price analysis"
+
+6. "general_chat" - General questions, greetings, help, or anything else.
    Examples: "Hello", "How does this work?", "What can you do?", "Help"
 
 IMPORTANT: If the user wants to ADD or CREATE new records, that is "data_mutation", NOT "data_query".
+IMPORTANT: If the user mentions PRICING, PRICE, DEMAND, or MARKET TREND, that is "pricing".
 
 Respond ONLY with a JSON object:
 {"intent": "...", "confidence": 0.0-1.0, "reasoning": "brief reason"}`,
@@ -60,7 +64,7 @@ Respond ONLY with a JSON object:
         if (!jsonMatch) return fallbackClassify(query);
 
         const parsed = JSON.parse(jsonMatch[0]);
-        const validIntents: IntentType[] = ["data_query", "data_mutation", "rebalancing", "supplier_audit", "general_chat"];
+        const validIntents: IntentType[] = ["data_query", "data_mutation", "rebalancing", "supplier_audit", "pricing", "general_chat"];
 
         return {
             intent: validIntents.includes(parsed.intent) ? parsed.intent : "general_chat",
@@ -118,6 +122,10 @@ function fallbackClassify(query: string): IntentResult {
 
     if (/supplier|contract|vendor|audit supplier/.test(q)) {
         return { intent: "supplier_audit", confidence: 0.7, reasoning: "Regex: supplier keywords detected" };
+    }
+
+    if (/pric|demand|forecast|market|selling price|cost price|dynamic pric|set price/.test(q)) {
+        return { intent: "pricing", confidence: 0.7, reasoning: "Regex: pricing keywords detected" };
     }
 
     if (/rebalanc|optimiz|fix stock|low stock|inventory analysis|analyze|check stock|run agent|stock issue/.test(q)) {

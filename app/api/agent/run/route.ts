@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 
     const traceId = crypto.randomUUID();
 
-    const result = await runMultiAgentSystem(userId, traceId);
+    const result = await runMultiAgentSystem(userId, traceId, "Run full inventory analysis and rebalancing");
 
     return NextResponse.json({
       traceId,

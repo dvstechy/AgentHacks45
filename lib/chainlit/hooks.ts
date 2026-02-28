@@ -25,7 +25,8 @@ export interface ChatMessage {
     | "error"
     | "system"
     | "sql_result"
-    | "mutation_result";
+    | "mutation_result"
+    | "pricing_result";
     content: string;
     nodeName?: string;
     reasoningString?: string;
